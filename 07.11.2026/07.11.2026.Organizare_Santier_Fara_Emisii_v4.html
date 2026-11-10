@@ -756,7 +756,9 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
               ["String-uri fotovoltaice", m.nstr, m.nstr+" buc · max "+K.D["19"]+" per invertor", "string"],
               ["Turbine eoliene 3 kW", m.Tin, m.Tin+` buc · stâlp ${state.hub} m · ${state.rows} rânduri × ${state.spc} m${m.Treq>m.Tmx?` · front ≈ ${m.frontNeed} m`:""}`, "turb"],
               ["Invertoare hibride 8 kW", m.inv, m.inv+" buc", "inv"],
-              ["Tablouri de siguranță (1–2 invertoare/tablou, invertorul întreg pe un tablou)", Math.ceil(m.inv/2), Math.ceil(m.inv/2)+" buc · "+m.inv+" invertoare", "tablou"],
+              ["Tablouri invertor (1–2 invertoare/tablou, invertorul întreg pe un tablou)", Math.ceil(m.inv/2), Math.ceil(m.inv/2)+" buc · "+m.inv+" invertoare", "tablou"],
+              ["Tablou general distribuție (toate invertoarele, ATS + contorizare)", 1, "1 buc / șantier", "tabGen"],
+              ["Sub-tablouri pe grupuri (split după putere)", m.nMB + Math.ceil(m.ncdC/3) + m.nSan, (m.nMB + Math.ceil(m.ncdC/3) + m.nSan)+" buc — birouri "+m.nMB+" + grupuri cazare "+Math.ceil(m.ncdC/3)+" + sanitare "+m.nSan, "subTab"],
               ["Acumulatori LiFePO₄", null, nf(m.bat,0)+" kWh", "bat"]);
     return rows;
   }
