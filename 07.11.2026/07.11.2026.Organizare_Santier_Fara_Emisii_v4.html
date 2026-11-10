@@ -197,6 +197,10 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
 
 .bottom{margin:18px 0 8px;display:grid;gap:14px;grid-template-columns:1fr}
 @media(min-width:1100px){.bottom{grid-template-columns:1fr 1fr}.bottom>.card:first-child{grid-column:1/-1}}
+
+.loctab-wrap{max-height:340px;overflow:auto;border:1px solid var(--border);border-radius:10px}
+#locTab td{cursor:pointer}
+#locTab tr.selrow td{background:var(--warn-soft);font-weight:600}
 </style>
 <style>html{color-scheme:light}body{margin:0}img{max-width:100%}
 .progrow{display:flex;gap:4px;flex-wrap:wrap}
@@ -246,6 +250,10 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
 
 .bottom{margin:18px 0 8px;display:grid;gap:14px;grid-template-columns:1fr}
 @media(min-width:1100px){.bottom{grid-template-columns:1fr 1fr}.bottom>.card:first-child{grid-column:1/-1}}
+
+.loctab-wrap{max-height:340px;overflow:auto;border:1px solid var(--border);border-radius:10px}
+#locTab td{cursor:pointer}
+#locTab tr.selrow td{background:var(--warn-soft);font-weight:600}
 </style>
 </head>
 <body>
@@ -364,7 +372,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
   </div>
 </div>
 
-<section class="bottom"><div class="card"><h2>Amplasament — hartă România (click pe localitate) + controale amplasament</h2><div class="ctl wide"><span class="lbl">Amplasament — click pe hartă (sau alege din listă)</span><div class="maprow"><svg id="map" viewBox="0 0 560 420" role="img" aria-label="Harta României"></svg><select id="locSel" aria-label="Localitate"></select><span class="lbl2">stâlp</span><select id="hubSel"></select><span class="lbl2">rânduri</span><select id="rowSel"></select><span class="lbl2">distanță</span><select id="spcSel"></select><span class="lbl2">front</span><select id="frontSel"></select><span class="lbl2">ilum.ext</span><select id="extPSel"></select><select id="extHSel"></select><select id="selfSel"></select><select id="comboSel"></select><label class="lbl2"><input type="checkbox" id="evChk" checked> EV dublă (vară)</label></div><p class="note" id="locInfo"></p></div></div><div class="card"><h2>Schema bloc — flux energie (surse → TG → grupuri)</h2><div class="chartbox"><svg id="bloc"></svg></div></div><div class="card"><h2>Schema bloc tablouri — bare și derivații</h2><div class="chartbox"><svg id="mono"></svg></div></div><div class="card"><h2>Schema funcțională — ventilație + apă caldă</h2><div class="chartbox"><svg id="inst"></svg></div></div><div class="card"><h2>Scheme desfășurate (monofilare) pe tablouri + jurnal de cabluri</h2><div class="chartbox" id="mono2" style="max-width:none"></div></div><section><h2>Optimizare consum</h2><p class="note">Resursa (PV + eolian) e finită: caută automat programul minim pe sezon (ore × zile) ca varianta să fie <b>AUTONOMĂ</b> în fiecare lună, dacă e posibil.</p><div class="optbtns"><button type="button" id="btnOpt">Optimizează programul</button><button type="button" id="btnApply" hidden>Aplică</button></div><p class="note" id="optOut"></p></section><section>
+<section class="bottom"><div class="card"><h2>Amplasament — hartă România (click pe localitate) + controale amplasament</h2><div class="ctl wide"><span class="lbl">Amplasament — click pe hartă (sau alege din listă)</span><div class="maprow"><div class="loctab-wrap"><table class="sd" id="locTab"></table></div><select id="locSel" aria-label="Localitate"></select><span class="lbl2">stâlp</span><select id="hubSel"></select><span class="lbl2">rânduri</span><select id="rowSel"></select><span class="lbl2">distanță</span><select id="spcSel"></select><span class="lbl2">front</span><select id="frontSel"></select><span class="lbl2">ilum.ext</span><select id="extPSel"></select><select id="extHSel"></select><select id="selfSel"></select><select id="comboSel"></select><label class="lbl2"><input type="checkbox" id="evChk" checked> EV dublă (vară)</label></div><p class="note" id="locInfo"></p></div></div><div class="card"><h2>Schema bloc — flux energie (surse → TG → grupuri)</h2><div class="chartbox"><svg id="bloc"></svg></div></div><div class="card"><h2>Schema bloc tablouri — bare și derivații</h2><div class="chartbox"><svg id="mono"></svg></div></div><div class="card"><h2>Schema funcțională — ventilație + apă caldă</h2><div class="chartbox"><svg id="inst"></svg></div></div><div class="card"><h2>Scheme desfășurate (monofilare) pe tablouri + jurnal de cabluri</h2><div class="chartbox" id="mono2" style="max-width:none"></div></div><section><h2>Optimizare consum</h2><p class="note">Resursa (PV + eolian) e finită: caută automat programul minim pe sezon (ore × zile) ca varianta să fie <b>AUTONOMĂ</b> în fiecare lună, dacă e posibil.</p><div class="optbtns"><button type="button" id="btnOpt">Optimizează programul</button><button type="button" id="btnApply" hidden>Aplică</button></div><p class="note" id="optOut"></p></section><section>
         <h2>Ce se montează</h2>
         <table class="eq"><thead><tr><th>Echipament</th><th>Cantitate</th><th>Preț/buc (lei)</th><th>Total (lei)</th></tr></thead><tbody id="eqBody"></tbody></table>
       </section></section>
@@ -1126,17 +1134,15 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
   constKX = 78; const KY = 86;
   const proj = (lon, lat) => [(lon-20.2)*constKX*Math.cos(46.5*Math.PI/180)+8, (48.8-lat)*KY+6];
   function drawMap(){
-    const svg = $("map"); if(!svg) return;
-    const pts = BORDER.map(p=>proj(p[0],p[1]).map(v=>v.toFixed(1)).join(",")).join(" ");
-    let s = `<polygon points="${pts}" class="ro-outline"/>`;
+    const el = $("locTab"); if(!el) return;
+    let s = `<thead><tr><th>Localitate</th><th>Județ</th><th>t calc min</th><th>t calc max</th><th>îngheț [m]</th><th>vânt mediu [m/s]</th><th>PV mediu [kWh/kWp/zi]</th></tr></thead><tbody>`;
     LOCS.forEach((L,i)=>{
-      const [x,y] = proj(L.lon, L.lat);
-      s += `<circle class="ro-dot${i===state.loc?" sel":""}" data-i="${i}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${i===state.loc?6:4.5}"><title>${L.name}, ${L.judet} — vânt ${ (L.w.reduce((a,b)=>a+b,0)/12).toFixed(1)} m/s, îngheț ${L.inghet} m</title></circle>`;
-      if(["Constanța","București","Cluj-Napoca","Iași","Timișoara","Suceava","Brașov","Galați","Tulcea","Craiova"].includes(L.name))
-        s += `<text class="ro-lbl" x="${(x+8).toFixed(1)}" y="${(y+3).toFixed(1)}">${L.name}</text>`;
+      const sel = i===state.loc ? ' class="selrow"' : '';
+      const wa = (L.w.reduce((a,b)=>a+b,0)/12).toFixed(1), pa = (L.pv.reduce((a,b)=>a+b,0)/12).toFixed(2);
+      s += `<tr data-i="${i}"${sel}><td><b>${L.name}</b></td><td>${L.judet}</td><td>${L.tmin}°C</td><td>${L.tmax}°C</td><td>${L.inghet.toFixed(2)}</td><td>${wa}</td><td>${pa}</td></tr>`;
     });
-    svg.innerHTML = s;
-    svg.querySelectorAll(".ro-dot").forEach(d=>d.addEventListener("click",()=>{ state.loc=+d.dataset.i; const sel=$("locSel"); if(sel) sel.value=String(state.loc); render(); }));
+    el.innerHTML = s + "</tbody>";
+    el.querySelectorAll("tr[data-i]").forEach(tr=>tr.addEventListener("click",()=>{ state.loc=+tr.dataset.i; const sel=$("locSel"); if(sel) sel.value=String(state.loc); render(); }));
   }
   function fillLocSel(){
     const sel = $("locSel"); if(!sel) return;
