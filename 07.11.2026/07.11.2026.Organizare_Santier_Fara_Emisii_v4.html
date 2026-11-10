@@ -194,6 +194,9 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
 table.sd{border-collapse:collapse;width:100%;font-size:.78rem;margin:6px 0 14px}
 table.sd th{background:var(--surface-2);text-align:left;padding:3px 6px;border:1px solid var(--border)}
 table.sd td{padding:3px 6px;border:1px solid var(--border)}
+
+.bottom{margin:18px 0 8px;display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:1100px){.bottom{grid-template-columns:1fr 1fr}.bottom>.card:first-child{grid-column:1/-1}}
 </style>
 <style>html{color-scheme:light}body{margin:0}img{max-width:100%}
 .progrow{display:flex;gap:4px;flex-wrap:wrap}
@@ -240,6 +243,9 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
 table.sd{border-collapse:collapse;width:100%;font-size:.78rem;margin:6px 0 14px}
 table.sd th{background:var(--surface-2);text-align:left;padding:3px 6px;border:1px solid var(--border)}
 table.sd td{padding:3px 6px;border:1px solid var(--border)}
+
+.bottom{margin:18px 0 8px;display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:1100px){.bottom{grid-template-columns:1fr 1fr}.bottom>.card:first-child{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -254,7 +260,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     <div class="meta">Constanța · calcul −15°C / +38°C<br>cifre preluate din calculul Excel</div>
   </header>
 
-  <div class="controls" role="group" aria-label="Opțiuni"><div class="ctl wide"><span class="lbl">Amplasament — click pe hartă (sau alege din listă)</span><div class="maprow"><svg id="map" viewBox="0 0 560 420" role="img" aria-label="Harta României"></svg><select id="locSel" aria-label="Localitate"></select><span class="lbl2">stâlp</span><select id="hubSel"></select><span class="lbl2">rânduri</span><select id="rowSel"></select><span class="lbl2">distanță</span><select id="spcSel"></select><span class="lbl2">front</span><select id="frontSel"></select><span class="lbl2">ilum.ext</span><select id="extPSel"></select><select id="extHSel"></select><select id="selfSel"></select><select id="comboSel"></select><label class="lbl2"><input type="checkbox" id="evChk" checked> EV dublă (vară)</label></div><p class="note" id="locInfo"></p></div>
+  <div class="controls" role="group" aria-label="Opțiuni">
     <div class="ctl"><span class="lbl">Variantă</span>
       <div class="seg" id="segVar">
         <button type="button" data-v="V1">V1 · doar birouri</button>
@@ -307,10 +313,10 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
         </div>
         <p class="caption" id="caption"></p>
       </div>
-      <div class="card"><h2>Schema bloc — flux energie (surse → TG → grupuri)</h2><div class="chartbox"><svg id="bloc"></svg></div></div>
-      <div class="card"><h2>Schema bloc tablouri — bare și derivații</h2><div class="chartbox"><svg id="mono"></svg></div></div>
-      <div class="card"><h2>Scheme desfășurate (monofilare) pe tablouri + jurnal de cabluri</h2><div class="chartbox" id="mono2" style="max-width:none"></div></div>
-      <div class="card"><h2>Schema funcțională — ventilație + apă caldă</h2><div class="chartbox"><svg id="inst"></svg></div></div>
+      
+      
+      
+      
       <div class="card">
         <h2>Consum și producție pe luni (kWh pe zi, medie)</h2>
         <div class="chartbox"><svg id="chart" role="img" aria-label="Consum și producție pe luni"></svg></div>
@@ -352,14 +358,16 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
         <h3 id="eTitle"></h3>
         <p id="eText"></p>
       </section>
-      <section><h2>Optimizare consum</h2><p class="note">Resursa (PV + eolian) e finită: caută automat programul minim pe sezon (ore × zile) ca varianta să fie <b>AUTONOMĂ</b> în fiecare lună, dacă e posibil.</p><div class="optbtns"><button type="button" id="btnOpt">Optimizează programul</button><button type="button" id="btnApply" hidden>Aplică</button></div><p class="note" id="optOut"></p></section>
-      <section>
-        <h2>Ce se montează</h2>
-        <table class="eq"><thead><tr><th>Echipament</th><th>Cantitate</th><th>Preț/buc (lei)</th><th>Total (lei)</th></tr></thead><tbody id="eqBody"></tbody></table>
-      </section>
+      
+      
     </aside>
   </div>
 </div>
+
+<section class="bottom"><div class="card"><h2>Amplasament — hartă România (click pe localitate) + controale amplasament</h2><div class="ctl wide"><span class="lbl">Amplasament — click pe hartă (sau alege din listă)</span><div class="maprow"><svg id="map" viewBox="0 0 560 420" role="img" aria-label="Harta României"></svg><select id="locSel" aria-label="Localitate"></select><span class="lbl2">stâlp</span><select id="hubSel"></select><span class="lbl2">rânduri</span><select id="rowSel"></select><span class="lbl2">distanță</span><select id="spcSel"></select><span class="lbl2">front</span><select id="frontSel"></select><span class="lbl2">ilum.ext</span><select id="extPSel"></select><select id="extHSel"></select><select id="selfSel"></select><select id="comboSel"></select><label class="lbl2"><input type="checkbox" id="evChk" checked> EV dublă (vară)</label></div><p class="note" id="locInfo"></p></div></div><div class="card"><h2>Schema bloc — flux energie (surse → TG → grupuri)</h2><div class="chartbox"><svg id="bloc"></svg></div></div><div class="card"><h2>Schema bloc tablouri — bare și derivații</h2><div class="chartbox"><svg id="mono"></svg></div></div><div class="card"><h2>Schema funcțională — ventilație + apă caldă</h2><div class="chartbox"><svg id="inst"></svg></div></div><div class="card"><h2>Scheme desfășurate (monofilare) pe tablouri + jurnal de cabluri</h2><div class="chartbox" id="mono2" style="max-width:none"></div></div><section><h2>Optimizare consum</h2><p class="note">Resursa (PV + eolian) e finită: caută automat programul minim pe sezon (ore × zile) ca varianta să fie <b>AUTONOMĂ</b> în fiecare lună, dacă e posibil.</p><div class="optbtns"><button type="button" id="btnOpt">Optimizează programul</button><button type="button" id="btnApply" hidden>Aplică</button></div><p class="note" id="optOut"></p></section><section>
+        <h2>Ce se montează</h2>
+        <table class="eq"><thead><tr><th>Echipament</th><th>Cantitate</th><th>Preț/buc (lei)</th><th>Total (lei)</th></tr></thead><tbody id="eqBody"></tbody></table>
+      </section></section>
 
 <script>
 (function(){
