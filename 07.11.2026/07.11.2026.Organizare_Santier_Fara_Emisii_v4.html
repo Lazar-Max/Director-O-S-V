@@ -301,7 +301,7 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
       </div>
       <div class="card"><h2>Schema bloc — flux energie (surse → TG → grupuri)</h2><div class="chartbox"><svg id="bloc"></svg></div></div>
       <div class="card"><h2>Schema bloc tablouri — bare și derivații</h2><div class="chartbox"><svg id="mono"></svg></div></div>
-      <div class="card"><h2>Schema monofilară — circuite pe tablouri (siguranțe, cabluri, sursă, destinație, PE)</h2><div class="chartbox"><svg id="mono2"></svg></div></div>
+      <div class="card"><h2>Schema monofilară — circuite pe tablouri: 1P+N/3P+N + amperaj + cablu mm² + sursă + destinație + PE</h2><div class="chartbox"><svg id="mono2"></svg></div></div>
       <div class="card"><h2>Schema funcțională — ventilație + apă caldă</h2><div class="chartbox"><svg id="inst"></svg></div></div>
       <div class="card">
         <h2>Consum și producție pe luni (kWh pe zi, medie)</h2>
@@ -1045,53 +1045,53 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
   // ---------------- schema monofilară reală: circuite pe tablouri, cu siguranțe, sursă, destinație, PE ----------------
   function drawMono2(m){
     const el = $("mono2"); if(!el) return;
+    // circuit: [tip siguranță (1P+N monofazat / 3P+N trifazat), amperaj, cablu mm², destinație]
     const groups = [];
     for(let i=0;i<m.nMB;i++) groups.push(["Sub-tablou BIROURI "+(i+1), [
-      ["C6A", "3G1.5 mm²", "iluminat birou "+(i+1)],
-      ["C16A", "3G2.5 mm²", "prize + laptop/imprimantă/AP birou "+(i+1)],
-      ["C20A", "5G2.5 mm²", "unitate exterioară pompă aer-aer (grup "+(i+1)+")"],
-      ["C20A", "3G2.5 mm²", "instant electric WC TESA"],
+      ["1P+N", "C6A",  "3G1.5 mm²", "iluminat birou "+(i+1)],
+      ["1P+N", "C16A", "3G2.5 mm²", "prize birou "+(i+1)+" (laptop, imprimantă, AP)"],
+      ["3P+N", "C16A", "5G2.5 mm²", "unitate exterioară pompă aer-aer (trifazat), grup "+(i+1)],
+      ["1P+N", "C20A", "3G2.5 mm²", "instant electric WC TESA"],
     ]]);
     const nGr = Math.ceil(m.ncdC/3);
     for(let g=0; g<nGr; g++) groups.push(["Sub-tablou CAZARE grup "+(g+1), [
-      ["C6A", "3G1.5 mm²", "iluminat dormitoare/sală "+(g+1)],
-      ["C16A", "3G2.5 mm²", "prize dormitoare "+(g+1)],
-      ["C16A", "3G2.5 mm²", "microunde + fierbător sală "+(g+1)],
-      ["C10A", "3G1.5 mm²", "ventilator/recuperator "+(g+1)],
+      ["1P+N", "C6A",  "3G1.5 mm²", "iluminat dormitoare/sală "+(g+1)],
+      ["1P+N", "C16A", "3G2.5 mm²", "prize dormitoare "+(g+1)],
+      ["1P+N", "C16A", "3G2.5 mm²", "microunde ×2 + fierbător sală "+(g+1)],
+      ["1P+N", "C10A", "3G1.5 mm²", "ventilator/recuperator grup "+(g+1)],
     ]]);
     for(let s=0;s<m.nSan;s++) groups.push(["Sub-tablou SANITAR "+(s+1), [
-      ["C16A", "3G2.5 mm²", "pompă aer-apă apă caldă "+(s+1)],
-      ["C20A", "3G4 mm²", "rezistență rezervă puffer "+(s+1)],
-      ["C16A", "3G2.5 mm²", "pompe circulație + stație solară"],
-      ["C10A", "3G1.5 mm²", "iluminat + ventilație sanitar "+(s+1)],
+      ["3P+N", "C16A", "5G2.5 mm²", "pompă aer-apă apă caldă "+(s+1)+" (trifazat)"],
+      ["1P+N", "C20A", "3G4 mm²",   "rezistență rezervă puffer "+(s+1)],
+      ["1P+N", "C10A", "3G1.5 mm²", "pompe circulație + stație solară (tuburi vidate)"],
+      ["1P+N", "C10A", "3G1.5 mm²", "iluminat + ventilație sanitar "+(s+1)],
     ]]);
-    if(state.ev) groups.push(["Sub-tablou STAȚIE EV", [["C32A", "5G6 mm² trifazat", "stație EV dublă 2×11 kW (vară)"]]]);
-    groups.push(["Sub-tablou TEHNIC (în container tehnic)", [
-      ["C6A", "3G1.5 mm²", "iluminat cameră tehnică + monitorizare"],
-      ["C10A", "3G1.5 mm²", "BMS/EMS + switch + contorizare"],
-      ["C16A", "3G2.5 mm²", "prize service invertor/acumulatori"],
+    if(state.ev) groups.push(["Sub-tablou STAȚIE EV", [["3P+N", "C32A", "5G6 mm²", "stație EV dublă 2×11 kW (trifazat, vară)"]]]);
+    groups.push(["Sub-tablou TEHNIC (container tehnic)", [
+      ["1P+N", "C6A",  "3G1.5 mm²", "iluminat cameră tehnică + monitorizare"],
+      ["1P+N", "C10A", "3G1.5 mm²", "BMS/EMS + switch + contorizare"],
+      ["1P+N", "C16A", "3G2.5 mm²", "prize service invertor/acumulatori"],
     ]]);
-    let s = `<defs></defs>`;
-    const colW = 420, nCol = groups.length > 1 ? 2 : 1;
+    let s = "";
+    const colW = 430, nCol = groups.length > 1 ? 2 : 1;
     groups.forEach((g, gi)=>{
       const gx = 20 + (gi % nCol) * (colW + 30);
-      const gy = 30 + Math.floor(gi / nCol) * 250;
+      const gy = 34 + Math.floor(gi / nCol) * 260;
       const [title, circuits] = g;
-      s += `<text class="bx-t" x="${gx}" y="${gy-8}" text-anchor="start">${title}</text>`;
-      s += `<text class="bx-s" x="${gx}" y="${gy+4}" text-anchor="start">alimentat de la: TABLOU GENERAL (ATS) · PE → împământare șantier</text>`;
-      s += `<line class="bus" x1="${gx+40}" y1="${gy+12}" x2="${gx+40}" y2="${gy+20+circuits.length*34}"/>`;
+      s += `<text class="bx-t" x="${gx}" y="${gy-10}" text-anchor="start">${title}</text>`;
+      s += `<text class="bx-s" x="${gx}" y="${gy+4}" text-anchor="start">de la: TABLOU GENERAL (ATS) · PE → împământare șantier · cablurile includ PE (3G/5G)</text>`;
+      s += `<line class="bus" x1="${gx+40}" y1="${gy+14}" x2="${gx+40}" y2="${gy+24+circuits.length*36}"/>`;
       circuits.forEach((c, ci)=>{
-        const y = gy + 26 + ci*34;
-        s += `<line class="ln" x1="${gx+40}" y1="${y}" x2="${gx+66}" y2="${y}"/>`;
-        s += `<rect class="brk" x="${gx+66}" y="${y-8}" width="16" height="16"/>`;
-        s += `<text class="bx-t" x="${gx+72}" y="${y+4}" text-anchor="start" style="font-size:11px">${c[0]}</text>`;
-        s += `<text class="bx-s" x="${gx+120}" y="${y+4}" text-anchor="start">${c[1]} → ${c[2]}</text>`;
+        const y = gy + 30 + ci*36;
+        s += `<line class="ln" x1="${gx+40}" y1="${y}" x2="${gx+64}" y2="${y}"/>`;
+        s += `<rect class="brk" x="${gx+64}" y="${y-8}" width="16" height="16"/>`;
+        s += `<text class="bx-t" x="${gx+88}" y="${y+4}" text-anchor="start" style="font-size:11px">${c[0]} ${c[1]}</text>`;
+        s += `<text class="bx-s" x="${gx+160}" y="${y+4}" text-anchor="start">${c[2]} → ${c[3]}</text>`;
       });
     });
-    el.setAttribute("viewBox", `0 0 ${nCol*(colW+30)+20} ${Math.ceil(groups.length/nCol)*250+40}`);
+    el.setAttribute("viewBox", `0 0 ${nCol*(colW+30)+20} ${Math.ceil(groups.length/nCol)*260+50}`);
     el.innerHTML = s;
   }
-
   // ---------------- hartă România ----------------
   const BORDER = [[23.6,47.27],[24.0,47.6],[24.98,48.26],[25.5,48.25],[26.63,48.2],[27.25,48.1],[28.2,48.0],[28.9,47.6],[29.71,46.57],[29.4,45.9],[29.73,45.2],[29.3,44.6],[28.63,44.18],[28.25,43.75],[27.5,43.8],[26.63,43.62],[25.75,43.73],[24.97,43.75],[24.3,43.65],[23.6,43.85],[22.88,44.45],[22.3,44.9],[21.7,45.1],[21.35,45.47],[21.6,45.85],[22.0,46.35],[22.45,46.62],[22.9,46.85],[23.2,47.0]];
   constKX = 78; const KY = 86;
