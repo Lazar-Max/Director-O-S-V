@@ -707,7 +707,7 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
       add(`<text class="lbl-svg" x="${hx-10}" y="${hy-6}" text-anchor="middle">tuburi vidate</text>`);
     }
 
-    const tl = `${m.inv} tablouri/invertoare · ${m.Tin} turbine · ${nf(m.bat,0)} kWh`;
+    const tl = `${m.inv} invertoare pe ${Math.ceil(m.inv/2)} tablouri · ${m.Tin} turbine · ${nf(m.bat,0)} kWh`;
     add(`<rect x="${techX0-3}" y="${techTop-30}" width="${tl.length*5.6+6}" height="13" rx="2" style="fill:var(--surface)" opacity=".92"/>`);
     add(`<text class="lbl-svg strong" x="${techX0}" y="${techTop-20}">${tl}</text>`);
     const svg = $("svg");
@@ -756,7 +756,7 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
               ["String-uri fotovoltaice", m.nstr, m.nstr+" buc · max "+K.D["19"]+" per invertor", "string"],
               ["Turbine eoliene 3 kW", m.Tin, m.Tin+` buc · stâlp ${state.hub} m · ${state.rows} rânduri × ${state.spc} m${m.Treq>m.Tmx?` · front ≈ ${m.frontNeed} m`:""}`, "turb"],
               ["Invertoare hibride 8 kW", m.inv, m.inv+" buc", "inv"],
-              ["Tablouri electrice (1 per invertor)", m.inv, m.inv+" buc", "tablou"],
+              ["Tablouri de siguranță (1–2 invertoare/tablou, invertorul întreg pe un tablou)", Math.ceil(m.inv/2), Math.ceil(m.inv/2)+" buc · "+m.inv+" invertoare", "tablou"],
               ["Acumulatori LiFePO₄", null, nf(m.bat,0)+" kWh", "bat"]);
     return rows;
   }
