@@ -188,6 +188,8 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
 .lamp-post{stroke:var(--steel-edge);stroke-width:2}
 .lamp{fill:var(--muted)}
 .lamp.on{fill:var(--sun)}
+
+#bloc,#mono,#inst,#mono2{width:100%;max-width:680px;height:auto;display:block;margin:0 auto}
 </style>
 <style>html{color-scheme:light}body{margin:0}img{max-width:100%}
 .progrow{display:flex;gap:4px;flex-wrap:wrap}
@@ -228,6 +230,8 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
 .lamp-post{stroke:var(--steel-edge);stroke-width:2}
 .lamp{fill:var(--muted)}
 .lamp.on{fill:var(--sun)}
+
+#bloc,#mono,#inst,#mono2{width:100%;max-width:680px;height:auto;display:block;margin:0 auto}
 </style>
 </head>
 <body>
@@ -295,8 +299,9 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
         </div>
         <p class="caption" id="caption"></p>
       </div>
-      <div class="card"><h2>Schema bloc — tablou general + BMS/EMS</h2><div class="chartbox"><svg id="bloc"></svg></div></div>
-      <div class="card"><h2>Schema monofilară</h2><div class="chartbox"><svg id="mono"></svg></div></div>
+      <div class="card"><h2>Schema bloc — flux energie (surse → TG → grupuri)</h2><div class="chartbox"><svg id="bloc"></svg></div></div>
+      <div class="card"><h2>Schema bloc tablouri — bare și derivații</h2><div class="chartbox"><svg id="mono"></svg></div></div>
+      <div class="card"><h2>Schema monofilară — circuite pe tablouri (siguranțe, cabluri, sursă, destinație, PE)</h2><div class="chartbox"><svg id="mono2"></svg></div></div>
       <div class="card"><h2>Schema funcțională — ventilație + apă caldă</h2><div class="chartbox"><svg id="inst"></svg></div></div>
       <div class="card">
         <h2>Consum și producție pe luni (kWh pe zi, medie)</h2>
@@ -890,7 +895,7 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
   function render(){
     const clim = climOf();
     const m = model(state.v, state.s, state.e, state.p, progOf(), clim);
-    draw(m); chart(m); panel(m, clim); drawMap(); drawBloc(m); drawMono(m); drawInst(m);
+    draw(m); chart(m); panel(m, clim); drawMap(); drawBloc(m); drawMono(m); drawInst(m); drawMono2(m);
     const sets = [["#segVar button","v"],["#segScen button","s"],["#segEq button","e"],["#segSez button","z"],["#segZi button","d"]];
     sets.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(b=>b.setAttribute("aria-pressed", String(b.dataset[key]===state[key]))));
     $("ctlPers").hidden = state.v!=="V2E";
@@ -938,114 +943,152 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
 
 
   // ---------------- schema bloc + monofilara ----------------
-  function box(svg, x, y, w, h, title, sub, cls){
+  function box(x, y, w, h, title, sub, cls){
     return `<rect class="bx ${cls||""}" x="${x}" y="${y}" width="${w}" height="${h}" rx="6"/>`+
            `<text class="bx-t" x="${x+w/2}" y="${y+h/2-4}" text-anchor="middle">${title}</text>`+
            (sub?`<text class="bx-s" x="${x+w/2}" y="${y+h/2+12}" text-anchor="middle">${sub}</text>`:"");
   }
-  function arrow(svg, x1,y1,x2,y2, cls){
+  function arrow(x1,y1,x2,y2, cls){
     return `<line class="ln ${cls||""}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#arr)"/>`;
   }
   function drawBloc(m){
     const el = $("bloc"); if(!el) return;
     const nTab = Math.ceil(m.inv/2), nSub = m.nMB + Math.ceil(m.ncdC/3) + m.nSan;
     let s = `<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--line)"/></marker></defs>`;
-    s += box(0, 20, 150, 44, "String-uri PV ×"+m.nstr, nf(m.kwp,1)+" kWp");
-    s += box(0, 84, 150, 44, "Turbine ×"+m.Tin, "3 kW · stâlp "+state.hub+" m");
-    s += box(0, 148, 150, 44, "Acumulatori", nf(m.bat,0)+" kWh · 48 V DC");
-    s += box(0, 212, 150, 44, "Rețea? NU — off-grid", "fără racord");
-    s += `<line class="ln" x1="150" y1="42" x2="200" y2="42"/><line class="ln" x1="150" y1="106" x2="200" y2="106"/><line class="ln" x1="150" y1="170" x2="200" y2="170"/>`;
-    s += `<line class="ln dc" x1="200" y1="42" x2="200" y2="170"/><line class="ln dc" x1="200" y1="106" x2="240" y2="106"/>`;
-    s += box(240, 84, 170, 44, "Invertoare hibride ×"+m.inv, "8 kW · 48 V · paralel");
-    s += arrow(0, 200, 240, 200, "");
-    s += arrow(0, 106, 240, 106, "dc");
-    s += box(450, 84, 140, 44, "Tablouri invertor ×"+nTab, "max 2 inv/tablou, întreg");
-    s += arrow(0, 106, 450, 106, "");
-    s += box(630, 70, 250, 72, "TABLOU GENERAL", "ATS · contorizare · bare AC/DC");
-    s += arrow(0, 106, 630, 106, "");
-    s += box(630, 30, 250, 28, "BMS / EMS", "monitorizare + délestare", "bms");
-    s += `<line class="ln bms" x1="755" y1="58" x2="325" y2="84"/><line class="ln bms" x1="755" y1="58" x2="705" y2="142"/><line class="ln bms" x1="755" y1="58" x2="75" y2="170"/>`;
-    s += box(450, 160, 140, 44, "Sub-tablouri ×"+nSub, "pe grupuri, după putere");
-    s += arrow(0, 160, 450, 160, "");
-    const loads = [`Birouri ×${3*m.nMB} (${nf(m.pkB,1)} kW vârf)`, `Cazare (${nf(m.pkC,1)} kW vârf)`, `Sanitar+tehnic ×${m.nSan}`, state.ev?"Stație EV dublă "+K.EV.evKw+" kW (vară)":"", "Iluminat + monitorizare ~1 kW (ține)"].filter(Boolean);
-    s += box(240, 160, 170, 44+loads.length*14, "Consumatori pe module", loads.join(" · "));
-    s += arrow(0, 182, 240, 182, "");
-    s += `<line class="ln bms" x1="325" y1="160" x2="325" y2="120" x2="755" y2="58"/>`;
+    s += box(10, 20, 160, 46, "String-uri PV ×"+m.nstr, nf(m.kwp,1)+" kWp");
+    s += box(10, 86, 160, 46, "Turbine ×"+m.Tin, "3 kW · stâlp "+state.hub+" m");
+    s += box(10, 152, 160, 46, "Acumulatori", nf(m.bat,0)+" kWh · 48 V DC");
+    s += `<line class="ln dc" x1="170" y1="43" x2="215" y2="43"/><line class="ln dc" x1="170" y1="109" x2="215" y2="109"/><line class="ln dc" x1="170" y1="175" x2="215" y2="175"/>`;
+    s += `<line class="ln dc" x1="215" y1="43" x2="215" y2="175"/>`;
+    s += box(215, 86, 170, 46, "Invertoare hibride ×"+m.inv, "8 kW · 48 V · paralel");
+    s += arrow(215, 109, 215, 109, "dc");
+    s += arrow(385, 109, 440, 109, "");
+    s += box(440, 86, 150, 46, "Tablouri invertor ×"+nTab, "max 2 inv/tablou, întreg");
+    s += arrow(590, 109, 640, 109, "");
+    s += box(640, 76, 250, 66, "TABLOU GENERAL", "ATS · contorizare · bare AC/DC", "tg");
+    s += box(640, 20, 250, 40, "BMS / EMS", "monitorizare + délestare pe priorități", "bms");
+    s += `<line class="ln bms" x1="765" y1="60" x2="300" y2="86"/><line class="ln bms" x1="765" y1="60" x2="90" y2="175"/>`;
+    s += arrow(765, 142, 765, 165, "");
+    s += box(640, 165, 250, 46, "Sub-tablouri pe grupuri ×"+nSub, "birouri "+m.nMB+" + cazare "+Math.ceil(m.ncdC/3)+" + sanitare "+m.nSan);
+    s += arrow(515, 165, 640, 188, "");
+    const loads = [`Birouri ×${3*m.nMB} — ${nf(m.pkB,1)} kW vârf`, `Cazare — ${nf(m.pkC,1)} kW vârf`, `Sanitar+tehnic ×${m.nSan}`, state.ev?"Stație EV dublă "+K.EV.evKw+" kW (vară)":"", "Iluminat + monitorizare ~1 kW (ține)"].filter(Boolean);
+    s += box(215, 165, 300, 20+loads.length*16, "Consumatori pe module", loads.join("  ·  "));
+    s += `<line class="ln bms" x1="365" y1="165" x2="765" y2="60"/>`;
     el.setAttribute("viewBox", "0 0 900 230");
     el.innerHTML = s;
   }
   function drawMono(m){
     const el = $("mono"); if(!el) return;
-    const nTab = Math.ceil(m.inv/2), nSub = m.nMB + Math.ceil(m.ncdC/3) + m.nSan;
+    const nTab = Math.ceil(m.inv/2);
     let s = `<defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--line)"/></marker></defs>`;
-    // vertical main line
-    const X = 120, W = 760;
-    s += `<line class="bus" x1="${X}" y1="20" x2="${X}" y2="400"/>`;
+    const X = 130;
+    s += `<line class="bus dc" x1="${X}" y1="30" x2="${X}" y2="170"/>`;
+    s += `<line class="bus" x1="${X}" y1="200" x2="${X}" y2="430"/>`;
+    s += `<text class="bx-s" x="${X+10}" y="105">bară DC 48 V</text>`;
+    s += `<text class="bx-s" x="${X+10}" y="250">bară AC 230 V</text>`;
     const tap = (y, label, sub, cls) => {
-      s += `<line class="ln" x1="${X}" y1="${y}" x2="${X+40}" y2="${y}"/>`;
-      s += `<rect class="brk" x="${X+40}" y="${y-7}" width="14" height="14"/>`;
-      s += box(0, X+70, y-22, 240, 44, label, sub, cls);
-      s += `<text class="bx-s" x="${X+330}" y="${y+4}">${sub||""}</text>`;
+      s += `<line class="ln" x1="${X}" y1="${y}" x2="${X+34}" y2="${y}"/>`;
+      s += `<rect class="brk" x="${X+34}" y="${y-7}" width="14" height="14"/>`;
+      s += box(X+64, y-22, 300, 44, label, sub, cls);
     };
-    s += `<text class="bx-t" x="${X-60}" y="16">~" + "" + "</text>`;
-    tap(40,  "String-uri PV ×"+m.nstr, nf(m.kwp,1)+" kWp → MPPT", "src");
-    tap(90,  "Turbine eoliene ×"+m.Tin, "3 kW → controller MPPT 48 V", "src");
-    tap(140, "Acumulatori LiFePO4", nf(m.bat,0)+" kWh · BMS pe fiecare modul", "src");
-    s += `<line class="bus dc" x1="${X}" y1="30" x2="${X}" y2="160"/>`;
-    s += `<text class="bx-s" x="${X+8}" y="100">bară DC 48 V</text>`;
-    tap(200, "Invertoare hibride ×"+m.inv+" → tablouri invertor ×"+nTab, "8 kW · max 2/tablou, întreg", "inv");
-    s += `<line class="bus" x1="${X}" y1="210" x2="${X}" y2="400"/>`;
-    s += `<text class="bx-s" x="${X+8}" y="240">bară AC 230 V</text>`;
-    tap(250, "TABLOU GENERAL", "ATS · contor · BMS/EMS (délestare pe priorități)", "tg");
-    tap(300, "Sub-tablou birouri ×"+m.nMB, nf(m.pkB,1)+" kW vârf", "sub");
-    tap(340, "Sub-tablou grup cazare ×"+Math.ceil(m.ncdC/3), nf(m.pkC,1)+" kW vârf", "sub");
-    tap(380, "Sub-tablou sanitar ×"+m.nSan, "apă caldă (tuburi+puffer+pompă aer-apă)", "sub");
-    if(state.ev) tap(420, "Stație EV dublă", K.EV.evKw+" kW · "+K.EV.evKwh+" kWh/zi · mai–sep", "ev");
-    el.setAttribute("viewBox", "0 0 900 460");
+    tap(45,  "String-uri PV ×"+m.nstr, nf(m.kwp,1)+" kWp → MPPT în invertor", "src");
+    tap(95,  "Turbine eoliene ×"+m.Tin, "3 kW · controller MPPT 48 V", "src");
+    tap(145, "Acumulatori LiFePO4 "+nf(m.bat,0)+" kWh", "BMS pe fiecare modul baterie", "src");
+    tap(215, "Invertoare ×"+m.inv+" → tablouri invertor ×"+nTab, "8 kW · max 2/tablou, întreg pe un tablou", "inv");
+    tap(275, "TABLOU GENERAL", "ATS · contor · BMS/EMS (délestare pe priorități)", "tg");
+    tap(325, "Sub-tablou birouri ×"+m.nMB, nf(m.pkB,1)+" kW vârf", "sub");
+    tap(370, "Sub-tablou grup cazare ×"+Math.ceil(m.ncdC/3), nf(m.pkC,1)+" kW vârf", "sub");
+    tap(415, "Sub-tablou sanitar ×"+m.nSan, "tuburi vidate + puffer + pompă aer-apă", "sub");
+    if(state.ev) tap(460, "Stație EV dublă", K.EV.evKw+" kW · "+K.EV.evKwh+" kWh/zi · mai–sep", "ev");
+    el.setAttribute("viewBox", "0 0 900 500");
     el.innerHTML = s;
   }
 
-
-  // ---------------- schema funcțională instalații (ventilație + apă caldă) ----------------
+  // ---------------- schema funcțională instalații ----------------
   function drawInst(m){
     const el = $("inst"); if(!el) return;
     const nRecup = 3*m.nMB + m.ncdC + m.nSan + m.nMB;
     let s = `<defs><marker id="arr3" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--cold)"/></marker>` +
             `<marker id="arr4" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--hot)"/></marker></defs>`;
-    // titluri
-    s += `<text class="bx-t" x="10" y="18" text-anchor="start">VENTILAȚIE CU RECUPERARE (HP) — aer proaspăt încălzit/răcit</text>`;
-    s += `<text class="bx-t" x="10" y="218" text-anchor="start">APĂ CALDĂ — tuburi vidate + puffer + pompă aer-apă (rezervă) + recirculare</text>`;
-    // ventilație: exterior -> recuperator -> distribuție -> camere; viciat -> recuperator -> exterior
-    s += box(0, 30, 120, 40, "Aer proaspăt", "30 m³/h/pers");
-    s += box(0, 100, 120, 40, "Aer viciat", "din încăperi");
-    s += box(170, 60, 150, 50, "Recuperator ×"+nRecup, "η = 75% · ventilator 0.35 W/(m³/h)");
-    s += box(380, 30, 150, 40, "Distribuție aer", "către încăperi");
-    s += box(380, 100, 150, 40, "Evacuare aer", "către exterior");
-    s += box(590, 60, 200, 50, "Încăperi: birouri "+(3*m.nMB)+", dormitoare "+m.nD+", săli "+m.nS+", sanitar "+m.nSan, "schimburi: uși 0.5–1 h⁻¹ + Q proaspăt");
-    s += `<line class="ln" style="stroke:var(--cold)" x1="120" y1="50" x2="170" y2="85" marker-end="url(#arr3)"/>`;
-    s += `<line class="ln" style="stroke:var(--cold)" x1="120" y1="120" x2="170" y2="95" marker-end="url(#arr3)"/>`;
-    s += `<line class="ln" style="stroke:var(--cold)" x1="320" y1="85" x2="380" y2="50" marker-end="url(#arr3)"/>`;
-    s += `<line class="ln" style="stroke:var(--cold)" x1="320" y1="90" x2="380" y2="120" marker-end="url(#arr3)"/>`;
-    s += `<line class="ln" style="stroke:var(--cold)" x1="530" y1="50" x2="590" y2="85" marker-end="url(#arr3)"/>`;
-    s += `<line class="ln" style="stroke:var(--cold)" x1="590" y1="95" x2="530" y2="110" marker-end="url(#arr3)"/>`;
-    s += `<line class="ln bms" x1="245" y1="60" x2="700" y2="30"/>`;
-    s += `<text class="bx-s" x="700" y="26" text-anchor="end">BMS reglează debitele</text>`;
-    // apă caldă
-    s += box(0, 240, 130, 40, "Apă rece", "din rețea/fântână · "+K.I["14"]+"°C la instant");
-    s += box(0, 310, 130, 40, "Tuburi vidate ×"+(m.nSan*K.I["7"]), "pe acoperișul sanitarelor");
-    s += box(190, 275, 150, 50, "Puffer "+(500*m.nSan)+" L ×"+m.nSan, "55°C · serpentină solară");
-    s += box(390, 275, 150, 50, "Pompă aer-apă ×"+m.nSan, "rezervă când soarele nu ajunge (dimensionată la "+LOCS[state.loc].tmin+"°C)");
-    s += box(590, 240, 150, 40, "Distribuție apă caldă", "55°C → amestec");
-    s += box(590, 310, 150, 40, "Recirculare", "pompă + răcire retur");
-    s += box(590, 370, 200, 44, "Consumatori: dușuri "+(m.nSan*K.I["23"])+" · WC "+(m.nSan*K.I["24"])+" · lavoare "+(m.nSan*K.I["25"]), "40 L/pers/zi cazare + 30 L spălări + 5 L/pers/zi birou (instant)");
-    s += `<line class="ln" style="stroke:var(--hot)" x1="130" y1="260" x2="190" y2="290" marker-end="url(#arr4)"/>`;
-    s += `<line class="ln" style="stroke:var(--hot)" x1="130" y1="330" x2="190" y2="310" marker-end="url(#arr4)"/>`;
-    s += `<line class="ln" style="stroke:var(--hot)" x1="340" y1="300" x2="390" y2="300" marker-end="url(#arr4)"/>`;
-    s += `<line class="ln" style="stroke:var(--hot)" x1="540" y1="300" x2="590" y2="260" marker-end="url(#arr4)"/>`;
-    s += `<line class="ln" style="stroke:var(--hot)" x1="665" y1="280" x2="665" y2="310" marker-end="url(#arr4)"/>`;
-    s += `<line class="ln" style="stroke:var(--hot)" x1="590" y1="330" x2="540" y2="330" x2="540" y2="310" marker-end="url(#arr4)"/>`;
-    s += `<line class="ln" style="stroke:var(--hot)" x1="740" y1="260" x2="740" y2="370" marker-end="url(#arr4)"/>`;
-    el.setAttribute("viewBox", "0 0 800 430");
+    s += `<text class="bx-t" x="10" y="16" text-anchor="start">VENTILAȚIE CU RECUPERARE — aer proaspăt încălzit/răcit (HP)</text>`;
+    s += `<text class="bx-t" x="10" y="196" text-anchor="start">APĂ CALDĂ — tuburi vidate + puffer + pompă aer-apă (rezervă) + recirculare</text>`;
+    s += box(10, 28, 120, 38, "Aer proaspăt", "30 m³/h/pers");
+    s += box(10, 92, 120, 38, "Aer viciat", "din încăperi");
+    s += box(180, 56, 150, 48, "Recuperator ×"+nRecup, "η=75% · 0.35 W/(m³/h)");
+    s += box(390, 28, 140, 38, "Distribuție aer", "către încăperi");
+    s += box(390, 92, 140, 38, "Evacuare aer", "către exterior");
+    s += box(590, 50, 210, 56, "Încăperi: birouri "+(3*m.nMB)+", dorm "+m.nD+", săli "+m.nS+", sanitar "+m.nSan, "uși 0.5–1 h⁻¹ + Q proaspăt");
+    s += `<line class="ln" style="stroke:var(--cold)" x1="130" y1="47" x2="180" y2="76" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="130" y1="111" x2="180" y2="92" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="330" y1="80" x2="390" y2="47" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="330" y1="84" x2="390" y2="111" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="530" y1="47" x2="590" y2="70" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="590" y1="90" x2="530" y2="118" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln bms" x1="255" y1="56" x2="700" y2="26"/><text class="bx-s" x="800" y="24" text-anchor="end">BMS reglează debitele</text>`;
+    s += box(10, 216, 120, 38, "Apă rece", "rețea/fântână · "+K.I["14"]+"°C instant");
+    s += box(10, 280, 120, 38, "Tuburi vidate ×"+(m.nSan*K.I["7"]), "pe acoperișul sanitarelor");
+    s += box(180, 252, 150, 46, "Puffer "+(500*m.nSan)+" L ×"+m.nSan, "55°C · serpentină solară");
+    s += box(390, 252, 160, 46, "Pompă aer-apă ×"+m.nSan, "rezervă la "+LOCS[state.loc].tmin+"°C");
+    s += box(610, 216, 140, 38, "Distribuție AC", "55°C → amestec");
+    s += box(610, 280, 140, 38, "Recirculare", "pompă + răcire retur");
+    s += box(610, 336, 190, 52, "Dușuri "+(m.nSan*K.I["23"])+" · WC "+(m.nSan*K.I["24"])+" · lavoare "+(m.nSan*K.I["25"]), "40 L/pers/zi + 30 L spălări + 5 L/pers/zi birou");
+    s += `<line class="ln" style="stroke:var(--hot)" x1="130" y1="235" x2="180" y2="270" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="130" y1="299" x2="180" y2="285" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="330" y1="275" x2="390" y2="275" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="550" y1="275" x2="610" y2="235" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="680" y1="254" x2="680" y2="280" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="610" y1="299" x2="560" y2="299" x2="550" y2="280" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="705" y1="254" x2="705" y2="336" marker-end="url(#arr4)"/>`;
+    el.setAttribute("viewBox", "0 0 810 400");
+    el.innerHTML = s;
+  }
+  // ---------------- schema monofilară reală: circuite pe tablouri, cu siguranțe, sursă, destinație, PE ----------------
+  function drawMono2(m){
+    const el = $("mono2"); if(!el) return;
+    const groups = [];
+    for(let i=0;i<m.nMB;i++) groups.push(["Sub-tablou BIROURI "+(i+1), [
+      ["C6A", "3G1.5 mm²", "iluminat birou "+(i+1)],
+      ["C16A", "3G2.5 mm²", "prize + laptop/imprimantă/AP birou "+(i+1)],
+      ["C20A", "5G2.5 mm²", "unitate exterioară pompă aer-aer (grup "+(i+1)+")"],
+      ["C20A", "3G2.5 mm²", "instant electric WC TESA"],
+    ]]);
+    const nGr = Math.ceil(m.ncdC/3);
+    for(let g=0; g<nGr; g++) groups.push(["Sub-tablou CAZARE grup "+(g+1), [
+      ["C6A", "3G1.5 mm²", "iluminat dormitoare/sală "+(g+1)],
+      ["C16A", "3G2.5 mm²", "prize dormitoare "+(g+1)],
+      ["C16A", "3G2.5 mm²", "microunde + fierbător sală "+(g+1)],
+      ["C10A", "3G1.5 mm²", "ventilator/recuperator "+(g+1)],
+    ]]);
+    for(let s=0;s<m.nSan;s++) groups.push(["Sub-tablou SANITAR "+(s+1), [
+      ["C16A", "3G2.5 mm²", "pompă aer-apă apă caldă "+(s+1)],
+      ["C20A", "3G4 mm²", "rezistență rezervă puffer "+(s+1)],
+      ["C16A", "3G2.5 mm²", "pompe circulație + stație solară"],
+      ["C10A", "3G1.5 mm²", "iluminat + ventilație sanitar "+(s+1)],
+    ]]);
+    if(state.ev) groups.push(["Sub-tablou STAȚIE EV", [["C32A", "5G6 mm² trifazat", "stație EV dublă 2×11 kW (vară)"]]]);
+    groups.push(["Sub-tablou TEHNIC (în container tehnic)", [
+      ["C6A", "3G1.5 mm²", "iluminat cameră tehnică + monitorizare"],
+      ["C10A", "3G1.5 mm²", "BMS/EMS + switch + contorizare"],
+      ["C16A", "3G2.5 mm²", "prize service invertor/acumulatori"],
+    ]]);
+    let s = `<defs></defs>`;
+    const colW = 420, nCol = groups.length > 1 ? 2 : 1;
+    groups.forEach((g, gi)=>{
+      const gx = 20 + (gi % nCol) * (colW + 30);
+      const gy = 30 + Math.floor(gi / nCol) * 250;
+      const [title, circuits] = g;
+      s += `<text class="bx-t" x="${gx}" y="${gy-8}" text-anchor="start">${title}</text>`;
+      s += `<text class="bx-s" x="${gx}" y="${gy+4}" text-anchor="start">alimentat de la: TABLOU GENERAL (ATS) · PE → împământare șantier</text>`;
+      s += `<line class="bus" x1="${gx+40}" y1="${gy+12}" x2="${gx+40}" y2="${gy+20+circuits.length*34}"/>`;
+      circuits.forEach((c, ci)=>{
+        const y = gy + 26 + ci*34;
+        s += `<line class="ln" x1="${gx+40}" y1="${y}" x2="${gx+66}" y2="${y}"/>`;
+        s += `<rect class="brk" x="${gx+66}" y="${y-8}" width="16" height="16"/>`;
+        s += `<text class="bx-t" x="${gx+72}" y="${y+4}" text-anchor="start" style="font-size:11px">${c[0]}</text>`;
+        s += `<text class="bx-s" x="${gx+120}" y="${y+4}" text-anchor="start">${c[1]} → ${c[2]}</text>`;
+      });
+    });
+    el.setAttribute("viewBox", `0 0 ${nCol*(colW+30)+20} ${Math.ceil(groups.length/nCol)*250+40}`);
     el.innerHTML = s;
   }
 
