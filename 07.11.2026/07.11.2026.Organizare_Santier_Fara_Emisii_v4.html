@@ -409,8 +409,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
 
   const state = {v:"V2", s:"CMD", e:"HP", z:"i", d:"zi", p:20, hi:11, si:8, zi:5, hv:11, sv:7, zv:5, loc:0, hub:6, alpha:0.14, rows:2, spc:18, front:80, ev:1, extP:1.0, extH:10, extSelf:0, combo:0};
   try{ const sv = JSON.parse(localStorage.getItem("santier-v6")||"null"); if(sv) Object.assign(state, sv); }catch(err){}
-  if(!LOCS[state.loc] || LOCS[state.loc].name!==undefined && !LOCS.some((l,i)=>i===state.loc)) state.loc = 0;
-  state.loc = Math.max(0, LOCS.findIndex(l=>l.name==="Constanța"));
+  if(typeof state.loc !== "number" || !LOCS[state.loc]) state.loc = Math.max(0, LOCS.findIndex(l=>l.name==="Constanța"));  // default: Constanța
   let prices = {};
   try{ prices = JSON.parse(localStorage.getItem("santier-v6-prices")||"{}")||{}; }catch(err){}
   const savePrices = () => { try{ localStorage.setItem("santier-v6-prices", JSON.stringify(prices)); }catch(err){} };
