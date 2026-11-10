@@ -1092,10 +1092,10 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
   function renderMono2(m){
     const el = $("mono2"); if(!el) return;
     const groups = circuitsFor(m);
-    let h = `<p class="note">Stil „schema desfășurată" (SDS): antet tablou + tabel circuite. 1P+N = monofazat, 3P+N = trifazat; TN-S; PE galben-verde; rezervă 30% în fiecare tablou.</p>`;
+    let h = `<p class="note"><b>Engineering Division — Jedi Ciprian Lazar</b> · Șantier fără emisii CO₂ · ${LOCS[state.loc].name} · ${new Date().toISOString().slice(0,10)} — scheme desfășurate (monofilare): 1P+N = monofazat, 3P+N = trifazat; TN-S; PE galben-verde; rezervă 30%.</p>`;
     let journal = [];
     groups.forEach(([tablou, rows], gi)=>{
-      h += `<table class="sd"><thead><tr><th colspan="5">${tablou} — IP54 · 400 V · intrare cabluri jos, ieșire sus · cofret metalic · montaj pe perete · rezervă 30%</th></tr>`+
+      h += `<table class="sd"><thead><tr><th colspan="5">${tablou}</th></tr>`+
            `<tr><th>Circuit</th><th>Denumire</th><th>Protecție</th><th>Cablu</th><th>Destinație</th></tr></thead><tbody>`;
       rows.forEach(r=>{
         h += `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`;
