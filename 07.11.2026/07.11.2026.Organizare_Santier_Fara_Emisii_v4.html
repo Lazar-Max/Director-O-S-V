@@ -297,6 +297,7 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
       </div>
       <div class="card"><h2>Schema bloc — tablou general + BMS/EMS</h2><div class="chartbox"><svg id="bloc"></svg></div></div>
       <div class="card"><h2>Schema monofilară</h2><div class="chartbox"><svg id="mono"></svg></div></div>
+      <div class="card"><h2>Schema funcțională — ventilație + apă caldă</h2><div class="chartbox"><svg id="inst"></svg></div></div>
       <div class="card">
         <h2>Consum și producție pe luni (kWh pe zi, medie)</h2>
         <div class="chartbox"><svg id="chart" role="img" aria-label="Consum și producție pe luni"></svg></div>
@@ -889,7 +890,7 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
   function render(){
     const clim = climOf();
     const m = model(state.v, state.s, state.e, state.p, progOf(), clim);
-    draw(m); chart(m); panel(m, clim); drawMap(); drawBloc(m); drawMono(m);
+    draw(m); chart(m); panel(m, clim); drawMap(); drawBloc(m); drawMono(m); drawInst(m);
     const sets = [["#segVar button","v"],["#segScen button","s"],["#segEq button","e"],["#segSez button","z"],["#segZi button","d"]];
     sets.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(b=>b.setAttribute("aria-pressed", String(b.dataset[key]===state[key]))));
     $("ctlPers").hidden = state.v!=="V2E";
@@ -1001,6 +1002,50 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
     tap(380, "Sub-tablou sanitar ×"+m.nSan, "apă caldă (tuburi+puffer+pompă aer-apă)", "sub");
     if(state.ev) tap(420, "Stație EV dublă", K.EV.evKw+" kW · "+K.EV.evKwh+" kWh/zi · mai–sep", "ev");
     el.setAttribute("viewBox", "0 0 900 460");
+    el.innerHTML = s;
+  }
+
+
+  // ---------------- schema funcțională instalații (ventilație + apă caldă) ----------------
+  function drawInst(m){
+    const el = $("inst"); if(!el) return;
+    const nRecup = 3*m.nMB + m.ncdC + m.nSan + m.nMB;
+    let s = `<defs><marker id="arr3" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--cold)"/></marker>` +
+            `<marker id="arr4" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--hot)"/></marker></defs>`;
+    // titluri
+    s += `<text class="bx-t" x="10" y="18" text-anchor="start">VENTILAȚIE CU RECUPERARE (HP) — aer proaspăt încălzit/răcit</text>`;
+    s += `<text class="bx-t" x="10" y="218" text-anchor="start">APĂ CALDĂ — tuburi vidate + puffer + pompă aer-apă (rezervă) + recirculare</text>`;
+    // ventilație: exterior -> recuperator -> distribuție -> camere; viciat -> recuperator -> exterior
+    s += box(0, 30, 120, 40, "Aer proaspăt", "30 m³/h/pers");
+    s += box(0, 100, 120, 40, "Aer viciat", "din încăperi");
+    s += box(170, 60, 150, 50, "Recuperator ×"+nRecup, "η = 75% · ventilator 0.35 W/(m³/h)");
+    s += box(380, 30, 150, 40, "Distribuție aer", "către încăperi");
+    s += box(380, 100, 150, 40, "Evacuare aer", "către exterior");
+    s += box(590, 60, 200, 50, "Încăperi: birouri "+(3*m.nMB)+", dormitoare "+m.nD+", săli "+m.nS+", sanitar "+m.nSan, "schimburi: uși 0.5–1 h⁻¹ + Q proaspăt");
+    s += `<line class="ln" style="stroke:var(--cold)" x1="120" y1="50" x2="170" y2="85" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="120" y1="120" x2="170" y2="95" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="320" y1="85" x2="380" y2="50" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="320" y1="90" x2="380" y2="120" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="530" y1="50" x2="590" y2="85" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="590" y1="95" x2="530" y2="110" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln bms" x1="245" y1="60" x2="700" y2="30"/>`;
+    s += `<text class="bx-s" x="700" y="26" text-anchor="end">BMS reglează debitele</text>`;
+    // apă caldă
+    s += box(0, 240, 130, 40, "Apă rece", "din rețea/fântână · "+K.I["14"]+"°C la instant");
+    s += box(0, 310, 130, 40, "Tuburi vidate ×"+(m.nSan*K.I["7"]), "pe acoperișul sanitarelor");
+    s += box(190, 275, 150, 50, "Puffer "+(500*m.nSan)+" L ×"+m.nSan, "55°C · serpentină solară");
+    s += box(390, 275, 150, 50, "Pompă aer-apă ×"+m.nSan, "rezervă când soarele nu ajunge (dimensionată la "+LOCS[state.loc].tmin+"°C)");
+    s += box(590, 240, 150, 40, "Distribuție apă caldă", "55°C → amestec");
+    s += box(590, 310, 150, 40, "Recirculare", "pompă + răcire retur");
+    s += box(590, 370, 200, 44, "Consumatori: dușuri "+(m.nSan*K.I["23"])+" · WC "+(m.nSan*K.I["24"])+" · lavoare "+(m.nSan*K.I["25"]), "40 L/pers/zi cazare + 30 L spălări + 5 L/pers/zi birou (instant)");
+    s += `<line class="ln" style="stroke:var(--hot)" x1="130" y1="260" x2="190" y2="290" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="130" y1="330" x2="190" y2="310" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="340" y1="300" x2="390" y2="300" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="540" y1="300" x2="590" y2="260" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="665" y1="280" x2="665" y2="310" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="590" y1="330" x2="540" y2="330" x2="540" y2="310" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="740" y1="260" x2="740" y2="370" marker-end="url(#arr4)"/>`;
+    el.setAttribute("viewBox", "0 0 800 430");
     el.innerHTML = s;
   }
 
