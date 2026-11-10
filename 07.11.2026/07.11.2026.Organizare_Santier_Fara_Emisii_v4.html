@@ -372,7 +372,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
   </div>
 </div>
 
-<section class="bottom"><div class="card"><h2>Amplasament — hartă România (click pe localitate) + controale amplasament</h2><div class="ctl wide"><span class="lbl">Amplasament — click pe hartă (sau alege din listă)</span><div class="maprow"><div class="loctab-wrap"><table class="sd" id="locTab"></table></div><select id="locSel" aria-label="Localitate"></select><span class="lbl2">stâlp</span><select id="hubSel"></select><span class="lbl2">rânduri</span><select id="rowSel"></select><span class="lbl2">distanță</span><select id="spcSel"></select><span class="lbl2">front</span><select id="frontSel"></select><span class="lbl2">ilum.ext</span><select id="extPSel"></select><select id="extHSel"></select><select id="selfSel"></select><select id="comboSel"></select><label class="lbl2"><input type="checkbox" id="evChk" checked> EV dublă (vară)</label></div><p class="note" id="locInfo"></p></div></div><div class="card"><h2>Schema bloc — flux energie (surse → TG → grupuri)</h2><div class="chartbox"><svg id="bloc"></svg></div></div><div class="card"><h2>Schema bloc tablouri — bare și derivații</h2><div class="chartbox"><svg id="mono"></svg></div></div><div class="card"><h2>Schema funcțională — ventilație + apă caldă</h2><div class="chartbox"><svg id="inst"></svg></div></div><div class="card"><h2>Scheme desfășurate (monofilare) pe tablouri + jurnal de cabluri</h2><div class="chartbox" id="mono2" style="max-width:none"></div></div><section><h2>Optimizare consum</h2><p class="note">Resursa (PV + eolian) e finită: caută automat programul minim pe sezon (ore × zile) ca varianta să fie <b>AUTONOMĂ</b> în fiecare lună, dacă e posibil.</p><div class="optbtns"><button type="button" id="btnOpt">Optimizează programul</button><button type="button" id="btnApply" hidden>Aplică</button></div><p class="note" id="optOut"></p></section><section>
+<section class="bottom"><div class="card"><h2>Amplasament — hartă România (click pe localitate) + controale amplasament</h2><div class="ctl wide"><span class="lbl">Amplasament — click pe hartă (sau alege din listă)</span><div class="maprow"><div class="loctab-wrap"><table class="sd" id="locTab"></table></div><select id="locSel" aria-label="Localitate"></select><span class="lbl2">stâlp</span><select id="hubSel"></select><span class="lbl2">rânduri</span><select id="rowSel"></select><span class="lbl2">distanță</span><select id="spcSel"></select><span class="lbl2">front</span><select id="frontSel"></select><span class="lbl2">turbină</span><select id="tkwSel"></select><span class="lbl2">ilum.ext</span><select id="extPSel"></select><select id="extHSel"></select><select id="selfSel"></select><select id="comboSel"></select><label class="lbl2"><input type="checkbox" id="evChk" checked> EV dublă (vară)</label></div><p class="note" id="locInfo"></p></div></div><div class="card"><h2>Schema bloc — flux energie (surse → TG → grupuri)</h2><div class="chartbox"><svg id="bloc"></svg></div></div><div class="card"><h2>Schema bloc tablouri — bare și derivații</h2><div class="chartbox"><svg id="mono"></svg></div></div><div class="card"><h2>Schema funcțională — ventilație + apă caldă</h2><div class="chartbox"><svg id="inst"></svg></div></div><div class="card"><h2>Scheme desfășurate (monofilare) pe tablouri + jurnal de cabluri</h2><div class="chartbox" id="mono2" style="max-width:none"></div></div><section><h2>Optimizare consum</h2><p class="note">Resursa (PV + eolian) e finită: caută automat programul minim pe sezon (ore × zile) ca varianta să fie <b>AUTONOMĂ</b> în fiecare lună, dacă e posibil.</p><div class="optbtns"><button type="button" id="btnOpt">Optimizează programul</button><button type="button" id="btnApply" hidden>Aplică</button></div><p class="note" id="optOut"></p></section><section>
         <h2>Ce se montează</h2>
         <table class="eq"><thead><tr><th>Echipament</th><th>Cantitate</th><th>Preț/buc (lei)</th><th>Total (lei)</th></tr></thead><tbody id="eqBody"></tbody></table>
       </section></section>
@@ -407,7 +407,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     V2E:["V2 extins","La fiecare 4 persoane se adaugă un dormitor, la fiecare 16 o sală de mese, la fiecare 8 un container cu dușuri și WC cu apă caldă proprie. O pompă de căldură aer-aer deservește 3 containere duble."]
   };
 
-  const state = {v:"V2", s:"CMD", e:"HP", z:"i", d:"zi", p:20, hi:11, si:8, zi:5, hv:11, sv:7, zv:5, loc:(LOCS.findIndex(l=>l.name==="Constanța")>=0?LOCS.findIndex(l=>l.name==="Constanța"):0), hub:6, alpha:0.14, rows:2, spc:18, front:80, ev:1, extP:1.0, extH:10, extSelf:0, combo:0};
+  const state = {v:"V2", s:"CMD", e:"HP", z:"i", d:"zi", p:20, hi:11, si:8, zi:5, hv:11, sv:7, zv:5, loc:(LOCS.findIndex(l=>l.name==="Constanța")>=0?LOCS.findIndex(l=>l.name==="Constanța"):0), hub:6, tkw:3, alpha:0.14, rows:2, spc:18, front:80, ev:1, extP:1.0, extH:10, extSelf:0, combo:0};
   try{ const sv = JSON.parse(localStorage.getItem("santier-v6")||"null"); if(sv) Object.assign(state, sv); }catch(err){}
   if(typeof state.loc !== "number" || !LOCS[state.loc]) state.loc = Math.max(0, LOCS.findIndex(l=>l.name==="Constanța"));  // default: Constanța
   let prices = {};
@@ -432,7 +432,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
   function makeClim(loc){
     const t = loc.t, w = loc.w, pv = loc.pv;
     return { tmed: t, tzi: t.map(x=>x+3), tno: t.map(x=>x-2.5), pv,
-             eol: w.map(v=>Math.min(3, 0.5*1.225*12.6*1.91*Math.pow(v*Math.pow(state.hub/10, state.alpha),3)*0.3/1000)*24),
+             eol: w.map(v=>Math.min(state.tkw, 0.5*1.225*(12.6*(state.tkw/3))*1.91*Math.pow(v*Math.pow(state.hub/10, state.alpha),3)*0.3/1000)*24),
              tap: t.map(x=>Math.max(6, Math.min(20, x))),
              tub: pv.map(p=>0.29*p/Math.max(...pv)),
              tmin: loc.tmin, tmax: loc.tmax, inghet: loc.inghet, name: loc.name, judet: loc.judet,
@@ -714,7 +714,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     add(`<rect x="0" y="${GY}" width="${W}" height="3" style="fill:var(--ground-2)"/>`);
 
     const tPerInv = m.inv>0 ? Math.min(2, Math.ceil(m.Tin/m.inv)) : 0;
-    turbX.forEach((tx,i)=> turbine(tx, i===0 ? (m.Tin>1 ? `${m.Tin} turbine × 3 kW (câte 1–${tPerInv} per invertor)` : "turbină 3 kW") : "", 3 + i*0.4));
+    turbX.forEach((tx,i)=> turbine(tx, i===0 ? (m.Tin>1 ? `${m.Tin} turbine × ${state.tkw} kW (câte 1–${tPerInv} per invertor)` : `turbină ${state.tkw} kW`) : "", 3 + i*0.4));
 
     const techTop = GY-CH;
     techItems.forEach((it,i)=>{ container(it.x, techTop, it.w, "tech", "Tehnic", i===0?"tablouri+inv.:":"", false); pvRoof(it.x, techTop, it.w); });
@@ -838,7 +838,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
                          ["Tuburi vidate · puffer", null, m.nSan*K.I["7"]+" · "+nf(500*m.nSan)+" L", null]);
     rows.push(["Panouri fotovoltaice", m.npan, m.npan+" buc · "+nf(m.kwp,1)+" kWp", "panou"],
               ["String-uri fotovoltaice", m.nstr, m.nstr+" buc · max "+K.D["19"]+" per invertor", "string"],
-              ["Turbine eoliene 3 kW", m.Tin, m.Tin+` buc · stâlp ${state.hub} m${state.combo?` · din care ${Math.min(m.Tin,state.combo)} pe stâlpi de iluminat`:""} · ${state.rows} rânduri × ${state.spc} m${m.Treq>m.Tmx?` · front sol ≈ ${m.frontNeed} m`:""}`, "turb"],
+              ["Turbine eoliene "+state.tkw+" kW (<5 kW, pornesc de la ~2,5–3 m/s)", m.Tin, m.Tin+` buc · stâlp ${state.hub} m${state.combo?` · din care ${Math.min(m.Tin,state.combo)} pe stâlpi de iluminat`:""} · ${state.rows} rânduri × ${state.spc} m${m.Treq>m.Tmx?` · front sol ≈ ${m.frontNeed} m`:""}`, "turb"],
               ["Invertoare hibride 8 kW", m.inv, m.inv+" buc", "inv"],
               ["Tablouri invertor (1–2 invertoare/tablou, invertorul întreg pe un tablou)", Math.ceil(m.inv/2), Math.ceil(m.inv/2)+" buc · "+m.inv+" invertoare", "tablou"],
               ["Tablou general distribuție (toate invertoarele, ATS + contorizare)", 1, "1 buc / șantier", "tabGen"],
@@ -923,7 +923,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     sets.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(b=>b.setAttribute("aria-pressed", String(b.dataset[key]===state[key]))));
     $("ctlPers").hidden = state.v!=="V2E";
     $("pers").value = state.p; $("persOut").textContent = state.p;
-    for(const [id,key] of [["pHi","hi"],["pSi","si"],["pZi","zi"],["pHv","hv"],["pSv","sv"],["pZv","zv"],["hubSel","hub"],["rowSel","rows"],["spcSel","spc"],["frontSel","front"],["extPSel","extP"],["extHSel","extH"],["selfSel","extSelf"],["comboSel","combo"]]){
+    for(const [id,key] of [["pHi","hi"],["pSi","si"],["pZi","zi"],["pHv","hv"],["pSv","sv"],["pZv","zv"],["hubSel","hub"],["rowSel","rows"],["spcSel","spc"],["frontSel","front"],["extPSel","extP"],["extHSel","extH"],["selfSel","extSelf"],["comboSel","combo"],["tkwSel","tkw"]]){
       const el = $(id); if(el) el.value = String(state[key]);
     }
     const mi = $("metaInfo"); const L0 = LOCS[state.loc];
@@ -1168,7 +1168,8 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
   fillSel("extHSel", [6,8,10,12,14], v=>v+" h");
   fillSel("selfSel", [0,25,50,75,100], v=>v+"% autonom solar");
   fillSel("comboSel", [0,1,2,3,4,6,8,10], v=>v+" stâlp cu turbină");
-  for(const [id,key] of [["hubSel","hub"],["rowSel","rows"],["spcSel","spc"],["frontSel","front"],["extPSel","extP"],["extHSel","extH"],["selfSel","extSelf"],["comboSel","combo"]]){
+  fillSel("tkwSel", [3,3.5], v=>v+" kW (<5 kW, fără prag 5 m/s)");
+  for(const [id,key] of [["hubSel","hub"],["rowSel","rows"],["spcSel","spc"],["frontSel","front"],["extPSel","extP"],["extHSel","extH"],["selfSel","extSelf"],["comboSel","combo"],["tkwSel","tkw"]]){
     const el = $(id); if(!el) continue;
     el.value = String(state[key]);
     el.addEventListener("change", ev=>{ state[key]=+ev.target.value; render(); });
