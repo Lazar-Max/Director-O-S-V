@@ -189,7 +189,11 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
 .lamp{fill:var(--muted)}
 .lamp.on{fill:var(--sun)}
 
-#bloc,#mono,#inst,#mono2{width:100%;max-width:680px;height:auto;display:block;margin:0 auto}
+#bloc,#mono,#inst{width:100%;max-width:680px;height:auto;display:block;margin:0 auto}
+
+table.sd{border-collapse:collapse;width:100%;font-size:.78rem;margin:6px 0 14px}
+table.sd th{background:var(--surface-2);text-align:left;padding:3px 6px;border:1px solid var(--border)}
+table.sd td{padding:3px 6px;border:1px solid var(--border)}
 </style>
 <style>html{color-scheme:light}body{margin:0}img{max-width:100%}
 .progrow{display:flex;gap:4px;flex-wrap:wrap}
@@ -231,7 +235,11 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
 .lamp{fill:var(--muted)}
 .lamp.on{fill:var(--sun)}
 
-#bloc,#mono,#inst,#mono2{width:100%;max-width:680px;height:auto;display:block;margin:0 auto}
+#bloc,#mono,#inst{width:100%;max-width:680px;height:auto;display:block;margin:0 auto}
+
+table.sd{border-collapse:collapse;width:100%;font-size:.78rem;margin:6px 0 14px}
+table.sd th{background:var(--surface-2);text-align:left;padding:3px 6px;border:1px solid var(--border)}
+table.sd td{padding:3px 6px;border:1px solid var(--border)}
 </style>
 </head>
 <body>
@@ -301,7 +309,7 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
       </div>
       <div class="card"><h2>Schema bloc — flux energie (surse → TG → grupuri)</h2><div class="chartbox"><svg id="bloc"></svg></div></div>
       <div class="card"><h2>Schema bloc tablouri — bare și derivații</h2><div class="chartbox"><svg id="mono"></svg></div></div>
-      <div class="card"><h2>Schema monofilară — circuite pe tablouri: 1P+N/3P+N + amperaj + cablu mm² + sursă + destinație + PE</h2><div class="chartbox"><svg id="mono2"></svg></div></div>
+      <div class="card"><h2>Scheme desfășurate (monofilare) pe tablouri + jurnal de cabluri</h2><div class="chartbox" id="mono2" style="max-width:none"></div></div>
       <div class="card"><h2>Schema funcțională — ventilație + apă caldă</h2><div class="chartbox"><svg id="inst"></svg></div></div>
       <div class="card">
         <h2>Consum și producție pe luni (kWh pe zi, medie)</h2>
@@ -895,7 +903,7 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
   function render(){
     const clim = climOf();
     const m = model(state.v, state.s, state.e, state.p, progOf(), clim);
-    draw(m); chart(m); panel(m, clim); drawMap(); drawBloc(m); drawMono(m); drawInst(m); drawMono2(m);
+    draw(m); chart(m); panel(m, clim); drawMap(); drawBloc(m); drawMono(m); drawInst(m); renderMono2(m);
     const sets = [["#segVar button","v"],["#segScen button","s"],["#segEq button","e"],["#segSez button","z"],["#segZi button","d"]];
     sets.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(b=>b.setAttribute("aria-pressed", String(b.dataset[key]===state[key]))));
     $("ctlPers").hidden = state.v!=="V2E";
@@ -1042,55 +1050,68 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
     el.setAttribute("viewBox", "0 0 810 400");
     el.innerHTML = s;
   }
-  // ---------------- schema monofilară reală: circuite pe tablouri, cu siguranțe, sursă, destinație, PE ----------------
-  function drawMono2(m){
-    const el = $("mono2"); if(!el) return;
-    // circuit: [tip siguranță (1P+N monofazat / 3P+N trifazat), amperaj, cablu mm², destinație]
-    const groups = [];
-    for(let i=0;i<m.nMB;i++) groups.push(["Sub-tablou BIROURI "+(i+1), [
-      ["1P+N", "C6A",  "3G1.5 mm²", "iluminat birou "+(i+1)],
-      ["1P+N", "C16A", "3G2.5 mm²", "prize birou "+(i+1)+" (laptop, imprimantă, AP)"],
-      ["3P+N", "C16A", "5G2.5 mm²", "unitate exterioară pompă aer-aer (trifazat), grup "+(i+1)],
-      ["1P+N", "C20A", "3G2.5 mm²", "instant electric WC TESA"],
-    ]]);
+  // ---------------- scheme desfășurate (monofilare) + jurnal de cabluri, stil SDS ----------------
+  function circuitsFor(m){
+    // [eticheta, denumire, protectie, cablu, destinatie, faza, Pi kW]
+    const G = [];
+    const push = (tablou, rows) => G.push([tablou, rows]);
+    for(let i=0;i<m.nMB;i++) push("SDS-B"+(i+1)+" · Sub-tablou BIROURI "+(i+1), [
+      ["1Q1","Alimentare de la Tablou General","3P+N 40A","NYY-J 5x10","TG (ATS)","RST",0],
+      ["I1","Iluminat birou "+(i+1),"1P+N C6A 30mA AC","NYY-J 3x1.5","corpuri LED birou "+(i+1),"R",0.4],
+      ["P1","Prize birou "+(i+1),"1P+N C16A 30mA AC","NYY-J 3x2.5","laptop/imprimantă/AP","R",2.0],
+      ["HP1"," Pompă aer-aer grup "+(i+1),"3P+N C16A","NYY-J 5x2.5","unitate exterioară multi-split","RST",3.5],
+      ["W1","Instant electric WC TESA","1P+N C20A 30mA A","NYY-J 3x2.5","instant 3.5 kW WC TESA","R",3.5],
+    ]);
     const nGr = Math.ceil(m.ncdC/3);
-    for(let g=0; g<nGr; g++) groups.push(["Sub-tablou CAZARE grup "+(g+1), [
-      ["1P+N", "C6A",  "3G1.5 mm²", "iluminat dormitoare/sală "+(g+1)],
-      ["1P+N", "C16A", "3G2.5 mm²", "prize dormitoare "+(g+1)],
-      ["1P+N", "C16A", "3G2.5 mm²", "microunde ×2 + fierbător sală "+(g+1)],
-      ["1P+N", "C10A", "3G1.5 mm²", "ventilator/recuperator grup "+(g+1)],
-    ]]);
-    for(let s=0;s<m.nSan;s++) groups.push(["Sub-tablou SANITAR "+(s+1), [
-      ["3P+N", "C16A", "5G2.5 mm²", "pompă aer-apă apă caldă "+(s+1)+" (trifazat)"],
-      ["1P+N", "C20A", "3G4 mm²",   "rezistență rezervă puffer "+(s+1)],
-      ["1P+N", "C10A", "3G1.5 mm²", "pompe circulație + stație solară (tuburi vidate)"],
-      ["1P+N", "C10A", "3G1.5 mm²", "iluminat + ventilație sanitar "+(s+1)],
-    ]]);
-    if(state.ev) groups.push(["Sub-tablou STAȚIE EV", [["3P+N", "C32A", "5G6 mm²", "stație EV dublă 2×11 kW (trifazat, vară)"]]]);
-    groups.push(["Sub-tablou TEHNIC (container tehnic)", [
-      ["1P+N", "C6A",  "3G1.5 mm²", "iluminat cameră tehnică + monitorizare"],
-      ["1P+N", "C10A", "3G1.5 mm²", "BMS/EMS + switch + contorizare"],
-      ["1P+N", "C16A", "3G2.5 mm²", "prize service invertor/acumulatori"],
-    ]]);
-    let s = "";
-    const colW = 430, nCol = groups.length > 1 ? 2 : 1;
-    groups.forEach((g, gi)=>{
-      const gx = 20 + (gi % nCol) * (colW + 30);
-      const gy = 34 + Math.floor(gi / nCol) * 260;
-      const [title, circuits] = g;
-      s += `<text class="bx-t" x="${gx}" y="${gy-10}" text-anchor="start">${title}</text>`;
-      s += `<text class="bx-s" x="${gx}" y="${gy+4}" text-anchor="start">de la: TABLOU GENERAL (ATS) · PE → împământare șantier · cablurile includ PE (3G/5G)</text>`;
-      s += `<line class="bus" x1="${gx+40}" y1="${gy+14}" x2="${gx+40}" y2="${gy+24+circuits.length*36}"/>`;
-      circuits.forEach((c, ci)=>{
-        const y = gy + 30 + ci*36;
-        s += `<line class="ln" x1="${gx+40}" y1="${y}" x2="${gx+64}" y2="${y}"/>`;
-        s += `<rect class="brk" x="${gx+64}" y="${y-8}" width="16" height="16"/>`;
-        s += `<text class="bx-t" x="${gx+88}" y="${y+4}" text-anchor="start" style="font-size:11px">${c[0]} ${c[1]}</text>`;
-        s += `<text class="bx-s" x="${gx+160}" y="${y+4}" text-anchor="start">${c[2]} → ${c[3]}</text>`;
+    for(let g=0; g<nGr; g++) push("SDS-C"+(g+1)+" · Sub-tablou CAZARE grup "+(g+1), [
+      ["1Q1","Alimentare de la Tablou General","3P+N 32A","NYY-J 5x6","TG (ATS)","RST",0],
+      ["I1","Iluminat dormitoare/sală "+(g+1),"1P+N C6A 30mA AC","NYY-J 3x1.5","corpuri LED","R",0.4],
+      ["P1","Prize dormitoare "+(g+1),"1P+N C16A 30mA AC","NYY-J 3x2.5","încărcare telefoane etc.","R",1.0],
+      ["M1","Microunde + fierbător sală "+(g+1),"1P+N C16A","NYY-J 3x2.5","2 microunde + fierbător","S",3.2],
+      ["V1","Ventilator/recuperator "+(g+1),"1P+N C10A","NYY-J 3x1.5","recuperator de căldură","T",0.4],
+    ]);
+    for(let s=0;s<m.nSan;s++) push("SDS-S"+(s+1)+" · Sub-tablou SANITAR "+(s+1), [
+      ["1Q1","Alimentare de la Tablou General","3P+N 32A","NYY-J 5x6","TG (ATS)","RST",0],
+      ["A1","Pompă aer-apă apă caldă "+(s+1),"3P+N C16A","NYY-J 5x2.5","pompă aer-apă monobloc","RST",3.0],
+      ["R1","Rezistență rezervă puffer "+(s+1),"1P+N C20A","NYY-J 3x4","rezistență 3 kW","S",3.0],
+      ["C1","Pompe circulație + stație solară","1P+N C10A","NYY-J 3x1.5","pompe + grup solar tuburi vidate","T",0.5],
+      ["I1","Iluminat + ventilație sanitar "+(s+1),"1P+N C10A 30mA AC","NYY-J 3x1.5","LED + ventilator evacuare","R",0.3],
+    ]);
+    if(state.ev) push("SDS-EV · Sub-tablou STAȚIE EV", [
+      ["1Q1","Alimentare de la Tablou General","3P+N 40A","NYY-J 5x10","TG (ATS)","RST",0],
+      ["EV1","Stație EV dublă 2×11 kW","3P+N C32A","NYY-J 5x6","2 posturi de încărcare (vară)","RST",22.0],
+    ]);
+    push("SDS-T · Sub-tablou TEHNIC (container tehnic)", [
+      ["1Q1","Alimentare de la Tablou General","3P+N 32A","NYY-J 5x6","TG (ATS)","RST",0],
+      ["I1","Iluminat cameră tehnică + monitorizare","1P+N C6A 30mA AC","NYY-J 3x1.5","LED + cameră","R",0.2],
+      ["B1","BMS/EMS + switch + contorizare","1P+N C10A","NYY-J 3x1.5","automatizare tablou general","S",0.5],
+      ["P1","Prize service invertor/acumulatori","1P+N C16A 30mA AC","NYY-J 3x2.5","prize service","T",1.5],
+    ]);
+    return G;
+  }
+  function renderMono2(m){
+    const el = $("mono2"); if(!el) return;
+    const groups = circuitsFor(m);
+    let h = `<p class="note">Stil „schema desfășurată" (SDS): antet tablou + tabel circuite. 1P+N = monofazat, 3P+N = trifazat; TN-S; PE galben-verde; rezervă 30% în fiecare tablou.</p>`;
+    let journal = [];
+    groups.forEach(([tablou, rows], gi)=>{
+      h += `<table class="sd"><thead><tr><th colspan="5">${tablou} — IP54 · 400 V · intrare cabluri jos, ieșire sus · cofret metalic · montaj pe perete · rezervă 30%</th></tr>`+
+           `<tr><th>Circuit</th><th>Denumire</th><th>Protecție</th><th>Cablu</th><th>Destinație</th></tr></thead><tbody>`;
+      rows.forEach(r=>{
+        h += `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`;
+        if(r[6]>0){
+          const Un = r[5]==="RST" ? 400 : 230;
+          const Imax = r[5]==="RST" ? r[6]*1000/(Math.sqrt(3)*400) : r[6]*1000/230;
+          journal.push([tablou, r[0], r[1], r[5], r[6], Imax, r[3].split(" ")[0], r[3].split(" ")[1], 25]);
+        }
       });
+      h += `</tbody></table>`;
     });
-    el.setAttribute("viewBox", `0 0 ${nCol*(colW+30)+20} ${Math.ceil(groups.length/nCol)*260+50}`);
-    el.innerHTML = s;
+    h += `<h3 style="margin:10px 0 4px">Jurnal de cabluri (breviar)</h3>`+
+         `<table class="sd"><thead><tr><th>Tablou</th><th>Circuit</th><th>Denumire</th><th>Faza</th><th>Pi [kW]</th><th>Imax [A]</th><th>Cablu</th><th>Secțiune</th><th>Lungime [m]</th><th>Pozare</th></tr></thead><tbody>`+
+         journal.map(j=>`<tr><td>${j[0]}</td><td>${j[1]}</td><td>${j[2]}</td><td>${j[3]}</td><td>${nf(j[4],1)}</td><td>${nf(j[5],1)}</td><td>${j[6]}</td><td>${j[7]}</td><td>${j[8]}</td><td>pe tub PVC / pat cabluri</td></tr>`).join("")+
+         `</tbody></table>`;
+    el.innerHTML = h;
   }
   // ---------------- hartă România ----------------
   const BORDER = [[23.6,47.27],[24.0,47.6],[24.98,48.26],[25.5,48.25],[26.63,48.2],[27.25,48.1],[28.2,48.0],[28.9,47.6],[29.71,46.57],[29.4,45.9],[29.73,45.2],[29.3,44.6],[28.63,44.18],[28.25,43.75],[27.5,43.8],[26.63,43.62],[25.75,43.73],[24.97,43.75],[24.3,43.65],[23.6,43.85],[22.88,44.45],[22.3,44.9],[21.7,45.1],[21.35,45.47],[21.6,45.85],[22.0,46.35],[22.45,46.62],[22.9,46.85],[23.2,47.0]];
