@@ -747,7 +747,8 @@ table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bot
     ];
     if(m.p>0) rows.push(["Dormitoare · săli de mese", null, m.nD+" · "+m.nS, "buc", null],
                          ["Dușuri · WC", null, m.nSan*K.I["23"]+" · "+m.nSan*K.I["24"], "buc", null]);
-    if(state.e==="HP") rows.push(["Pompe de căldură aer-aer (per grup de 3)", m.nPAA, "buc", "hpAA"]);
+    if(state.e==="HP") rows.push(["Pompe de căldură aer-aer (per grup de 3)", m.nPAA, m.nPAA+" buc", "hpAA"],
+                                  ["Recuperatoare de căldură (ventilație cu recuperare)", 3*m.nMB + m.ncdC + m.nSan + m.nMB, (3*m.nMB + m.ncdC + m.nSan + m.nMB)+" buc — birouri/dormitoare/săli + sanitar/WC", "recup"]);
     else rows.push(["Calorifere cu ulei 1,4 kW", m.nRad, "buc", "rad"], ["Clime 1,2 kW (birouri)", m.nAC, "buc", "ac"]);
     if(m.nSan) rows.push(["Pompe de căldură aer-apă (sanitar)", m.nSan, "buc", "hpAp"],
                          ["Tuburi vidate · puffer", null, m.nSan*K.I["7"]+" · "+nf(500*m.nSan)+" L", null]);
