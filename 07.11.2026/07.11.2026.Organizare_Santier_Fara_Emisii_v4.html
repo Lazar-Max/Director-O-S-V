@@ -288,10 +288,10 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
         <button type="button" data-s="ECO">Economic</button>
       </div>
     </div>
-    <div class="ctl"><span class="lbl">Echipare</span>
+    <div class="ctl"><span class="lbl">Echipare (doar pompe de căldură în pagină; calorifere doar în Excel/PPT)</span>
       <div class="seg" id="segEq">
         <button type="button" data-e="HP">Pompe de căldură</button>
-        <button type="button" data-e="CL">Calorifere + clime</button>
+        
       </div>
     </div>
     <div class="ctl"><span class="lbl">Program — IARNĂ</span><div class="progrow"><select id="pHi" aria-label="ore iarnă"></select><select id="pSi" aria-label="ora de start iarnă"></select><select id="pZi" aria-label="zile pe săptămână iarnă"></select></div><span class="lbl2">ore · de la ora · zile/săpt</span></div><div class="ctl"><span class="lbl">Program — VARĂ</span><div class="progrow"><select id="pHv" aria-label="ore vară"></select><select id="pSv" aria-label="ora de start vară"></select><select id="pZv" aria-label="zile pe săptămână vară"></select></div><span class="lbl2">ore · de la ora · zile/săpt</span></div>
@@ -337,6 +337,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     </div>
 
     <aside class="panel" aria-live="polite">
+      <section><h2>Rezumat pentru șef (toate cifrile)</h2><p class="note" id="sumBoss"></p></section>
       <section>
         <h2>Rezultat</h2>
         <div id="verdict"></div>
@@ -396,10 +397,8 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
       li:["Sezoanele ca la Normal"]}
   };
   const EQT = {
-    HP:{t:"Pompe de căldură",
-      txt:"O pompă de căldură aer-aer la fiecare 3 containere duble, cu ventilație cu recuperare de căldură. Încălzește și răcește. Sanitarul și WC-ul TESA au câte un split mic."},
-    CL:{t:"Calorifere + clime (comparație)",
-      txt:"Câte un calorifer cu ulei de 1,4 kW în fiecare container de 2,5 × 6 m (2 într-un container dublu) și câte o climă de 1,2 kW în fiecare birou, doar pentru răcire. Ventilație fără recuperare."}
+    HP:{t:"Pompe de căldură (singura variantă în pagina; caloriferele rămân doar în Excel/PPT)",
+      txt:"O pompă de căldură aer-aer la fiecare 3 containere duble, cu ventilație cu recuperare de căldură. Încălzește și răcește. Sanitarul și WC-ul TESA au câte un split mic."}
   };
   const VT = {
     V1:["V1 · doar birouri","Trei containere duble de birouri, WC TESA, magazie și container adițional. Containerul tehnic ține invertoarele, acumulatorii și tablourile."],
@@ -571,7 +570,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     const treqOf = pr => { const m = model(state.v, state.s, state.e, state.p, pr, clim); return Math.max(m.need, m.inv); };
     function scan(fixed, varyW){
       let best = null;
-      for(let h=1; h<=24; h++) for(const z of [5,6,7]){
+      for(let h=1; h<=24; h++) for(const z of [1,2,3,4,5,6,7]){
         const pr = {...fixed}; 
         if(varyW){ pr.hi=h; pr.zi=z; } else { pr.hv=h; pr.zv=z; }
         const tq = treqOf(pr);
@@ -833,7 +832,6 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
                          ["Dușuri · WC", null, m.nSan*K.I["23"]+" · "+m.nSan*K.I["24"], "buc", null]);
     if(state.e==="HP") rows.push(["Pompe de căldură aer-aer (per grup de 3)", m.nPAA, m.nPAA+" buc", "hpAA"],
                                   ["Recuperatoare de căldură (ventilație cu recuperare)", 3*m.nMB + m.ncdC + m.nSan + m.nMB, (3*m.nMB + m.ncdC + m.nSan + m.nMB)+" buc — birouri/dormitoare/săli + sanitar/WC", "recup"]);
-    else rows.push(["Calorifere cu ulei 1,4 kW", m.nRad, "buc", "rad"], ["Clime 1,2 kW (birouri)", m.nAC, "buc", "ac"]);
     if(m.nSan) rows.push(["Pompe de căldură aer-apă (sanitar)", m.nSan, "buc", "hpAp"],
                          ["Tuburi vidate · puffer", null, m.nSan*K.I["7"]+" · "+nf(500*m.nSan)+" L", null]);
     rows.push(["Panouri fotovoltaice", m.npan, m.npan+" buc · "+nf(m.kwp,1)+" kWp", "panou"],
@@ -864,6 +862,19 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     document.querySelectorAll("#eqBody .price").forEach(inp=>{
       inp.addEventListener("input", ()=>{ prices[inp.dataset.k] = +inp.value || 0; savePrices(); renderEq(m); });
     });
+  }
+
+
+  function renderSummary(m, clim){
+    const el = $("sumBoss"); if(!el) return;
+    const L = LOCS[state.loc];
+    const prog = progOf();
+    el.innerHTML = `<b>${L.name}</b> (jud. ${L.judet}) · varianta ${state.v}${state.v==="V2E"?" · "+m.p+" persoane":""} · scenariul ${SCEN[state.s].t}<br>`
+      + `Program: iarnă ${prog.hi} h de la ${String(prog.si).padStart(2,"0")}:00 (${prog.zi} zile/săpt), vară ${prog.hv} h de la ${String(prog.sv).padStart(2,"0")}:00 (${prog.zv} zile/săpt). În afara programului 15°C.<br>`
+      + `Consum: <b>${nf(m.an,0)} kWh/an</b> · Producție (PV ${nf(m.kwp,1)} kWp + ${m.Tin} turbine × ${state.tkw} kW pe stâlp ${state.hub} m): <b>${nf(m.prod,0)} kWh/an</b> → <b>off-grid, 0 kWh din rețea</b><br>`
+      + `Turbine: <b>${m.Tin} buc</b>${m.Treq>m.Tmx?` — front necesar ≈ ${m.frontNeed} m (pe ${state.front} m actual încap ${m.Tmx})`:` — pe frontul actual (${state.front} m) încap ${m.Tmx}, deci e suficient`}<br>`
+      + `Baterie ${nf(m.bat,0)} kWh · ${m.inv} invertoare pe ${Math.ceil(m.inv/2)} tablouri + 1 tablou general (BMS) · ${m.npan} panouri · ${m.nstr} string-uri<br>`
+      + `Echipamente (cu prețurile completate): <b>${nf(document.querySelectorAll("#eqBody .rowtot").length ? [...document.querySelectorAll("#eqBody .rowtot")].reduce((a,t)=>a+parseFloat((t.textContent||"0").replace(/[^\d]/g,""))||0,0) : 0,0)} lei</b> · Îngheț ${L.inghet.toFixed(2)} m → fundare ≥ ${(L.inghet+0.15).toFixed(2)} m`;
   }
 
   function panel(m, clim){
@@ -898,15 +909,9 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     $("kProd").innerHTML = nf(m.prod,0)+"<small>kWh/an</small>";
     $("kTurb").innerHTML = nf(m.Tin,0)+"<small>buc</small>";
     $("kBat").innerHTML = nf(m.bat,0)+"<small>kWh</small>";
-    const lei = x => nf(x*K.D["50"],0) + " lei";
-    if(state.e==="HP"){
-      $("cmp").innerHTML = `Cu <b>calorifere + clime</b>, aceeași variantă ar consuma <b>${nf(other.an,0)} kWh/an</b> (+${nf(other.an-m.an,0)} kWh, ≈ +${lei(other.an-m.an)}/an), ar cere ${other.Treq} turbine și ${nf(other.bat,0)} kWh acumulatori, și ar fi <b>${other.auto?"autonomă":"dependentă de rețea"}</b>.`;
-    } else {
-      $("cmp").innerHTML = `Cu <b>pompe de căldură</b>, aceeași variantă ar consuma <b>${nf(other.an,0)} kWh/an</b> (−${nf(m.an-other.an,0)} kWh, ≈ −${lei(m.an-other.an)}/an), cu ${other.Tin} turbine și ${nf(other.bat,0)} kWh acumulatori, și ar fi <b>${other.auto?"autonomă":"dependentă de rețea"}</b>.`;
-    }
     const L = LOCS[state.loc];
     $("locInfo").textContent = `${L.name}, jud. ${L.judet} — t calcul ${L.tmin}/${L.tmax}°C · vânt mediu ${nf(clim.wavg,1)} m/s · PV mediu ${nf(clim.pvavg,1)} kWh/kWp/zi · îngheț ${L.inghet.toFixed(2)} m (STAS 6054/77) → fundare ≥ ${(L.inghet+0.15).toFixed(2)} m`;
-    renderEq(m);
+    renderEq(m); renderSummary(m, clim);
     $("lgGrid").hidden = m.auto;
     $("caption").textContent = (state.v==="V1"
       ? "WC TESA cu instant electric și panouri pe acoperiș; containerul tehnic separat, cu panouri."
@@ -934,7 +939,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     try{ localStorage.setItem("santier-v6", JSON.stringify(state)); }catch(err){}
   }
   const bind = (sel,key) => document.querySelectorAll(sel).forEach(b=>b.addEventListener("click",()=>{state[key]=b.dataset[key];render();}));
-  bind("#segVar button","v"); bind("#segScen button","s"); bind("#segEq button","e"); bind("#segSez button","z"); bind("#segZi button","d");
+  bind("#segVar button","v"); bind("#segScen button","s"); // echipare CL scoasă din HTML (rămâne în Excel/PPT) bind("#segSez button","z"); bind("#segZi button","d");
   $("pers").addEventListener("input",ev=>{state.p=+ev.target.value;render();});
 
   // umple select-urile de program
@@ -1071,34 +1076,34 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     const G = [];
     const push = (tablou, rows) => G.push([tablou, rows]);
     for(let i=0;i<m.nMB;i++) push("SDS-B"+(i+1)+" · Sub-tablou BIROURI "+(i+1), [
-      ["1Q1","Alimentare de la Tablou General","3P+N 40A","NYY-J 5x10","TG (ATS)","RST",0],
-      ["I1","Iluminat birou "+(i+1),"1P+N C6A 30mA AC","NYY-J 3x1.5","corpuri LED birou "+(i+1),"R",0.4],
+      ["1Q1","Alimentare de la Tablou General","3P+N — de dimensionat de ing.","NYY-J 5x10","TG (ATS)","RST",0],
+      ["I1","Iluminat birou "+(i+1),"1P+N C10A 30mA AC","NYY-J 3x1.5","corpuri LED birou "+(i+1),"R",0.4],
       ["P1","Prize birou "+(i+1),"1P+N C16A 30mA AC","NYY-J 3x2.5","laptop/imprimantă/AP","R",2.0],
-      ["HP1"," Pompă aer-aer grup "+(i+1),"3P+N C16A","NYY-J 5x2.5","unitate exterioară multi-split","RST",3.5],
+      ["HP1"," Pompă aer-aer grup "+(i+1),"3P+N — de dimensionat de ing.","NYY-J 5x2.5","unitate exterioară multi-split","RST",3.5],
       ["W1","Instant electric WC TESA","1P+N C20A 30mA A","NYY-J 3x2.5","instant 3.5 kW WC TESA","R",3.5],
     ]);
     const nGr = Math.ceil(m.ncdC/3);
     for(let g=0; g<nGr; g++) push("SDS-C"+(g+1)+" · Sub-tablou CAZARE grup "+(g+1), [
-      ["1Q1","Alimentare de la Tablou General","3P+N 32A","NYY-J 5x6","TG (ATS)","RST",0],
-      ["I1","Iluminat dormitoare/sală "+(g+1),"1P+N C6A 30mA AC","NYY-J 3x1.5","corpuri LED","R",0.4],
+      ["1Q1","Alimentare de la Tablou General","3P+N — de dimensionat de ing.","NYY-J 5x6","TG (ATS)","RST",0],
+      ["I1","Iluminat dormitoare/sală "+(g+1),"1P+N C10A 30mA AC","NYY-J 3x1.5","corpuri LED","R",0.4],
       ["P1","Prize dormitoare "+(g+1),"1P+N C16A 30mA AC","NYY-J 3x2.5","încărcare telefoane etc.","R",1.0],
       ["M1","Microunde + fierbător sală "+(g+1),"1P+N C16A","NYY-J 3x2.5","2 microunde + fierbător","S",3.2],
       ["V1","Ventilator/recuperator "+(g+1),"1P+N C10A","NYY-J 3x1.5","recuperator de căldură","T",0.4],
     ]);
     for(let s=0;s<m.nSan;s++) push("SDS-S"+(s+1)+" · Sub-tablou SANITAR "+(s+1), [
-      ["1Q1","Alimentare de la Tablou General","3P+N 32A","NYY-J 5x6","TG (ATS)","RST",0],
-      ["A1","Pompă aer-apă apă caldă "+(s+1),"3P+N C16A","NYY-J 5x2.5","pompă aer-apă monobloc","RST",3.0],
+      ["1Q1","Alimentare de la Tablou General","3P+N — de dimensionat de ing.","NYY-J 5x6","TG (ATS)","RST",0],
+      ["A1","Pompă aer-apă apă caldă "+(s+1),"3P+N — de dimensionat de ing.","NYY-J 5x2.5","pompă aer-apă monobloc","RST",3.0],
       ["R1","Rezistență rezervă puffer "+(s+1),"1P+N C20A","NYY-J 3x4","rezistență 3 kW","S",3.0],
       ["C1","Pompe circulație + stație solară","1P+N C10A","NYY-J 3x1.5","pompe + grup solar tuburi vidate","T",0.5],
       ["I1","Iluminat + ventilație sanitar "+(s+1),"1P+N C10A 30mA AC","NYY-J 3x1.5","LED + ventilator evacuare","R",0.3],
     ]);
     if(state.ev) push("SDS-EV · Sub-tablou STAȚIE EV", [
-      ["1Q1","Alimentare de la Tablou General","3P+N 40A","NYY-J 5x10","TG (ATS)","RST",0],
-      ["EV1","Stație EV dublă 2×11 kW","3P+N C32A","NYY-J 5x6","2 posturi de încărcare (vară)","RST",22.0],
+      ["1Q1","Alimentare de la Tablou General","3P+N — de dimensionat de ing.","NYY-J 5x10","TG (ATS)","RST",0],
+      ["EV1","Stație EV dublă 2×11 kW","3P+N — de dimensionat de ing.","NYY-J 5x6","2 posturi de încărcare (vară)","RST",22.0],
     ]);
     push("SDS-T · Sub-tablou TEHNIC (container tehnic)", [
-      ["1Q1","Alimentare de la Tablou General","3P+N 32A","NYY-J 5x6","TG (ATS)","RST",0],
-      ["I1","Iluminat cameră tehnică + monitorizare","1P+N C6A 30mA AC","NYY-J 3x1.5","LED + cameră","R",0.2],
+      ["1Q1","Alimentare de la Tablou General","3P+N — de dimensionat de ing.","NYY-J 5x6","TG (ATS)","RST",0],
+      ["I1","Iluminat cameră tehnică + monitorizare","1P+N C10A 30mA AC","NYY-J 3x1.5","LED + cameră","R",0.2],
       ["B1","BMS/EMS + switch + contorizare","1P+N C10A","NYY-J 3x1.5","automatizare tablou general","S",0.5],
       ["P1","Prize service invertor/acumulatori","1P+N C16A 30mA AC","NYY-J 3x2.5","prize service","T",1.5],
     ]);
@@ -1117,11 +1122,18 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
         if(r[6]>0){
           const Un = r[5]==="RST" ? 400 : 230;
           const Imax = r[5]==="RST" ? r[6]*1000/(Math.sqrt(3)*400) : r[6]*1000/230;
-          journal.push([tablou, r[0], r[1], r[5], r[6], Imax, r[3].split(" ")[0], r[3].split(" ")[1], 25]);
+          journal.push([tablou, r[0], r[1], r[5], r[6], Imax, r[3].split(" ")[0], r[3].split(" ")[1], 60]);
         }
       });
       h += `</tbody></table>`;
     });
+    const mono = [["Iluminat (toate tablourile)", 0.4*m.nMB + 0.4*Math.ceil(m.ncdC/3) + 0.3*m.nSan + 0.2], ["Prize birouri", 2.0*m.nMB], ["Prize dormitoare", 1.0*Math.ceil(m.ncdC/3)], ["Microunde+fierbător săli", 3.2*Math.ceil(m.ncdC/3)], ["Instant WC TESA", 3.5*m.nMB], ["Rezistență rezervă puffer", 3.0*m.nSan], ["Pompe circulație + stație solară", 0.5*m.nSan], ["Ventilatoare/recuperatoare", 0.4*Math.ceil(m.ncdC/3)], ["Iluminat tehnic + monitorizare + BMS", 0.7], ["Prize service tehnic", 1.5]];
+    const tri = [["Unități exterioare pompe aer-aer (per grup de 3)", 3.5*m.nMB + 3.5*Math.ceil(m.ncdC/3)*0], ["Pompă aer-apă apă caldă (per sanitar)", 3.0*m.nSan], ["Stație EV dublă 2×11 kW", state.ev?22:0], ["Alimentare fiecare sub-tablou de la TG (3P+N)", 0]];
+    h += `<h3 style="margin:10px 0 4px">Consumatori pentru calculul tău de siguranțe (Pi)</h3>`+
+         `<table class="sd"><thead><tr><th>MONOFAZAT (1P+N, 230 V)</th><th>Pi total [kW]</th><th>TRIFAZAT (3P+N, 400 V)</th><th>Pi total [kW]</th></tr></thead><tbody>`;
+    const nR = Math.max(mono.length, tri.length);
+    for(let i=0;i<nR;i++) h += `<tr><td>${mono[i]?mono[i][0]:""}</td><td>${mono[i]?nf(mono[i][1],1):""}</td><td>${tri[i]?tri[i][0]:""}</td><td>${tri[i]?nf(tri[i][1],1):""}</td></tr>`;
+    h += `</tbody></table><p class="note">La trifazat nu am pus amperaj — îl calculezi tu (3P+N, 400 V). La mono: iluminat 10A, prize 16A, restul după regulă.</p>`;
     h += `<h3 style="margin:10px 0 4px">Jurnal de cabluri (breviar)</h3>`+
          `<table class="sd"><thead><tr><th>Tablou</th><th>Circuit</th><th>Denumire</th><th>Faza</th><th>Pi [kW]</th><th>Imax [A]</th><th>Cablu</th><th>Secțiune</th><th>Lungime [m]</th><th>Pozare</th></tr></thead><tbody>`+
          journal.map(j=>`<tr><td>${j[0]}</td><td>${j[1]}</td><td>${j[2]}</td><td>${j[3]}</td><td>${nf(j[4],1)}</td><td>${nf(j[5],1)}</td><td>${j[6]}</td><td>${j[7]}</td><td>${j[8]}</td><td>pe tub PVC / pat cabluri</td></tr>`).join("")+
