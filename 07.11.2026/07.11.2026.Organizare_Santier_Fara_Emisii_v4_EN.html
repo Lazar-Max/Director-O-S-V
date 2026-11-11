@@ -1,0 +1,1209 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zero-emission site</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: secțiune verticală prin organizarea de șantier (stânga) + panou de explicații (dreapta). Culori preluate din schema camerei tehnice. */
+:root{
+  --bg:#F3F1EC; --surface:#FBFAF7; --surface-2:#ECE8DF; --ink:#1D2530; --muted:#5B6472; --border:#CBC4B2;
+  --line:#2B5F8A;
+  --hydro:#1D7A8C; --hydro-soft:#DCEEF0;
+  --electric:#B8720A; --electric-soft:#F5E6CC;
+  --battery:#6B4FA0; --battery-soft:#EAE1F5;
+  --hot:#C2452D; --cold:#2F7FB8;
+  --ok:#2F7D4F; --ok-soft:#DCEEDF; --warn:#A8620A; --warn-soft:#F7E7CC; --bad:#B23A2B; --bad-soft:#F6DCD7;
+  --sky-day-1:#BFD9EC; --sky-day-2:#EAF2F7; --sky-night-1:#1B2638; --sky-night-2:#33415A;
+  --ground:#9C8E74; --ground-2:#B9AC91;
+  --steel:#D7D3C8; --steel-2:#C5C0B3; --steel-edge:#6E6A60; --office:#E3E6E9;
+  --pv:#24365A; --pv-hi:#3E5A8E; --tube:#7C4A2E; --sun:#F2C14E; --moon:#E9E4D4;
+  --font-sans:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  --shadow:0 1px 2px rgba(29,37,48,.06),0 6px 16px -8px rgba(29,37,48,.16);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12181F; --surface:#1A222C; --surface-2:#222C38; --ink:#DCE4EC; --muted:#8B96A5; --border:#2C3742;
+    --line:#6FB3E0; --hydro:#4FC7D9; --hydro-soft:#16333A; --electric:#E0A248; --electric-soft:#3A2C14;
+    --battery:#A98BE0; --battery-soft:#2A2138; --hot:#F07A5E; --cold:#6CB4E8;
+    --ok:#4FBE7C; --ok-soft:#17301F; --warn:#E0A248; --warn-soft:#3A2C14; --bad:#F07A5E; --bad-soft:#3A1E19;
+    --sky-day-1:#5D7C96; --sky-day-2:#8FA9BD; --sky-night-1:#0B111A; --sky-night-2:#1C2636;
+    --ground:#4A4235; --ground-2:#5C5343; --steel:#5A6170; --steel-2:#4D5361; --steel-edge:#AEB5C2; --office:#646C7B;
+    --pv:#9DB4E0; --pv-hi:#C8D6F2; --tube:#E2A27A; --sun:#F2C14E; --moon:#E9E4D4;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 20px -8px rgba(0,0,0,.5);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12181F; --surface:#1A222C; --surface-2:#222C38; --ink:#DCE4EC; --muted:#8B96A5; --border:#2C3742;
+  --line:#6FB3E0; --hydro:#4FC7D9; --hydro-soft:#16333A; --electric:#E0A248; --electric-soft:#3A2C14;
+  --battery:#A98BE0; --battery-soft:#2A2138; --hot:#F07A5E; --cold:#6CB4E8;
+  --ok:#4FBE7C; --ok-soft:#17301F; --warn:#E0A248; --warn-soft:#3A2C14; --bad:#F07A5E; --bad-soft:#3A1E19;
+  --sky-day-1:#5D7C96; --sky-day-2:#8FA9BD; --sky-night-1:#0B111A; --sky-night-2:#1C2636;
+  --ground:#4A4235; --ground-2:#5C5343; --steel:#5A6170; --steel-2:#4D5361; --steel-edge:#AEB5C2; --office:#646C7B;
+  --pv:#9DB4E0; --pv-hi:#C8D6F2; --tube:#E2A27A; --sun:#F2C14E; --moon:#E9E4D4;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 20px -8px rgba(0,0,0,.5);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);font-size:15px;line-height:1.5}
+.wrap{max-width:1320px;margin:0 auto;padding-block:22px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:end;justify-content:space-between;margin-bottom:16px}
+h1{margin:0;font-size:clamp(22px,3vw,30px);font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--muted);max-width:72ch;margin:4px 0 0}
+.meta{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);text-align:right}
+
+.controls{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px 14px;box-shadow:var(--shadow)}
+.ctl{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.ctl .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-right:4px}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.seg button{font:500 13px var(--font-sans);color:var(--ink);background:var(--surface);border:0;padding:6px 13px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--border)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.seg button:focus-visible,input:focus-visible{outline:2px solid var(--line);outline-offset:2px}
+.slider{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:13px}
+.slider input{width:150px;accent-color:var(--line)}
+.slider output{min-width:5.5ch;font-weight:600}
+
+.main{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(300px,1fr);gap:16px;margin-top:16px;align-items:start}
+@media (max-width:960px){.main{grid-template-columns:1fr}}
+.left{display:flex;flex-direction:column;gap:16px;min-width:0}
+.scene{background:var(--surface);border:1px solid var(--border);border-radius:4px;box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.scene .svgbox{overflow-x:auto}
+.scene svg{display:block;width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:10px 14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:18px;height:0;border-top:3px dashed}
+.caption{padding:0 14px 12px;margin:0;font-size:12.5px;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:4px;box-shadow:var(--shadow);padding:14px 16px;min-width:0}
+.card h2,.panel h2{margin:0 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:600}
+.chartbox{overflow-x:auto}
+.chartbox svg{display:block;width:100%;min-width:520px;height:auto}
+.ch-axis{font:500 10px var(--font-mono);fill:var(--muted)}
+.ch-grid{stroke:var(--border);stroke-width:1}
+.ch-bar{fill:var(--battery);opacity:.8}
+.ch-bar.deficit{fill:var(--bad)}
+.ch-line{fill:none;stroke:var(--electric);stroke-width:2.5}
+.ch-dot{fill:var(--electric)}
+.ch-key{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:var(--muted);margin-top:6px}
+.ch-key b{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-2px}
+
+aside.panel{background:var(--surface);border:1px solid var(--border);border-radius:4px;box-shadow:var(--shadow);min-width:0}
+.panel section{padding:14px 16px;border-bottom:1px solid var(--border)}
+.panel section:last-child{border-bottom:0}
+.panel h3{margin:0 0 6px;font-size:17px;font-weight:600;text-wrap:balance}
+.panel p{margin:0 0 8px;font-size:14px}
+.panel ul{margin:0;padding-left:18px;font-size:13.5px}
+.panel li{margin:2px 0}
+.pill{display:inline-block;font:600 13px var(--font-sans);padding:4px 12px;border-radius:20px;border:1px solid}
+.pill.ok{color:var(--ok);background:var(--ok-soft);border-color:var(--ok)}
+.pill.warn{color:var(--warn);background:var(--warn-soft);border-color:var(--warn)}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-top:10px}
+.kpi{background:var(--surface);padding:9px 11px}
+.kpi .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.kpi .v{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:18px;font-weight:600}
+.kpi .v small{font-size:11.5px;color:var(--muted);font-weight:500;margin-left:3px}
+table.eq{width:100%;border-collapse:collapse;font-size:13px}
+table.eq td{padding:4px 0;border-bottom:1px dashed var(--border)}
+table.eq td:last-child{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap;padding-left:10px}
+.note{font-size:12.5px;color:var(--muted);margin-top:8px}
+.cmp{font-size:13.5px;background:var(--surface-2);border-radius:4px;padding:10px 12px;margin-top:10px}
+
+/* SVG */
+.cont{fill:var(--steel);stroke:var(--steel-edge);stroke-width:1.2}
+.cont.office{fill:var(--office)}
+.cont.tech{fill:var(--battery-soft);stroke:var(--battery)}
+.cont.san{fill:var(--hydro-soft);stroke:var(--hydro)}
+.rib{stroke:var(--steel-2);stroke-width:1}
+.clabel{font:600 9.5px var(--font-mono);fill:var(--ink)}
+.clabel.small{font-size:8.5px;font-weight:500;fill:var(--muted)}
+.win{fill:var(--sky-day-2);stroke:var(--steel-edge);stroke-width:.8}
+.night .win{fill:var(--sun);opacity:.85}
+.door{fill:var(--steel-2);stroke:var(--steel-edge);stroke-width:.8}
+.pvp{fill:var(--pv);stroke:var(--pv-hi);stroke-width:.8}
+.day .pvp{fill:var(--pv-hi)}
+.tubes line{stroke:var(--tube);stroke-width:1.6}
+.tubes rect{fill:none;stroke:var(--tube);stroke-width:1}
+.mast{stroke:var(--steel-edge);stroke-width:3}
+.blade{fill:var(--surface);stroke:var(--steel-edge);stroke-width:1}
+.hub{fill:var(--steel-edge)}
+.hp{fill:var(--surface);stroke:var(--steel-edge);stroke-width:1}
+.fan{fill:none;stroke:var(--steel-edge);stroke-width:1.4}
+.rad{fill:var(--hot);opacity:.85}
+.ac{fill:var(--surface);stroke:var(--cold);stroke-width:1.2}
+.pylon{fill:none;stroke:var(--steel-edge);stroke-width:1.6}
+.flow{fill:none;stroke-width:2.4;stroke-dasharray:7 7;animation:dash 1.2s linear infinite}
+.flow.el{stroke:var(--electric)}
+.flow.grid{stroke:var(--bad)}
+.flow.hot{stroke:var(--hot)}
+.flow.air-h{stroke:var(--hot);stroke-width:1.6;stroke-dasharray:3 4}
+.flow.air-c{stroke:var(--cold);stroke-width:1.6;stroke-dasharray:3 4}
+.flow.off{opacity:.12;animation:none}
+@keyframes dash{to{stroke-dashoffset:-28}}
+.lbl-svg{font:500 9px var(--font-mono);fill:var(--muted)}
+.lbl-svg.strong{fill:var(--ink);font-weight:600}
+.lbl-svg.bad{fill:var(--bad);font-weight:600}
+.cloud{fill:var(--surface);opacity:.6}
+@media (prefers-reduced-motion: reduce){.flow{animation:none}}
+
+.progrow{display:flex;gap:4px;flex-wrap:wrap}
+.progrow select{font:inherit;font-size:.82rem;padding:4px 6px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--ink)}
+.lbl2{display:block;font-size:.68rem;color:var(--muted);margin-top:2px}
+.optbtns{display:flex;gap:8px;margin:6px 0}
+.optbtns button{font:inherit;font-size:.85rem;padding:6px 12px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--ink);cursor:pointer}
+table.eq th{font-size:.7rem;text-align:left;color:var(--muted);padding:2px 6px;border-bottom:1px solid var(--border)}
+table.eq td{padding:3px 6px;border-bottom:1px solid var(--border);font-size:.85rem}
+table.eq .price{width:90px;font:inherit;font-size:.8rem;padding:2px 6px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink)}
+table.eq .rowtot,table.eq .total td{text-align:right;white-space:nowrap}
+table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bottom:none}
+
+.ctl.wide{flex-basis:100%}
+.maprow{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+#map{width:min(560px,100%);height:auto;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.ro-outline{fill:var(--surface-2);stroke:var(--steel-edge);stroke-width:1.5}
+.ro-dot{fill:var(--line);cursor:pointer;stroke:var(--surface);stroke-width:1}
+.ro-dot:hover{fill:var(--electric)}
+.ro-dot.sel{fill:var(--bad)}
+.ro-lbl{font-size:10px;fill:var(--muted);pointer-events:none}
+#locSel{font:inherit;font-size:.85rem;max-width:220px;padding:4px 6px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--ink)}
+
+.bx{fill:var(--surface);stroke:var(--steel-edge);stroke-width:1.2}
+.bx.src{stroke:var(--electric)}
+.bx.inv{stroke:var(--battery)}
+.bx.tg{stroke:var(--line);stroke-width:2;fill:var(--surface-2)}
+.bx.bms{stroke:var(--ok);fill:var(--ok-soft)}
+.bx.ev{stroke:var(--ok)}
+.bx-t{font-size:12px;font-weight:600;fill:var(--ink)}
+.bx-s{font-size:10px;fill:var(--muted)}
+.ln{stroke:var(--line);stroke-width:1.5;fill:none}
+.ln.dc{stroke:var(--battery)}
+.ln.bms{stroke:var(--ok);stroke-dasharray:4 3}
+.bus{stroke:var(--line);stroke-width:3}
+.bus.dc{stroke:var(--battery)}
+.brk{fill:var(--surface);stroke:var(--ink);stroke-width:1.2}
+.lamp-post{stroke:var(--steel-edge);stroke-width:2}
+.lamp{fill:var(--muted)}
+.lamp.on{fill:var(--sun)}
+
+#bloc,#mono,#inst{width:100%;max-width:680px;height:auto;display:block;margin:0 auto}
+
+table.sd{border-collapse:collapse;width:100%;font-size:.78rem;margin:6px 0 14px}
+table.sd th{background:var(--surface-2);text-align:left;padding:3px 6px;border:1px solid var(--border)}
+table.sd td{padding:3px 6px;border:1px solid var(--border)}
+
+.bottom{margin:18px 0 8px;display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:1100px){.bottom{grid-template-columns:1fr 1fr}.bottom>.card:first-child{grid-column:1/-1}}
+
+.loctab-wrap{max-height:340px;overflow:auto;border:1px solid var(--border);border-radius:10px}
+#locTab td{cursor:pointer}
+#locTab tr.selrow td{background:var(--warn-soft);font-weight:600}
+</style>
+<style>html{color-scheme:light}body{margin:0}img{max-width:100%}
+.progrow{display:flex;gap:4px;flex-wrap:wrap}
+.progrow select{font:inherit;font-size:.82rem;padding:4px 6px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--ink)}
+.lbl2{display:block;font-size:.68rem;color:var(--muted);margin-top:2px}
+.optbtns{display:flex;gap:8px;margin:6px 0}
+.optbtns button{font:inherit;font-size:.85rem;padding:6px 12px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--ink);cursor:pointer}
+table.eq th{font-size:.7rem;text-align:left;color:var(--muted);padding:2px 6px;border-bottom:1px solid var(--border)}
+table.eq td{padding:3px 6px;border-bottom:1px solid var(--border);font-size:.85rem}
+table.eq .price{width:90px;font:inherit;font-size:.8rem;padding:2px 6px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink)}
+table.eq .rowtot,table.eq .total td{text-align:right;white-space:nowrap}
+table.eq .total td{font-weight:600;border-top:2px solid var(--border);border-bottom:none}
+
+.ctl.wide{flex-basis:100%}
+.maprow{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+#map{width:min(560px,100%);height:auto;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.ro-outline{fill:var(--surface-2);stroke:var(--steel-edge);stroke-width:1.5}
+.ro-dot{fill:var(--line);cursor:pointer;stroke:var(--surface);stroke-width:1}
+.ro-dot:hover{fill:var(--electric)}
+.ro-dot.sel{fill:var(--bad)}
+.ro-lbl{font-size:10px;fill:var(--muted);pointer-events:none}
+#locSel{font:inherit;font-size:.85rem;max-width:220px;padding:4px 6px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--ink)}
+
+.bx{fill:var(--surface);stroke:var(--steel-edge);stroke-width:1.2}
+.bx.src{stroke:var(--electric)}
+.bx.inv{stroke:var(--battery)}
+.bx.tg{stroke:var(--line);stroke-width:2;fill:var(--surface-2)}
+.bx.bms{stroke:var(--ok);fill:var(--ok-soft)}
+.bx.ev{stroke:var(--ok)}
+.bx-t{font-size:12px;font-weight:600;fill:var(--ink)}
+.bx-s{font-size:10px;fill:var(--muted)}
+.ln{stroke:var(--line);stroke-width:1.5;fill:none}
+.ln.dc{stroke:var(--battery)}
+.ln.bms{stroke:var(--ok);stroke-dasharray:4 3}
+.bus{stroke:var(--line);stroke-width:3}
+.bus.dc{stroke:var(--battery)}
+.brk{fill:var(--surface);stroke:var(--ink);stroke-width:1.2}
+.lamp-post{stroke:var(--steel-edge);stroke-width:2}
+.lamp{fill:var(--muted)}
+.lamp.on{fill:var(--sun)}
+
+#bloc,#mono,#inst{width:100%;max-width:680px;height:auto;display:block;margin:0 auto}
+
+table.sd{border-collapse:collapse;width:100%;font-size:.78rem;margin:6px 0 14px}
+table.sd th{background:var(--surface-2);text-align:left;padding:3px 6px;border:1px solid var(--border)}
+table.sd td{padding:3px 6px;border:1px solid var(--border)}
+
+.bottom{margin:18px 0 8px;display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:1100px){.bottom{grid-template-columns:1fr 1fr}.bottom>.card:first-child{grid-column:1/-1}}
+
+.loctab-wrap{max-height:340px;overflow:auto;border:1px solid var(--border);border-radius:10px}
+#locTab td{cursor:pointer}
+#locTab tr.selrow td{background:var(--warn-soft);font-weight:600}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Zero-Emission Construction Site CO₂ / CO</h1>
+<p class="sub" style="margin-top:2px;font-weight:600">Powered by STRABAG MK-LL — Engineering Division Constanta - Jedi Ciprian Lazar</p>
+      <p class="sub">Energy from wind and sun on hybrid inverters with batteries, hot water from evacuated tubes, heating and cooling with heat pumps. Choose variant, scenario and equipment: diagram, explanations and equipment update together.</p>
+    </div>
+    <div class="meta">Constanța · calcul −15°C / +38°C<br>figures from the Excel calculation</div>
+  </header>
+
+  <div class="controls" role="group" aria-label="Opțiuni">
+    <div class="ctl"><span class="lbl">Variant</span>
+      <div class="seg" id="segVar">
+        <button type="button" data-v="V1">V1 · offices only</button>
+        <button type="button" data-v="V2">V2 · offices + accommodation</button>
+        <button type="button" data-v="V2E">V2 extended</button>
+      </div>
+    </div>
+    <div class="ctl slider" id="ctlPers" hidden>
+      <label for="pers">Accommodated people</label>
+      <input id="pers" type="range" min="8" max="48" step="4" value="20">
+      <output id="persOut" for="pers">20</output>
+    </div>
+    <div class="ctl"><span class="lbl">Scenario</span>
+      <div class="seg" id="segScen">
+        <button type="button" data-s="CMD">Most unfavorable</button>
+        <button type="button" data-s="NOR">Normal</button>
+        <button type="button" data-s="ECO">Economic</button>
+      </div>
+    </div>
+    <div class="ctl"><span class="lbl">Equipment (heat pumps only on this page; radiators only in Excel/PPT)</span>
+      <div class="seg" id="segEq">
+        <button type="button" data-e="HP">Pompe de căldură</button>
+        
+      </div>
+    </div>
+    <div class="ctl"><span class="lbl">Program — WINTER</span><div class="progrow"><select id="pHi" aria-label="ore iarnă"></select><select id="pSi" aria-label="ora de start iarnă"></select><select id="pDay" aria-label="zile pe săptămână iarnă"></select></div><span class="lbl2">hours · start time · days/week</span></div><div class="ctl"><span class="lbl">Program — SUMMER</span><div class="progrow"><select id="pHv" aria-label="ore vară"></select><select id="pSv" aria-label="ora de start vară"></select><select id="pZv" aria-label="zile pe săptămână vară"></select></div><span class="lbl2">hours · start time · days/week</span></div>
+    <div class="ctl"><span class="lbl">Season</span>
+      <div class="seg" id="segSez">
+        <button type="button" data-z="i">Winter</button>
+        <button type="button" data-z="v">Summer</button>
+      </div>
+    </div>
+    <div class="ctl"><span class="lbl">Time of day</span>
+      <div class="seg" id="segDay">
+        <button type="button" data-d="zi">Day</button>
+        <button type="button" data-d="noapte">Night</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="left">
+      <div class="scene">
+        <div class="svgbox"><svg id="svg" role="img" aria-label="Schema organizării de șantier"></svg></div>
+        <div class="legend">
+          <span><i style="border-color:var(--electric)"></i>electricity (panels, turbines → inverters and batteries → consumers)</span>
+          <span><i style="border-color:var(--hot)"></i>hot water (evacuated tubes → buffer → showers)</span>
+          <span><i style="border-color:var(--cold)"></i>cooling / <i style="border-color:var(--hot)"></i>heating</span>
+          <span id="lgGrid" hidden><i style="border-color:var(--bad)"></i>grid energy (on-grid)</span>
+        </div>
+        <p class="caption" id="caption"></p>
+      </div>
+      
+      
+      
+      
+      <div class="card">
+        <h2>Consumption and production per month (kWh/day, average)</h2>
+        <div class="chartbox"><svg id="chart" role="img" aria-label="Consum și producție pe luni"></svg></div>
+        <div class="ch-key">
+          <span><b style="background:var(--battery)"></b>covered consumption</span>
+          <span><b style="background:var(--bad)"></b>deficit month (from grid)</span>
+          <span><b style="background:var(--electric)"></b>PV + turbine production</span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="panel" aria-live="polite">
+      <section><h2>Summary for manager (all figures)</h2><p class="note" id="sumBoss"></p></section>
+      <section>
+        <h2>Results</h2>
+        <div id="verdict"></div>
+        <p class="note" id="regNote"></p>
+        <p class="note" id="prodNote"></p>
+        <div class="kpis">
+          <div class="kpi"><div class="k">Annual consumption</div><div class="v" id="kCons"></div></div>
+          <div class="kpi"><div class="k">Annual production</div><div class="v" id="kProd"></div></div>
+          <div class="kpi"><div class="k">3 kW turbines</div><div class="v" id="kTurb"></div></div>
+          <div class="kpi"><div class="k">Batteries</div><div class="v" id="kBat"></div></div>
+        </div>
+        <div class="cmp" id="cmp"></div>
+      </section>
+      <section>
+        <h2>Variant</h2>
+        <h3 id="vTitle"></h3>
+        <p id="vText"></p>
+      </section>
+      <section>
+        <h2>Scenario</h2>
+        <h3 id="sTitle"></h3>
+        <p id="sText"></p>
+        <ul id="sList"></ul>
+      </section>
+      <section>
+        <h2>Equipment</h2>
+        <h3 id="eTitle"></h3>
+        <p id="eText"></p>
+      </section>
+      
+      
+    </aside>
+  </div>
+</div>
+
+<section class="bottom"><div class="card"><h2>Site — Romania table (click a locality) + site controls</h2><div class="ctl wide"><span class="lbl">Site — click a locality (or choose from list)</span><div class="maprow"><div class="loctab-wrap"><table class="sd" id="locTab"></table></div><select id="locSel" aria-label="Locality"></select><span class="lbl2">mast</span><select id="hubSel"></select><span class="lbl2">rows</span><select id="rowSel"></select><span class="lbl2">spacing</span><select id="spcSel"></select><span class="lbl2">frontage</span><select id="frontageSel"></select><span class="lbl2">turbine</span><select id="tkwSel"></select><span class="lbl2">ilum.ext</span><select id="extPSel"></select><select id="extHSel"></select><select id="selfSel"></select><select id="comboSel"></select><label class="lbl2"><input type="checkbox" id="evChk" checked> double EV charger (summer)</label><label class="lbl2"><input type="checkbox" id="cctvChk" checked> CCTV</label><select id="camsSel" aria-label="nr camere"></select></div><p class="note" id="locInfo"></p></div></div><div class="card"><h2>Block diagram — energy flow (sources → main panel → groups)</h2><div class="chartbox"><svg id="bloc"></svg></div></div><div class="card"><h2>Block diagram panels — buses and feeders</h2><div class="chartbox"><svg id="mono"></svg></div></div><div class="card"><h2>Functional diagram — ventilation + hot water</h2><div class="chartbox"><svg id="inst"></svg></div></div><div class="card"><h2>Unfolded single-line diagrams per panel + cable schedule</h2><div class="chartbox" id="mono2" style="max-width:none"></div></div><section><h2>Consumption optimization</h2><p class="note">Resource (PV + wind) is finite: automatically finds the minimum per-season program (hours × days) so the variant is <b>AUTONOMĂ</b> în fiecare lună, dacă e posibil.</p><div class="optbtns"><button type="button" id="btnOpt">Optimize program</button><button type="button" id="btnApply" hidden>Apply</button></div><p class="note" id="optOut"></p></section><section>
+        <h2>Equipment list</h2>
+        <table class="eq"><thead><tr><th>Equipment</th><th>Quantity</th><th>Unit price (RON)</th><th>Total (RON)</th></tr></thead><tbody id="eqBody"></tbody></table>
+      </section></section>
+
+<script>
+(function(){
+  // Constante preluate din fișierul Excel (foaia Principal: CLIMĂ + anexe A/C/D/E + Personal).
+  const K = {"days": [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], "tmed": [0.9, 1.9, 5.1, 10.1, 15.6, 20.3, 22.9, 22.6, 18.6, 13.6, 8.3, 3.4], "tzi": [3.9, 4.9, 8.1, 13.1, 18.6, 23.3, 25.9, 25.6, 21.6, 16.6, 11.3, 6.4], "tno": [-1.6, -0.6, 2.6, 7.6, 13.1, 17.8, 20.4, 20.1, 16.1, 11.1, 5.8, 0.9], "pv": [1.5, 2.2, 3.2, 4.1, 4.9, 5.3, 5.5, 5.1, 4.1, 2.9, 1.7, 1.2], "eol": [13.2663825, 13.2663825, 11.73724618752, 9.04066821504, 6.29558834814, 5.37585658218, 5.37585658218, 4.95165073536, 6.29558834814, 8.43816218742, 10.33037285616, 12.48621307794], "tap": [6, 6, 6, 10.1, 15.6, 20, 20, 20, 18.6, 13.6, 8.3, 6], "tub": [0.0790909090909091, 0.116, 0.168727272727273, 0.216181818181818, 0.258363636363636, 0.279454545454545, 0.29, 0.268909090909091, 0.216181818181818, 0.152909090909091, 0.0896363636363636, 0.0632727272727273], "fi": {"CMD": [1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1], "NOR": [1, 1, 0.483870967741936, 0, 0, 0, 0, 0, 0, 0.548387096774194, 1, 1], "ECO": [1, 1, 0.483870967741936, 0, 0, 0, 0, 0, 0, 0.548387096774194, 1, 1]}, "fv": {"CMD": [0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0], "NOR": [0, 0, 0, 0, 1, 1, 1, 1, 0.5, 0, 0, 0], "ECO": [0, 0, 0, 0, 1, 1, 1, 1, 0.5, 0, 0, 0]}, "TI": {"CMD": 25, "NOR": 23, "ECO": 22}, "TV": {"CMD": 20, "NOR": 21, "ECO": 22}, "D": {"7": 1.225, "8": 12.6, "9": 0.3, "10": 1.91, "11": 3, "12": 3, "13": null, "14": 450, "15": 6, "16": 2.7, "17": 2.25, "18": 8, "19": 3, "20": null, "21": 8, "22": 2, "23": 0.9, "24": 5.12, "25": 0.3, "26": 0.6, "27": 1.3, "28": null, "29": 0.5, "30": 1.2, "31": 0.5, "32": 1, "33": 2, "34": 2, "35": 0.25, "36": 1, "37": 1.2, "38": 1.2, "39": 0.5, "40": 0.15, "41": 6, "42": 0.1, "43": 0.1, "44": 0.15, "45": 6, "46": 0.8, "47": 1, "48": 2.5, "49": 1.5, "50": 1.3}, "N": {"7": -15, "8": 38, "9": 15, "10": 11, "11": 5, "12": null, "13": 3, "14": 2, "15": 3.2, "16": 0.24, "17": 20, "18": 1.2, "19": 0.25, "20": null, "21": 30, "22": 0.75, "23": 0.35, "24": 250, "25": 60, "26": null, "27": 0.5, "28": 0.25, "29": 1, "30": 0.5, "31": null, "32": 1.4, "33": 1.2, "34": 2.9, "35": 0}, "I": {"7": 30, "8": 0.29, "9": null, "10": 40, "11": 30, "12": 5, "13": 55, "14": 40, "15": 0.1, "16": null, "17": 1, "18": 6, "19": 3, "20": 3, "21": 3.5, "22": null, "23": 3, "24": 2, "25": 2}, "A": {"B": {"L": 6, "W": 5, "H": 2.6, "pers": 5, "ore": 11, "regim": 0, "zile": 5, "ach": 0.5, "qint": 600, "coolp": 1, "coolc": 1, "nrad": 2, "q": 150, "fz": 0.714285714285714, "fsun": 1, "vol": 78, "env": 117.2, "roof": 30, "kenv": 28.128, "kdoor": 13.26, "kocc_hp": 54.138, "kocc_cl": 92.388, "fan": 0.0525, "util": 5.5}, "D": {"L": 6, "W": 5, "H": 2.6, "pers": 4, "ore": 14, "regim": 1, "zile": 7, "ach": 0.25, "qint": 250, "coolp": 1, "coolc": 0, "nrad": 2, "q": 120, "fz": 1, "fsun": 0, "vol": 78, "env": 117.2, "roof": 30, "kenv": 28.128, "kdoor": 6.63, "kocc_hp": 44.958, "kocc_cl": 75.558, "fan": 0.042, "util": 0.9}, "M": {"L": 6, "W": 5, "H": 2.6, "pers": 16, "ore": 4, "regim": 0, "zile": 7, "ach": 1, "qint": 900, "coolp": 1, "coolc": 0, "nrad": 2, "q": 480, "fz": 1, "fsun": 1, "vol": 78, "env": 117.2, "roof": 30, "kenv": 28.128, "kdoor": 26.52, "kocc_hp": 95.448, "kocc_cl": 217.848, "fan": 0.168, "util": 3.5}, "S": {"L": 6, "W": 2.5, "H": 2.6, "pers": 0, "ore": 24, "regim": 2, "zile": 7, "ach": 0.5, "qint": 0, "coolp": 0, "coolc": 0, "nrad": 1, "q": 250, "fz": 1, "fsun": 0.5, "vol": 39, "env": 74.2, "roof": 15, "kenv": 17.808, "kdoor": 6.63, "kocc_hp": 45.688, "kocc_cl": 109.438, "fan": 0.0875, "util": 0.6}, "T": {"L": 6, "W": 2.5, "H": 2.6, "pers": 0, "ore": 11, "regim": 0, "zile": 5, "ach": 0.5, "qint": 0, "coolp": 0, "coolc": 0, "nrad": 1, "q": 60, "fz": 0.714285714285714, "fsun": 1, "vol": 39, "env": 74.2, "roof": 15, "kenv": 17.808, "kdoor": 6.63, "kocc_hp": 29.538, "kocc_cl": 44.838, "fan": 0.021, "util": 1.1}}, "S": {"E413": 2, "F413": 2, "G413": 2, "H413": 1, "I413": 1, "E427": 3, "G427": 5, "H427": 2.5, "I427": 1.5, "E502": 5}, "persTESA": 5, "locuri": 10, "moduleB": 1, "capMese": 16, "persSan": 8, "persDorm": 4, "DORM_TI": 22.0, "DORM_TV": 20.0};
+  K.EV = {evKw:22, evKwh:40};
+  K.CCTV = {wCam:8, nvrW:40, swW:20};
+  const LOCS = [{"name": "București", "judet": "București", "lat": 44.43, "lon": 26.1, "reg": "sud", "tmin": -15, "tmax": 38, "inghet": 0.85, "t": [-1.5, 0.0, 3.7, 9.5, 15.0, 19.6, 22.4, 22.0, 18.0, 12.4, 6.5, 1.5], "w": [3.2, 3.2, 3.1, 2.9, 2.5, 2.4, 2.4, 2.3, 2.5, 2.8, 3.0, 3.2], "pv": [1.54, 2.27, 3.3, 4.22, 5.05, 5.46, 5.67, 5.25, 4.22, 2.99, 1.75, 1.24]}, {"name": "Constanța", "judet": "Constanța", "lat": 44.18, "lon": 28.63, "reg": "coast", "tmin": -15, "tmax": 38, "inghet": 0.7, "t": [0.9, 1.9, 5.1, 10.1, 15.6, 20.3, 22.9, 22.6, 18.6, 13.6, 8.3, 3.4], "w": [5.0, 5.0, 4.8, 4.4, 3.9, 3.7, 3.7, 3.6, 3.9, 4.3, 4.6, 4.9], "pv": [1.5, 2.2, 3.2, 4.1, 4.9, 5.3, 5.5, 5.1, 4.1, 2.9, 1.7, 1.2]}, {"name": "Tulcea", "judet": "Tulcea", "lat": 45.18, "lon": 28.8, "reg": "coast", "tmin": -15, "tmax": 35, "inghet": 0.75, "t": [0.7, 1.7, 5.0, 10.0, 15.5, 20.2, 22.9, 22.5, 18.5, 13.5, 8.1, 3.2], "w": [5.8, 5.8, 5.5, 5.1, 4.5, 4.3, 4.3, 4.1, 4.5, 4.9, 5.3, 5.6], "pv": [1.53, 2.24, 3.26, 4.18, 5.0, 5.41, 5.61, 5.2, 4.18, 2.96, 1.73, 1.22]}, {"name": "Brăila", "judet": "Brăila", "lat": 45.27, "lon": 27.96, "reg": "dobrogea", "tmin": -15, "tmax": 37, "inghet": 0.8, "t": [0.0, 1.2, 4.6, 9.9, 15.4, 20.0, 22.7, 22.4, 18.4, 13.2, 7.6, 2.7], "w": [5.0, 5.0, 4.8, 4.4, 3.9, 3.7, 3.7, 3.6, 3.9, 4.3, 4.6, 4.9], "pv": [1.58, 2.31, 3.36, 4.3, 5.15, 5.57, 5.78, 5.35, 4.3, 3.04, 1.78, 1.26]}, {"name": "Galați", "judet": "Galați", "lat": 45.43, "lon": 28.03, "reg": "sud-est", "tmin": -15, "tmax": 37, "inghet": 0.85, "t": [-0.6, 0.7, 4.2, 9.7, 15.2, 19.8, 22.6, 22.2, 18.2, 12.9, 7.1, 2.2], "w": [4.2, 4.2, 4.1, 3.7, 3.3, 3.1, 3.1, 3.1, 3.3, 3.7, 3.9, 4.2], "pv": [1.58, 2.31, 3.36, 4.3, 5.15, 5.57, 5.78, 5.35, 4.3, 3.04, 1.78, 1.26]}, {"name": "Slobozia", "judet": "Ialomița", "lat": 44.57, "lon": 27.36, "reg": "sud-est", "tmin": -15, "tmax": 37, "inghet": 0.8, "t": [-0.6, 0.7, 4.2, 9.7, 15.2, 19.8, 22.6, 22.2, 18.2, 12.9, 7.1, 2.2], "w": [4.2, 4.2, 4.1, 3.7, 3.3, 3.1, 3.1, 3.1, 3.3, 3.7, 3.9, 4.2], "pv": [1.58, 2.31, 3.36, 4.3, 5.15, 5.57, 5.78, 5.35, 4.3, 3.04, 1.78, 1.26]}, {"name": "Călărași", "judet": "Călărași", "lat": 44.2, "lon": 27.33, "reg": "sud-est", "tmin": -15, "tmax": 37, "inghet": 0.8, "t": [-0.6, 0.7, 4.2, 9.7, 15.2, 19.8, 22.6, 22.2, 18.2, 12.9, 7.1, 2.2], "w": [4.2, 4.2, 4.1, 3.7, 3.3, 3.1, 3.1, 3.1, 3.3, 3.7, 3.9, 4.2], "pv": [1.58, 2.31, 3.36, 4.3, 5.15, 5.57, 5.78, 5.35, 4.3, 3.04, 1.78, 1.26]}, {"name": "Giurgiu", "judet": "Giurgiu", "lat": 43.9, "lon": 25.97, "reg": "sud", "tmin": -15, "tmax": 38, "inghet": 0.85, "t": [-1.5, 0.0, 3.7, 9.5, 15.0, 19.6, 22.4, 22.0, 18.0, 12.4, 6.5, 1.5], "w": [3.2, 3.2, 3.1, 2.9, 2.5, 2.4, 2.4, 2.3, 2.5, 2.8, 3.0, 3.2], "pv": [1.54, 2.27, 3.3, 4.22, 5.05, 5.46, 5.67, 5.25, 4.22, 2.99, 1.75, 1.24]}, {"name": "Alexandria", "judet": "Teleorman", "lat": 43.98, "lon": 25.33, "reg": "sud", "tmin": -15, "tmax": 38, "inghet": 0.85, "t": [-1.5, 0.0, 3.7, 9.5, 15.0, 19.6, 22.4, 22.0, 18.0, 12.4, 6.5, 1.5], "w": [3.2, 3.2, 3.1, 2.9, 2.5, 2.4, 2.4, 2.3, 2.5, 2.8, 3.0, 3.2], "pv": [1.54, 2.27, 3.3, 4.22, 5.05, 5.46, 5.67, 5.25, 4.22, 2.99, 1.75, 1.24]}, {"name": "Ploiești", "judet": "Prahova", "lat": 44.94, "lon": 26.03, "reg": "sud", "tmin": -15, "tmax": 37, "inghet": 0.85, "t": [-1.5, 0.0, 3.7, 9.5, 15.0, 19.6, 22.4, 22.0, 18.0, 12.4, 6.5, 1.5], "w": [3.2, 3.2, 3.1, 2.9, 2.5, 2.4, 2.4, 2.3, 2.5, 2.8, 3.0, 3.2], "pv": [1.54, 2.27, 3.3, 4.22, 5.05, 5.46, 5.67, 5.25, 4.22, 2.99, 1.75, 1.24]}, {"name": "Târgoviște", "judet": "Dâmbovița", "lat": 44.93, "lon": 25.46, "reg": "sud", "tmin": -15, "tmax": 37, "inghet": 0.85, "t": [-1.5, 0.0, 3.7, 9.5, 15.0, 19.6, 22.4, 22.0, 18.0, 12.4, 6.5, 1.5], "w": [3.2, 3.2, 3.1, 2.9, 2.5, 2.4, 2.4, 2.3, 2.5, 2.8, 3.0, 3.2], "pv": [1.54, 2.27, 3.3, 4.22, 5.05, 5.46, 5.67, 5.25, 4.22, 2.99, 1.75, 1.24]}, {"name": "Pitești", "judet": "Argeș", "lat": 44.86, "lon": 24.87, "reg": "sud", "tmin": -15, "tmax": 36, "inghet": 0.9, "t": [-1.5, 0.0, 3.7, 9.5, 15.0, 19.6, 22.4, 22.0, 18.0, 12.4, 6.5, 1.5], "w": [3.2, 3.2, 3.1, 2.9, 2.5, 2.4, 2.4, 2.3, 2.5, 2.8, 3.0, 3.2], "pv": [1.54, 2.27, 3.3, 4.22, 5.05, 5.46, 5.67, 5.25, 4.22, 2.99, 1.75, 1.24]}, {"name": "Craiova", "judet": "Dolj", "lat": 44.33, "lon": 23.8, "reg": "sud", "tmin": -15, "tmax": 38, "inghet": 0.85, "t": [-1.5, 0.0, 3.7, 9.5, 15.0, 19.6, 22.4, 22.0, 18.0, 12.4, 6.5, 1.5], "w": [3.2, 3.2, 3.1, 2.9, 2.5, 2.4, 2.4, 2.3, 2.5, 2.8, 3.0, 3.2], "pv": [1.54, 2.27, 3.3, 4.22, 5.05, 5.46, 5.67, 5.25, 4.22, 2.99, 1.75, 1.24]}, {"name": "Slatina", "judet": "Olt", "lat": 44.43, "lon": 24.37, "reg": "sud", "tmin": -15, "tmax": 37, "inghet": 0.85, "t": [-1.5, 0.0, 3.7, 9.5, 15.0, 19.6, 22.4, 22.0, 18.0, 12.4, 6.5, 1.5], "w": [3.2, 3.2, 3.1, 2.9, 2.5, 2.4, 2.4, 2.3, 2.5, 2.8, 3.0, 3.2], "pv": [1.54, 2.27, 3.3, 4.22, 5.05, 5.46, 5.67, 5.25, 4.22, 2.99, 1.75, 1.24]}, {"name": "Râmnicu Vâlcea", "judet": "Vâlcea", "lat": 45.1, "lon": 24.37, "reg": "sud", "tmin": -15, "tmax": 36, "inghet": 0.9, "t": [-1.5, 0.0, 3.7, 9.5, 15.0, 19.6, 22.4, 22.0, 18.0, 12.4, 6.5, 1.5], "w": [3.2, 3.2, 3.1, 2.9, 2.5, 2.4, 2.4, 2.3, 2.5, 2.8, 3.0, 3.2], "pv": [1.54, 2.27, 3.3, 4.22, 5.05, 5.46, 5.67, 5.25, 4.22, 2.99, 1.75, 1.24]}, {"name": "Târgu Jiu", "judet": "Gorj", "lat": 45.03, "lon": 23.27, "reg": "sud", "tmin": -15, "tmax": 36, "inghet": 0.9, "t": [-1.5, 0.0, 3.7, 9.5, 15.0, 19.6, 22.4, 22.0, 18.0, 12.4, 6.5, 1.5], "w": [3.2, 3.2, 3.1, 2.9, 2.5, 2.4, 2.4, 2.3, 2.5, 2.8, 3.0, 3.2], "pv": [1.54, 2.27, 3.3, 4.22, 5.05, 5.46, 5.67, 5.25, 4.22, 2.99, 1.75, 1.24]}, {"name": "Drobeta-Turnu Severin", "judet": "Mehedinți", "lat": 44.43, "lon": 22.66, "reg": "vest", "tmin": -15, "tmax": 38, "inghet": 0.85, "t": [-1.7, -0.1, 3.5, 9.4, 14.9, 19.5, 22.4, 21.9, 17.9, 12.3, 6.3, 1.4], "w": [3.5, 3.5, 3.4, 3.1, 2.7, 2.6, 2.6, 2.5, 2.7, 3.0, 3.2, 3.4], "pv": [1.46, 2.13, 3.1, 3.98, 4.75, 5.14, 5.33, 4.95, 3.98, 2.81, 1.65, 1.16]}, {"name": "Timișoara", "judet": "Timiș", "lat": 45.75, "lon": 21.23, "reg": "vest", "tmin": -15, "tmax": 37, "inghet": 0.7, "t": [-1.7, -0.1, 3.5, 9.4, 14.9, 19.5, 22.4, 21.9, 17.9, 12.3, 6.3, 1.4], "w": [3.5, 3.5, 3.4, 3.1, 2.7, 2.6, 2.6, 2.5, 2.7, 3.0, 3.2, 3.4], "pv": [1.46, 2.13, 3.1, 3.98, 4.75, 5.14, 5.33, 4.95, 3.98, 2.81, 1.65, 1.16]}, {"name": "Arad", "judet": "Arad", "lat": 46.17, "lon": 21.32, "reg": "vest", "tmin": -15, "tmax": 36, "inghet": 0.8, "t": [-1.7, -0.1, 3.5, 9.4, 14.9, 19.5, 22.4, 21.9, 17.9, 12.3, 6.3, 1.4], "w": [3.5, 3.5, 3.4, 3.1, 2.7, 2.6, 2.6, 2.5, 2.7, 3.0, 3.2, 3.4], "pv": [1.46, 2.13, 3.1, 3.98, 4.75, 5.14, 5.33, 4.95, 3.98, 2.81, 1.65, 1.16]}, {"name": "Reșița", "judet": "Caraș-Severin", "lat": 45.3, "lon": 21.9, "reg": "vest", "tmin": -15, "tmax": 34, "inghet": 0.9, "t": [-1.7, -0.1, 3.5, 9.4, 14.9, 19.5, 22.4, 21.9, 17.9, 12.3, 6.3, 1.4], "w": [3.5, 3.5, 3.4, 3.1, 2.7, 2.6, 2.6, 2.5, 2.7, 3.0, 3.2, 3.4], "pv": [1.46, 2.13, 3.1, 3.98, 4.75, 5.14, 5.33, 4.95, 3.98, 2.81, 1.65, 1.16]}, {"name": "Deva", "judet": "Hunedoara", "lat": 45.87, "lon": 22.9, "reg": "vest", "tmin": -15, "tmax": 35, "inghet": 0.9, "t": [-1.7, -0.1, 3.5, 9.4, 14.9, 19.5, 22.4, 21.9, 17.9, 12.3, 6.3, 1.4], "w": [3.5, 3.5, 3.4, 3.1, 2.7, 2.6, 2.6, 2.5, 2.7, 3.0, 3.2, 3.4], "pv": [1.46, 2.13, 3.1, 3.98, 4.75, 5.14, 5.33, 4.95, 3.98, 2.81, 1.65, 1.16]}, {"name": "Oradea", "judet": "Bihor", "lat": 47.07, "lon": 21.93, "reg": "nord-vest", "tmin": -15, "tmax": 35, "inghet": 0.9, "t": [-2.6, -0.8, 3.0, 9.2, 14.7, 19.3, 22.2, 21.7, 17.7, 11.9, 5.7, 0.7], "w": [2.8, 2.8, 2.6, 2.4, 2.1, 2.0, 2.0, 2.0, 2.1, 2.4, 2.5, 2.7], "pv": [1.35, 1.98, 2.88, 3.69, 4.41, 4.77, 4.95, 4.59, 3.69, 2.61, 1.53, 1.08]}, {"name": "Satu Mare", "judet": "Satu Mare", "lat": 47.79, "lon": 22.89, "reg": "nord-vest", "tmin": -18, "tmax": 34, "inghet": 1.0, "t": [-2.6, -0.8, 3.0, 9.2, 14.7, 19.3, 22.2, 21.7, 17.7, 11.9, 5.7, 0.7], "w": [2.8, 2.8, 2.6, 2.4, 2.1, 2.0, 2.0, 2.0, 2.1, 2.4, 2.5, 2.7], "pv": [1.35, 1.98, 2.88, 3.69, 4.41, 4.77, 4.95, 4.59, 3.69, 2.61, 1.53, 1.08]}, {"name": "Baia Mare", "judet": "Maramureș", "lat": 47.66, "lon": 23.58, "reg": "nord-vest", "tmin": -18, "tmax": 33, "inghet": 1.0, "t": [-2.6, -0.8, 3.0, 9.2, 14.7, 19.3, 22.2, 21.7, 17.7, 11.9, 5.7, 0.7], "w": [2.8, 2.8, 2.6, 2.4, 2.1, 2.0, 2.0, 2.0, 2.1, 2.4, 2.5, 2.7], "pv": [1.35, 1.98, 2.88, 3.69, 4.41, 4.77, 4.95, 4.59, 3.69, 2.61, 1.53, 1.08]}, {"name": "Zalău", "judet": "Sălaj", "lat": 47.2, "lon": 23.05, "reg": "nord-vest", "tmin": -15, "tmax": 34, "inghet": 1.0, "t": [-2.6, -0.8, 3.0, 9.2, 14.7, 19.3, 22.2, 21.7, 17.7, 11.9, 5.7, 0.7], "w": [2.8, 2.8, 2.6, 2.4, 2.1, 2.0, 2.0, 2.0, 2.1, 2.4, 2.5, 2.7], "pv": [1.35, 1.98, 2.88, 3.69, 4.41, 4.77, 4.95, 4.59, 3.69, 2.61, 1.53, 1.08]}, {"name": "Cluj-Napoca", "judet": "Cluj", "lat": 46.77, "lon": 23.6, "reg": "transilvania", "tmin": -18, "tmax": 34, "inghet": 0.95, "t": [-3.1, -1.2, 2.8, 9.1, 14.6, 19.1, 22.1, 21.6, 17.6, 11.7, 5.3, 0.3], "w": [2.2, 2.2, 2.2, 2.0, 1.8, 1.7, 1.7, 1.6, 1.8, 1.9, 2.1, 2.2], "pv": [1.38, 2.02, 2.94, 3.77, 4.51, 4.88, 5.06, 4.69, 3.77, 2.67, 1.56, 1.1]}, {"name": "Bistrița", "judet": "Bistrița-Năsăud", "lat": 47.13, "lon": 24.5, "reg": "nord-vest", "tmin": -18, "tmax": 33, "inghet": 1.0, "t": [-2.6, -0.8, 3.0, 9.2, 14.7, 19.3, 22.2, 21.7, 17.7, 11.9, 5.7, 0.7], "w": [2.8, 2.8, 2.6, 2.4, 2.1, 2.0, 2.0, 2.0, 2.1, 2.4, 2.5, 2.7], "pv": [1.35, 1.98, 2.88, 3.69, 4.41, 4.77, 4.95, 4.59, 3.69, 2.61, 1.53, 1.08]}, {"name": "Alba Iulia", "judet": "Alba", "lat": 46.07, "lon": 23.58, "reg": "transilvania", "tmin": -18, "tmax": 34, "inghet": 0.95, "t": [-3.1, -1.2, 2.8, 9.1, 14.6, 19.1, 22.1, 21.6, 17.6, 11.7, 5.3, 0.3], "w": [2.2, 2.2, 2.2, 2.0, 1.8, 1.7, 1.7, 1.6, 1.8, 1.9, 2.1, 2.2], "pv": [1.38, 2.02, 2.94, 3.77, 4.51, 4.88, 5.06, 4.69, 3.77, 2.67, 1.56, 1.1]}, {"name": "Sibiu", "judet": "Sibiu", "lat": 45.8, "lon": 24.15, "reg": "transilvania", "tmin": -18, "tmax": 33, "inghet": 1.0, "t": [-3.1, -1.2, 2.8, 9.1, 14.6, 19.1, 22.1, 21.6, 17.6, 11.7, 5.3, 0.3], "w": [2.2, 2.2, 2.2, 2.0, 1.8, 1.7, 1.7, 1.6, 1.8, 1.9, 2.1, 2.2], "pv": [1.38, 2.02, 2.94, 3.77, 4.51, 4.88, 5.06, 4.69, 3.77, 2.67, 1.56, 1.1]}, {"name": "Brașov", "judet": "Brașov", "lat": 45.65, "lon": 25.6, "reg": "transilvania", "tmin": -21, "tmax": 32, "inghet": 1.05, "t": [-3.1, -1.2, 2.8, 9.1, 14.6, 19.1, 22.1, 21.6, 17.6, 11.7, 5.3, 0.3], "w": [2.2, 2.2, 2.2, 2.0, 1.8, 1.7, 1.7, 1.6, 1.8, 1.9, 2.1, 2.2], "pv": [1.38, 2.02, 2.94, 3.77, 4.51, 4.88, 5.06, 4.69, 3.77, 2.67, 1.56, 1.1]}, {"name": "Sfântu Gheorghe", "judet": "Covasna", "lat": 45.85, "lon": 25.78, "reg": "transilvania", "tmin": -18, "tmax": 32, "inghet": 1.05, "t": [-3.1, -1.2, 2.8, 9.1, 14.6, 19.1, 22.1, 21.6, 17.6, 11.7, 5.3, 0.3], "w": [2.2, 2.2, 2.2, 2.0, 1.8, 1.7, 1.7, 1.6, 1.8, 1.9, 2.1, 2.2], "pv": [1.38, 2.02, 2.94, 3.77, 4.51, 4.88, 5.06, 4.69, 3.77, 2.67, 1.56, 1.1]}, {"name": "Miercurea Ciuc", "judet": "Harghita", "lat": 46.36, "lon": 25.8, "reg": "transilvania", "tmin": -24, "tmax": 30, "inghet": 1.1, "t": [-3.1, -1.2, 2.8, 9.1, 14.6, 19.1, 22.1, 21.6, 17.6, 11.7, 5.3, 0.3], "w": [2.2, 2.2, 2.2, 2.0, 1.8, 1.7, 1.7, 1.6, 1.8, 1.9, 2.1, 2.2], "pv": [1.38, 2.02, 2.94, 3.77, 4.51, 4.88, 5.06, 4.69, 3.77, 2.67, 1.56, 1.1]}, {"name": "Târgu Mureș", "judet": "Mureș", "lat": 46.54, "lon": 24.57, "reg": "transilvania", "tmin": -18, "tmax": 35, "inghet": 0.95, "t": [-3.1, -1.2, 2.8, 9.1, 14.6, 19.1, 22.1, 21.6, 17.6, 11.7, 5.3, 0.3], "w": [2.2, 2.2, 2.2, 2.0, 1.8, 1.7, 1.7, 1.6, 1.8, 1.9, 2.1, 2.2], "pv": [1.38, 2.02, 2.94, 3.77, 4.51, 4.88, 5.06, 4.69, 3.77, 2.67, 1.56, 1.1]}, {"name": "Suceava", "judet": "Suceava", "lat": 47.65, "lon": 26.25, "reg": "moldova", "tmin": -21, "tmax": 34, "inghet": 1.1, "t": [-3.1, -1.2, 2.8, 9.1, 14.6, 19.1, 22.1, 21.6, 17.6, 11.7, 5.3, 0.3], "w": [4.0, 4.0, 3.8, 3.5, 3.1, 3.0, 3.0, 2.9, 3.1, 3.4, 3.7, 3.9], "pv": [1.35, 1.98, 2.88, 3.69, 4.41, 4.77, 4.95, 4.59, 3.69, 2.61, 1.53, 1.08]}, {"name": "Botoșani", "judet": "Botoșani", "lat": 47.75, "lon": 26.67, "reg": "moldova", "tmin": -21, "tmax": 35, "inghet": 1.1, "t": [-3.1, -1.2, 2.8, 9.1, 14.6, 19.1, 22.1, 21.6, 17.6, 11.7, 5.3, 0.3], "w": [4.0, 4.0, 3.8, 3.5, 3.1, 3.0, 3.0, 2.9, 3.1, 3.4, 3.7, 3.9], "pv": [1.35, 1.98, 2.88, 3.69, 4.41, 4.77, 4.95, 4.59, 3.69, 2.61, 1.53, 1.08]}, {"name": "Iași", "judet": "Iași", "lat": 47.16, "lon": 27.59, "reg": "moldova", "tmin": -18, "tmax": 36, "inghet": 1.05, "t": [-3.1, -1.2, 2.8, 9.1, 14.6, 19.1, 22.1, 21.6, 17.6, 11.7, 5.3, 0.3], "w": [4.0, 4.0, 3.8, 3.5, 3.1, 3.0, 3.0, 2.9, 3.1, 3.4, 3.7, 3.9], "pv": [1.35, 1.98, 2.88, 3.69, 4.41, 4.77, 4.95, 4.59, 3.69, 2.61, 1.53, 1.08]}, {"name": "Piatra Neamț", "judet": "Neamț", "lat": 46.93, "lon": 26.37, "reg": "moldova", "tmin": -18, "tmax": 34, "inghet": 1.05, "t": [-3.1, -1.2, 2.8, 9.1, 14.6, 19.1, 22.1, 21.6, 17.6, 11.7, 5.3, 0.3], "w": [4.0, 4.0, 3.8, 3.5, 3.1, 3.0, 3.0, 2.9, 3.1, 3.4, 3.7, 3.9], "pv": [1.35, 1.98, 2.88, 3.69, 4.41, 4.77, 4.95, 4.59, 3.69, 2.61, 1.53, 1.08]}, {"name": "Bacău", "judet": "Bacău", "lat": 46.57, "lon": 26.9, "reg": "moldova", "tmin": -18, "tmax": 36, "inghet": 1.0, "t": [-3.1, -1.2, 2.8, 9.1, 14.6, 19.1, 22.1, 21.6, 17.6, 11.7, 5.3, 0.3], "w": [4.0, 4.0, 3.8, 3.5, 3.1, 3.0, 3.0, 2.9, 3.1, 3.4, 3.7, 3.9], "pv": [1.35, 1.98, 2.88, 3.69, 4.41, 4.77, 4.95, 4.59, 3.69, 2.61, 1.53, 1.08]}, {"name": "Vaslui", "judet": "Vaslui", "lat": 46.64, "lon": 27.73, "reg": "moldova", "tmin": -18, "tmax": 36, "inghet": 1.05, "t": [-3.1, -1.2, 2.8, 9.1, 14.6, 19.1, 22.1, 21.6, 17.6, 11.7, 5.3, 0.3], "w": [4.0, 4.0, 3.8, 3.5, 3.1, 3.0, 3.0, 2.9, 3.1, 3.4, 3.7, 3.9], "pv": [1.35, 1.98, 2.88, 3.69, 4.41, 4.77, 4.95, 4.59, 3.69, 2.61, 1.53, 1.08]}, {"name": "Focșani", "judet": "Vrancea", "lat": 45.7, "lon": 27.18, "reg": "sud-est", "tmin": -15, "tmax": 36, "inghet": 0.9, "t": [-0.6, 0.7, 4.2, 9.7, 15.2, 19.8, 22.6, 22.2, 18.2, 12.9, 7.1, 2.2], "w": [4.2, 4.2, 4.1, 3.7, 3.3, 3.1, 3.1, 3.1, 3.3, 3.7, 3.9, 4.2], "pv": [1.58, 2.31, 3.36, 4.3, 5.15, 5.57, 5.78, 5.35, 4.3, 3.04, 1.78, 1.26]}, {"name": "Buftea", "judet": "Ilfov", "lat": 44.5, "lon": 26.05, "reg": "sud", "tmin": -15, "tmax": 37, "inghet": 0.85, "t": [-1.5, 0.0, 3.7, 9.5, 15.0, 19.6, 22.4, 22.0, 18.0, 12.4, 6.5, 1.5], "w": [3.2, 3.2, 3.1, 2.9, 2.5, 2.4, 2.4, 2.3, 2.5, 2.8, 3.0, 3.2], "pv": [1.54, 2.27, 3.3, 4.22, 5.05, 5.46, 5.67, 5.25, 4.22, 2.99, 1.75, 1.24]}];
+
+  const SCEN = {
+    CMD:{t:"Most unfavorable",
+      txt:"Office users want 25°C in winter and 20°C in summer during working hours.",
+      li:["Winter: Oct 1 – Mar 31","Summer: Apr 1 – Sep 30"]},
+    NOR:{t:"Normal",
+      txt:"Office users want 23°C in winter and 21°C in summer, same schedule.",
+      li:["Winter: Oct 15 – Mar 15","Summer: May 1 – Sep 15"]},
+    ECO:{t:"Economic",
+      txt:"Office users want 22°C both winter and summer, same schedule.",
+      li:["Seasons as Normal"]}
+  };
+  const EQT = {
+    HP:{t:"Pompe de căldură (singura variantă în pagina; caloriferele rămân doar în Excel/PPT)",
+      txt:"O pompă de căldură aer-aer la fiecare 3 containere duble, cu ventilație cu recuperare de căldură. Încălzește și răcește. Sanitarul și WC-ul TESA au câte un split mic."}
+  };
+  const VT = {
+    V1:["V1 · offices only","Three double office containers, TESA WC, storage and an extra container. The technical container holds inverters, batteries and panels."],
+    V2:["V2 · offices + accommodation (8 persoane)","Ground floor: 2 bedrooms and the canteen, with the 3 offices above. The shower/WC container has the TESA WC above, with evacuated tubes on the roof. The technical container is separate, covered with panels."],
+    V2E:["V2 extended","Every 4 people adds a bedroom, every 16 a canteen, every 8 a shower+WC container with its own hot water. One air-to-air heat pump serves 3 double containers."]
+  };
+
+  const state = {v:"V2", s:"CMD", e:"HP", z:"i", d:"zi", p:20, hi:11, si:8, zi:5, hv:11, sv:7, zv:5, loc:(LOCS.findIndex(l=>l.name==="Constanța")>=0?LOCS.findIndex(l=>l.name==="Constanța"):0), hub:6, tkw:3, cctv:1, cams:4, alpha:0.14, rows:2, spc:18, frontage:80, ev:1, extP:1.0, extH:10, extSelf:0, combo:0};
+  try{ const sv = JSON.parse(localStorage.getItem("santier-v6")||"null"); if(sv) Object.assign(state, sv); }catch(err){}
+  if(typeof state.loc !== "number" || !LOCS[state.loc]) state.loc = Math.max(0, LOCS.findIndex(l=>l.name==="Constanța"));  // default: Constanța
+  let prices = {};
+  try{ prices = JSON.parse(localStorage.getItem("santier-v6-prices")||"{}")||{}; }catch(err){}
+  const savePrices = () => { try{ localStorage.setItem("santier-v6-prices", JSON.stringify(prices)); }catch(err){} };
+
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = id => document.getElementById(id);
+  const nf = (x,d=0) => x.toLocaleString("ro-RO",{minimumFractionDigits:d,maximumFractionDigits:d});
+  const up = x => Math.ceil(x - 1e-9);
+
+  // ---------- model (port exact din foaia Principal: CLIMĂ + anexe A/C/D/E) ----------
+  function nightfrac(s, h, d0=7, d1=20){
+    const e = s + h;
+    let day = Math.max(0, Math.min(e, d1) - Math.max(s, d0));
+    if (e > 24) day += Math.max(0, Math.min(e-24, d1) - d0);
+    day = Math.min(day, h);
+    return h ? (h-day)/h : 0;
+  }
+
+
+  function makeClim(loc){
+    const t = loc.t, w = loc.w, pv = loc.pv;
+    return { tmed: t, tzi: t.map(x=>x+3), tno: t.map(x=>x-2.5), pv,
+             eol: w.map(v=>Math.min(state.tkw, 0.5*1.225*(12.6*(state.tkw/3))*1.91*Math.pow(v*Math.pow(state.hub/10, state.alpha),3)*0.3/1000)*24),
+             tap: t.map(x=>Math.max(6, Math.min(20, x))),
+             tub: pv.map(p=>0.29*p/Math.max(...pv)),
+             tmin: loc.tmin, tmax: loc.tmax, inghet: loc.inghet, name: loc.name, judet: loc.judet,
+             wavg: w.reduce((a,b)=>a+b,0)/12, pvavg: pv.reduce((a,b)=>a+b,0)/12 };
+  }
+  const climOf = () => makeClim(LOCS[state.loc]);
+  function pnom(t, clim){
+    const a = K.A[t];
+    const heat = a.kocc_hp*(K.TI.CMD - clim.tmin)/1000;
+    const cool = a.coolp*Math.max(0,(a.kocc_hp*(clim.tmax - K.TV.CMD) + K.N["16"]*a.roof*K.N["17"] + a.qint)/1000*K.N["18"]);
+    return up(Math.max(heat,cool)*(1+K.N["19"])*2)/2;
+  }
+  function dormPnom(clim){
+    const a = K.A['D'];
+    const heat = a.kocc_hp*(K.DORM_TI - clim.tmin)/1000;
+    const cool = a.coolp*Math.max(0,(a.kocc_hp*(clim.tmax - K.DORM_TV) + K.N["16"]*a.roof*K.N["17"] + a.qint)/1000*K.N["18"]);
+    return up(Math.max(heat,cool)*(1+K.N["19"])*2)/2;
+  }
+  const E502 = up(500*4.186*(K.I["13"]-6)/3600/K.I["18"]);
+
+  function annexC(t, scen, eq, prog, k, clim){
+    const a = K.A[t];
+    const tzi = clim.tzi, tno = clim.tno, tmed = clim.tmed;
+    const fiK = K.fi[scen][k], fvK = K.fv[scen][k];
+    const regim = a.regim;
+    const tocc0 = [tzi, tno, tmed][regim][k];
+    const toff0 = [tno, tzi, tmed][regim][k];
+    const kocc = eq==='HP' ? a.kocc_hp : a.kocc_cl;
+    const copd = eq==='HP' ? K.N["13"] : 1;
+    const coole = eq==='HP' ? a.coolp : a.coolc;
+    const eer = eq==='HP' ? K.N["15"] : K.N["34"];
+    const Ti = t==='D' ? K.DORM_TI : K.TI[scen];
+    const Tv = t==='D' ? K.DORM_TV : K.TV[scen];
+    if (t==='B' || t==='T'){
+      const hI=prog.hi, sI=prog.si, zI=prog.zi, hV=prog.hv, sV=prog.sv, zV=prog.zv;
+      const fnI = nightfrac(sI, hI), fnV = nightfrac(sV, hV);
+      const sho = 1 - fiK - fvK;
+      const WT = fiK*hI*zI/7 + fvK*hV*zV/7 + sho*(hI+hV)/2*(zI+zV)/14;
+      const toccI = tzi[k]*(1-fnI) + tno[k]*fnI;
+      const toccV = tzi[k]*(1-fnV) + tno[k]*fnV;
+      const heat = fiK*((zI/7)*(kocc*Math.max(0, Ti-toccI)*hI + a.kenv*Math.max(0, K.N["9"]-toff0)*(24-hI))
+                        + (1-zI/7)*a.kenv*Math.max(0, K.N["9"]-tmed[k])*24)/1000/copd;
+      const cool = fvK*(zV/7)*coole*Math.max(0,(kocc*(toccV-Tv) + K.N["16"]*a.roof*K.N["17"]*(1-fnV) + a.qint)/1000*K.N["18"])*hV/eer;
+      const fans = eq==='HP' ? a.fan*WT : 0;
+      const util = (t==='B' ? K.D["29"] : K.D["43"])*WT;
+      return heat + cool + fans + util;
+    }
+    const h = a.ore, fz = a.zile/7;
+    const heat = fiK*(fz*(kocc*Math.max(0, Ti-tocc0)*h + a.kenv*Math.max(0, K.N["9"]-toff0)*(24-h))
+                     + (1-fz)*a.kenv*Math.max(0, K.N["9"]-tmed[k])*24)/1000/copd;
+    const cool = fvK*fz*coole*Math.max(0,(kocc*(tocc0-Tv) + K.N["16"]*a.roof*K.N["17"]*a.fsun + a.qint)/1000*K.N["18"])*h/eer;
+    const fans = eq==='HP' ? a.fan*h*fz : 0;
+    const util = a.util*fz;
+    return heat + cool + fans + util;
+  }
+
+  function annexD(scen, eq, prog, k, clim){
+    const tap = clim.tap, tub = clim.tub;
+    const B0 = 3*annexC('B',scen,eq,prog,k,clim) + annexC('T',scen,eq,prog,k,clim);
+    const fiK = K.fi[scen][k], fvK = K.fv[scen][k];
+    const sho = 1 - fiK - fvK;
+    const Wk = fiK*prog.zi/7 + fvK*prog.zv/7 + sho*(prog.zi+prog.zv)/14;
+    const inst = (K.persTESA/K.moduleB)*K.I["12"]*4.186*(K.I["14"]-tap[k])/3600;
+    const B = B0 + (K.D["32"]*K.D["30"]*K.D["31"] + inst)*Wk + K.D["38"] + K.D["49"] + K.D["46"]*K.D["47"];
+    const S = annexC('S',scen,eq,prog,k,clim) + K.D["48"] + K.D["46"]*K.D["47"]
+            + Math.max(0,(K.persSan*K.I["10"]+K.I["11"])*4.186*(K.I["13"]-tap[k])/3600*(1+K.I["15"]) - K.I["7"]*tub[k])/K.I["19"];
+    return [B, S];
+  }
+
+
+  function model(v, s, e, pSlider, prog, clim, lay){
+    lay = lay || {hub:state.hub, alpha:state.alpha, rows:state.rows, spc:state.spc, frontage:state.frontage};
+    const pv = clim.pv, eol = clim.eol;
+    const p = v==="V1" ? 0 : v==="V2" ? K.persSan : pSlider;
+    const nMB = K.moduleB;
+    const nD = p ? up(p/K.persDorm) : 0, nS = p ? up(p/K.capMese) : 0, nSan = p ? up(p/K.persSan) : 0;
+    const ncdC = nD+nS;
+    const nteh = Math.max(1, nSan);
+    const roofD = 3*nMB + ncdC - Math.min(3*nMB, ncdC);
+    const roofTub = nSan;
+    const roofS = nMB - Math.min(nMB,nSan) + nteh + 2;
+    const kwp = roofD*K.D["15"] + roofTub*K.D["17"] + roofS*K.D["16"];
+    const npan = up(kwp*1000/K.D["14"]);
+    const panB = Math.min(npan, p===0 ? npan : up(3*nMB*K.D["15"]*1000/K.D["14"]));
+    const strB = up(panB/K.D["18"]), strC = up((npan-panB)/K.D["18"]);
+    const E427=pnom('B',clim), I427=pnom('T',clim), G427=pnom('M',clim), H427=pnom('S',clim), F427=dormPnom(clim);
+    const kit = K.D["33"]*K.D["30"] + K.D["36"]*K.D["34"] + 0.2 + K.D["42"];
+    let PkB, PkC;
+    if(e==="HP"){
+      PkB = (3*E427+I427)/K.N["14"] + K.I["21"] + K.D["32"]*K.D["30"] + K.D["39"] + 3*K.D["29"] + 3*K.A.B.fan + K.A.T.fan + K.D["46"] + 0.2;
+      PkC = p===0 ? 0 : (nD*F427 + nS*G427 + nSan*H427)/K.N["14"] + nSan*E502/K.N["14"]
+            + nS*(kit + K.A.M.fan) + nD*(K.D["40"] + K.A.D.fan) + nSan*(K.D["43"] + K.D["46"] + 0.3 + K.A.S.fan);
+    } else {
+      const E413=K.S.E413, I413=K.S.I413, F413=K.S.F413, G413=K.S.G413, H413=K.S.H413;
+      PkB = Math.max(3*E413+I413,0)*K.N["32"] + K.I["21"] + K.D["32"]*K.D["30"] + K.D["39"] + 3*K.D["29"] + K.D["46"] + 0.2;
+      PkC = p===0 ? 0 : (nD*F413 + nS*G413 + nSan*H413)*K.N["32"] + nSan*E502/K.N["14"]
+            + nS*(K.D["33"]*K.D["30"] + K.D["36"]*K.D["34"] + 0.2 + K.D["42"]) + nD*K.D["40"] + nSan*(K.D["43"] + K.D["46"] + 0.3);
+    }
+    const inv = nMB*Math.max(K.D["22"], up(PkB/K.D["21"]), up(strB/nMB/K.D["19"])) + (p===0 ? 0 : Math.max(K.D["22"], up(PkC/K.D["21"]), up(strC/K.D["19"])));
+    const cons = [], caz = [];
+    for(let k=0;k<12;k++){
+      const d = annexD(s, e, prog, k, clim);
+      const ev = (state.ev && k>=4 && k<=8) ? K.EV.evKwh : 0;
+      const c = nMB*d[0] + nD*annexC('D',s,e,prog,k,clim) + nS*annexC('M',s,e,prog,k,clim) + nSan*d[1] + 2*K.D["44"]*K.D["45"] + ev + state.extP*state.extH*(1-state.extSelf/100) + (state.cctv ? (state.cams*K.CCTV.wCam + K.CCTV.nvrW + K.CCTV.swW)*24/1000 : 0);
+      cons.push(c); caz.push(c - nMB*d[0] - 2*K.D["44"]*K.D["45"]);
+    }
+    let need = 0;
+    for(let k=0;k<12;k++) need = Math.max(need, Math.max(0, up((cons[k]-kwp*pv[k])/eol[k])));
+    const Treq = Math.max(need, inv);
+    const Tmx = lay.rows*Math.floor(lay.frontage/lay.spc);   // câte încap pe frontageul actual (info)
+    const Tin = Treq;                                      // off-grid: se instalează câte sunt necesare
+    const ground = Math.max(0, Treq - Math.min(Treq, state.combo));  // turbine la sol; restul pe masti de iluminat
+    const frontageNeed = Math.ceil(ground/lay.rows)*lay.spc;             // lățime frontage necesară (m)
+    const auto = true;                                     // regula: șantier verde = off-grid
+    const Bmax = Math.max(...Array.from({length:12},(_,k)=>annexD(s,e,prog,k,clim)[0]));
+    const bat = up((nMB*Bmax*K.D["25"] + Math.max(...caz)*K.D["26"])*K.D["27"]/K.D["23"]/K.D["24"])*K.D["24"];
+    const prodM = pv.map((p,k)=> kwp*p + Tin*eol[k]);
+    let an=0, prod=0, grid=0;
+    for(let k=0;k<12;k++){ an += K.days[k]*cons[k]; prod += K.days[k]*prodM[k]; grid += K.days[k]*Math.max(0,cons[k]-prodM[k]); }
+    return {p,nMB,nD,nS,nSan,ncdC,nteh,kwp,npan,nstr:strB+strC,inv,need,Treq,Tmx,frontageNeed,auto,Tin,bat,cons,prodM,an,prod,grid,pkB:PkB,pkC:PkC,
+            nPAA: e==="HP" ? nMB + up(ncdC/3) : 0,
+            nRad: e==="CL" ? nMB*(3*K.A.B.nrad+K.A.T.nrad) + nD*K.A.D.nrad + nS*K.A.M.nrad + nSan*K.A.S.nrad : 0,
+            nAC: e==="CL" ? 3*nMB : 0};
+  }
+  window.__model = model;
+  window.__LOCS = LOCS;
+  window.__makeClim = makeClim;
+  window.__state = state;
+  const progOf = () => ({hi:+state.hi, si:+state.si, zi:+state.zi, hv:+state.hv, sv:+state.sv, zv:+state.zv});
+
+  // optimizator: program minim pe sezon ca Treq <= Tmx (AUTONOM), dacă e posibil
+  function optimize(){
+    const prog = progOf();
+    const clim = climOf();
+    const Tmx0 = model(state.v, state.s, state.e, state.p, prog, clim).Treq;
+    const treqOf = pr => { const m = model(state.v, state.s, state.e, state.p, pr, clim); return Math.max(m.need, m.inv); };
+    function scan(fixed, varyW){
+      let best = null;
+      for(let h=1; h<=24; h++) for(const z of [1,2,3,4,5,6,7]){
+        const pr = {...fixed}; 
+        if(varyW){ pr.hi=h; pr.zi=z; } else { pr.hv=h; pr.zv=z; }
+        const tq = treqOf(pr);
+        const score = tq*1000 - h*z;   // off-grid: minimizează turbinele necesare, la egalitate program mai lung
+        if(!best || score < best.score) best = {score, h, z, tq, feas:true};
+      }
+      return best;
+    }
+    let w1 = scan({...prog, hv:prog.hv, zv:prog.zv}, true);
+    let s1 = scan({...prog, hi:w1.h, zi:w1.z}, false);
+    let w2 = scan({...prog, hv:s1.h, zv:s1.z}, true);
+    const cands = [ [w1, prog.hv, prog.zv], [w2, s1.h, s1.z], [w1, s1.h, s1.z] ];
+    cands.sort((a,b)=> (a[0].score + (a[0].feas?0:0)) - (b[0].score));
+    // alege cea mai bună pereche (iarnă, vară) fezabilă cu suma orelor săptămânale minimă
+    let bestPair = null;
+    for(const [w, hv, zv] of cands){
+      const pr = {...prog, hi:w.h, zi:w.z, hv, zv};
+      const tq = treqOf(pr);
+      const feas = tq <= Tmx0;
+      const score = feas ? w.h*w.z + hv*zv : 1e9 + tq;
+      if(!bestPair || score < bestPair.score) bestPair = {score, hi:w.h, zi:w.z, hv, zv, tq, feas};
+    }
+    return bestPair;
+  }
+  window.__optimize = optimize;
+
+  // ---------------- schema ----------------
+  const S = 20, GY = 330, CH = 2.6*S, DW = 5*S, SW = 2.5*S;
+  let out = [];
+  const add = s => out.push(s);
+  const spin = dur => reduce ? "" : `<animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="${dur}s" repeatCount="indefinite"/>`;
+
+  function container(x, y, w, cls, label, sub, windows){
+    add(`<rect class="cont ${cls}" x="${x}" y="${y}" width="${w}" height="${CH}" rx="1"/>`);
+    for(let rx=x+6; rx<x+w-3; rx+=6) add(`<line class="rib" x1="${rx}" y1="${y+3}" x2="${rx}" y2="${y+CH-3}"/>`);
+    if(windows){
+      add(`<rect class="win" x="${x+w-26}" y="${y+5}" width="18" height="10"/>`);
+      if(w>60) add(`<rect class="win" x="${x+w-48}" y="${y+5}" width="18" height="10"/>`);
+    }
+    add(`<rect class="door" x="${x+5}" y="${y+12}" width="12" height="${CH-14}"/>`);
+    add(`<text class="clabel" x="${x+w/2+(w>60?8:5)}" y="${y+CH-8}" text-anchor="middle">${label}</text>`);
+    if(sub) add(`<text class="clabel small" x="${x+w/2+(w>60?8:5)}" y="${y+CH-20}" text-anchor="middle">${sub}</text>`);
+  }
+  function radiators(x, y, w, n){
+    for(let i=0;i<n;i++){
+      const rx = x + 22 + i*16;
+      add(`<rect class="rad" x="${rx}" y="${y+CH-14}" width="11" height="9" rx="1"/>`);
+    }
+  }
+  function pvRoof(x, y, w){
+    const n = Math.max(1, Math.floor((w-4)/22)), pw = (w-4)/n;
+    for(let i=0;i<n;i++){
+      const px = x+2+i*pw;
+      add(`<polygon class="pvp" points="${px+1},${y-2} ${px+pw-1},${y-2} ${px+pw-4},${y-11} ${px+4},${y-11}"/>`);
+    }
+  }
+  function tubesRoof(x, y, w){
+    add(`<g class="tubes"><rect x="${x+3}" y="${y-16}" width="${w-6}" height="14"/>`);
+    for(let tx=x+6; tx<x+w-5; tx+=3.2) add(`<line x1="${tx}" y1="${y-15}" x2="${tx}" y2="${y-3}"/>`);
+    add(`</g>`);
+  }
+  function turbine(x, label, dur){
+    const top = GY-state.hub*S;
+    add(`<line class="mast" x1="${x}" y1="${GY}" x2="${x}" y2="${top}"/>`);
+    add(`<g transform="translate(${x},${top})"><g>`);
+    for(let a=0;a<3;a++) add(`<path class="blade" transform="rotate(${a*120})" d="M0,0 C6,-8 5,-30 0,-40 C-3,-30 -4,-8 0,0Z"/>`);
+    add(spin(dur)+`</g><circle class="hub" r="3.5"/></g>`);
+    if(label) add(`<text class="lbl-svg strong" x="${x+8}" y="${GY-6}">${label}</text>`);
+  }
+  function heatPump(x, label){
+    const y = GY-26;
+    add(`<rect class="hp" x="${x}" y="${y}" width="30" height="24" rx="2"/>`);
+    add(`<g transform="translate(${x+15},${y+12})"><circle class="fan" r="8"/><g><path class="fan" d="M0,-7 L0,7 M-7,0 L7,0"/>${spin(1.4)}</g></g>`);
+    if(label) add(`<text class="lbl-svg" x="${x+15}" y="${y-4}" text-anchor="middle">${label}</text>`);
+  }
+
+  function draw(m){
+    out = [];
+    const winter = state.z==="i", day = state.d==="zi", hp = state.e==="HP";
+    let x = 30;
+    const nT = Math.min(m.Tin, 4);
+    const turbX = [];
+    for(let i=0;i<nT;i++) turbX.push(x+30+i*90);
+    x += 30 + (nT-1)*90 + 60;
+
+    const techList = [];
+    if(m.nSan<=1) techList.push(SW); else { for(let i=0;i<Math.floor(m.nSan/2);i++) techList.push(DW); if(m.nSan%2) techList.push(SW); }
+    const techX0 = x;
+    const techItems = techList.map(w => { const it = {x,w}; x += w+6; return it; });
+    const techX1 = x-6;
+    const hpwX = x+4, nHpw = Math.min(m.nSan,3);
+    x += m.nSan>0 ? 14 + nHpw*34 : 20;
+
+    const sanX0 = x;
+    const sanItems = [];
+    if(m.nSan===0){ sanItems.push({k:"tesa0",x}); x += SW+30; }
+    else { for(let i=0;i<m.nSan;i++){ sanItems.push({k:i===0?"san1":"san",x}); x += SW+6; } x += 24; }
+
+    const doubles = [];
+    if(m.p===0) doubles.push({k:"birou",i:0},{k:"birou",i:1},{k:"birou",i:2});
+    else {
+      let d=m.nD, s=m.nS; const g=[];
+      if(d>0){g.push("dorm");d--;} if(s>0){g.push("sala");s--;} if(d>0){g.push("dorm");d--;}
+      while(g.length<3 && (d>0||s>0)){ if(d>0){g.push("dorm");d--;} else {g.push("sala");s--;} }
+      while(d>0||s>0){ if(s>0 && g.length%3===1){g.push("sala");s--;} else if(d>0){g.push("dorm");d--;} else {g.push("sala");s--;} }
+      g.forEach((k,i)=>doubles.push({k,i}));
+    }
+    const dblX = [];
+    doubles.forEach((dd,i)=>{
+      dblX.push(x); x += DW+6;
+      if((i%3)===2 || i===doubles.length-1){ x += hp ? ((m.p>0 && i<3) ? 82 : 46) : 18; }
+    });
+    const dblEnd = x;
+    const magX = x; x += SW+6; const adiX = x; x += SW+30;
+    const gridX = x; if(!m.auto) x += 70;
+    const W = Math.max(x, 700), H = GY+46;
+
+    add(`<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(${day?"--sky-day-1":"--sky-night-1"})"/><stop offset="1" style="stop-color:var(${day?"--sky-day-2":"--sky-night-2"})"/></linearGradient></defs>`);
+    add(`<rect x="0" y="0" width="${W}" height="${GY}" fill="url(#sky)"/>`);
+    if(day) add(`<circle cx="${W-90}" cy="${winter?92:46}" r="18" style="fill:var(--sun)"/>`);
+    else {
+      add(`<circle cx="${W-90}" cy="60" r="13" style="fill:var(--moon)"/><circle cx="${W-84}" cy="56" r="11" style="fill:var(--sky-night-1)"/>`);
+      for(let i=0;i<26;i++){ add(`<circle cx="${(i*137)%W}" cy="${(i*53)%170+10}" r="1" style="fill:var(--moon)" opacity=".7"/>`); }
+    }
+    add(`<rect x="0" y="${GY}" width="${W}" height="${H-GY}" style="fill:var(--ground)"/>`);
+    if(state.extP>0){
+      const nL = Math.max(2, Math.round(state.extP/0.5));
+      for(let i=0;i<nL;i++){
+        const lx = 60 + i*(W-120)/Math.max(1,nL-1);
+        const isCombo = i < state.combo;
+        const isSolar = !isCombo && (i < Math.round(nL*state.extSelf/100));
+        add(`<line class="lamp-post" x1="${lx}" y1="${GY}" x2="${lx}" y2="${GY-34}"/>`);
+        add(`<circle class="lamp${day?"":" on"}" cx="${lx}" cy="${GY-36}" r="5"/>`);
+        if(isSolar) add(`<polygon class="pvp" points="${lx-7},${GY-46} ${lx+7},${GY-46} ${lx+4},${GY-54} ${lx-4},${GY-54}"/>`);
+        if(isCombo){ add(`<line class="mast" x1="${lx}" y1="${GY-34}" x2="${lx}" y2="${GY-34-2*state.hub}"/>`);
+          add(`<g transform="translate(${lx},${GY-34-2*state.hub})"><path class="blade" d="M0,0 C3,-4 2,-12 0,-16 C-2,-12 -3,-4 0,0Z"/><path class="blade" transform="rotate(120)" d="M0,0 C3,-4 2,-12 0,-16 C-2,-12 -3,-4 0,0Z"/><path class="blade" transform="rotate(240)" d="M0,0 C3,-4 2,-12 0,-16 C-2,-12 -3,-4 0,0Z"/><circle class="hub" r="2"/></g>`); }
+      }
+      add(`<text class="lbl-svg" x="60" y="${GY-44}">iluminat exterior ${state.extP} kW × ${state.extH} h${state.extSelf?" · "+state.extSelf+"% autonom solar":""}${state.combo?" · "+state.combo+" masti cu turbine":""}</text>`);
+    }
+    add(`<rect x="0" y="${GY}" width="${W}" height="3" style="fill:var(--ground-2)"/>`);
+
+    const tPerInv = m.inv>0 ? Math.min(2, Math.ceil(m.Tin/m.inv)) : 0;
+    turbX.forEach((tx,i)=> turbine(tx, i===0 ? (m.Tin>1 ? `${m.Tin} turbines × ${state.tkw} kW (câte 1–${tPerInv} per inverter)` : `turbine ${state.tkw} kW`) : "", 3 + i*0.4));
+
+    const techTop = GY-CH;
+    techItems.forEach((it,i)=>{ container(it.x, techTop, it.w, "tech", "Tehnic", i===0?"tablouri+inv.:":"", false); pvRoof(it.x, techTop, it.w); });
+    for(let i=0;i<nHpw;i++) heatPump(hpwX+i*34, i===0 ? (m.nSan>3?`aer-apă ×${m.nSan}`:"aer-apă") : "");
+
+    let tubeRoof = null;
+    sanItems.forEach(it=>{
+      if(it.k==="tesa0"){
+        container(it.x, GY-CH, SW, "san", "WC TESA", "instant", false);
+        pvRoof(it.x, GY-CH, SW);
+        if(!hp) radiators(it.x, GY-CH, SW, 1);
+      } else if(it.k==="san1"){
+        container(it.x, GY-CH, SW, "san", "Dușuri", "3 duș · 2 WC", false);
+        container(it.x, GY-2*CH, SW, "san", "WC TESA", "", false);
+        tubesRoof(it.x, GY-2*CH, SW);
+        tubeRoof = {x:it.x+SW/2, y:GY-2*CH-16};
+        if(!hp){ radiators(it.x, GY-CH, SW, 1); radiators(it.x, GY-2*CH, SW, 1); }
+      } else {
+        container(it.x, GY-CH, SW, "san", "Dușuri", "3 duș · 2 WC", false);
+        tubesRoof(it.x, GY-CH, SW);
+        if(!hp) radiators(it.x, GY-CH, SW, 1);
+      }
+    });
+
+    const offNames = [["Sală ședințe","PM"],["Șef șantier","Topo"],["Subcontractori",""]];
+    let nDl=0, nSl=0;
+    doubles.forEach((dd,i)=>{
+      const dx = dblX[i];
+      if(dd.k==="birou"){
+        container(dx, GY-CH, DW, "office", offNames[dd.i][0], offNames[dd.i][1], true);
+        pvRoof(dx, GY-CH, DW);
+        if(!hp){ radiators(dx, GY-CH, DW, 2); add(`<rect class="ac" x="${dx+DW-30}" y="${GY-CH-0}" width="22" height="9" rx="2"/>`); }
+      } else {
+        const lbl = dd.k==="dorm" ? `Dormitor ${++nDl}` : `Sală de mese${m.nS>1?" "+(++nSl):""}`;
+        container(dx, GY-CH, DW, "", lbl, dd.k==="dorm"?"4 pers.":"16 locuri", true);
+        if(!hp) radiators(dx, GY-CH, DW, 2);
+        if(i<3){
+          container(dx, GY-2*CH, DW, "office", offNames[i][0], offNames[i][1], true);
+          pvRoof(dx, GY-2*CH, DW);
+          if(!hp){ radiators(dx, GY-2*CH, DW, 2); add(`<rect class="ac" x="${dx+DW-30}" y="${GY-2*CH}" width="22" height="9" rx="2"/>`); }
+        } else pvRoof(dx, GY-CH, DW);
+      }
+    });
+    if(hp){
+      const groups = Math.ceil(doubles.length/3), mode = winter ? "h" : "c";
+      for(let g=0; g<groups; g++){
+        const last = Math.min(doubles.length-1, g*3+2), gx = dblX[last] + DW + 8;
+        const two = (m.p>0 && g===0);
+        heatPump(gx, two ? "aer-aer ×2" : "aer-aer");
+        if(two) heatPump(gx+34, "");
+        add(`<path class="flow air-${mode}" d="M${gx},${GY-6} L${dblX[g*3]+10},${GY-6}"/>`);
+        if(two) add(`<path class="flow air-${mode}" d="M${gx+4},${GY-CH-6} L${dblX[0]+10},${GY-CH-6}"/>`);
+      }
+    }
+    container(magX, GY-CH, SW, "", "Magazie", "", false); pvRoof(magX, GY-CH, SW);
+    container(adiX, GY-CH, SW, "", "Adițional", "", false); pvRoof(adiX, GY-CH, SW);
+
+    const cy1 = GY+16, cy2 = GY+28;
+    if(turbX.length) add(`<path class="flow el" d="M${turbX[0]},${GY} L${turbX[0]},${cy1} L${techX0+4},${cy1} L${techX0+4},${GY}"/>`);
+    add(`<path class="flow el ${day?"":"off"}" d="M${adiX+SW/2},${GY} L${adiX+SW/2},${cy1} L${techX1-4},${cy1} L${techX1-4},${GY}"/>`);
+    add(`<path class="flow el" style="stroke-dasharray:2 6" d="M${techX1-14},${GY} L${techX1-14},${cy2} L${dblEnd-10},${cy2}"/>`);
+    add(`<text class="lbl-svg" x="${techX1+6}" y="${cy1-3}">producție → tablouri/invertoare + acumulatori</text>`);
+    add(`<text class="lbl-svg" x="${techX1+6}" y="${cy2+10}">→ consumatori${day?"":" (din acumulatori)"}</text>`);
+    if(!m.auto){
+      const px = gridX+30;
+      add(`<path class="pylon" d="M${px-14},${GY} L${px},${GY-120} L${px+14},${GY} M${px-18},${GY-96} L${px+18},${GY-96} M${px-12},${GY-70} L${px+12},${GY-70}"/>`);
+      add(`<text class="lbl-svg bad" x="${px}" y="${GY-128}" text-anchor="middle">rețea</text>`);
+      add(`<path class="flow grid" d="M${px},${GY} L${px},${cy2+6} L${techX1-8},${cy2+6} L${techX1-8},${GY}"/>`);
+    }
+    if(tubeRoof){
+      const hx = tubeRoof.x, hy = tubeRoof.y;
+      add(`<path class="flow hot ${day?"":"off"}" d="M${hx-14},${hy+2} L${hx-30},${hy+2} L${hx-30},${GY-44} L${techX1-10},${GY-44}"/>`);
+      add(`<path class="flow hot" d="M${techX1-10},${GY-36} L${sanX0+6},${GY-36}"/>`);
+      add(`<text class="lbl-svg" x="${hx-10}" y="${hy-6}" text-anchor="middle">tuburi vidate</text>`);
+    }
+
+    const tl = `${m.inv} inverters on ${Math.ceil(m.inv/2)} tablouri · ${m.Tin} turbine · ${nf(m.bat,0)} kWh`;
+    add(`<rect x="${techX0-3}" y="${techTop-30}" width="${tl.length*5.6+6}" height="13" rx="2" style="fill:var(--surface)" opacity=".92"/>`);
+    add(`<text class="lbl-svg strong" x="${techX0}" y="${techTop-20}">${tl}</text>`);
+    const svg = $("svg");
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    svg.setAttribute("class", day ? "day" : "night");
+    svg.style.minWidth = Math.round(W*0.85) + "px";
+    svg.innerHTML = out.join("");
+  }
+
+  function chart(m){
+    const W = 640, H = 220, L = 46, R = 12, T = 12, B = 28;
+    const mx = Math.max(...m.cons, ...m.prodM) * 1.1;
+    const step = mx > 400 ? 100 : mx > 200 ? 50 : mx > 100 ? 25 : 10;
+    const top = Math.ceil(mx/step)*step;
+    const y = v => T + (H-T-B)*(1 - v/top);
+    const bw = (W-L-R)/12;
+    const lun = ["Ian","Feb","Mar","Apr","Mai","Iun","Iul","Aug","Sep","Oct","Noi","Dec"];
+    let s = "";
+    for(let v=0; v<=top; v+=step){
+      s += `<line class="ch-grid" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text class="ch-axis" x="${L-6}" y="${y(v)+3}" text-anchor="end">${nf(v)}</text>`;
+    }
+    m.cons.forEach((c,k)=>{
+      const x = L + k*bw + bw*0.18, w = bw*0.64;
+      const def = c > m.prodM[k] + 1e-6;
+      s += `<rect class="ch-bar${def?" deficit":""}" x="${x}" y="${y(c)}" width="${w}" height="${y(0)-y(c)}"/>`;
+      s += `<text class="ch-axis" x="${L+k*bw+bw/2}" y="${H-10}" text-anchor="middle">${lun[k]}</text>`;
+    });
+    s += `<polyline class="ch-line" points="${m.prodM.map((p,k)=>`${L+k*bw+bw/2},${y(p)}`).join(" ")}"/>`;
+    m.prodM.forEach((p,k)=>{ s += `<circle class="ch-dot" cx="${L+k*bw+bw/2}" cy="${y(p)}" r="3"/>`; });
+    const c = $("chart"); c.setAttribute("viewBox", `0 0 ${W} ${H}`); c.innerHTML = s;
+  }
+
+  function eqRows(m){
+    const rows = [
+      ["Double containers", 3 + m.ncdC, "pcs", "contD"],
+      ["Single containers", 1 + m.nSan + m.nteh + 2, "pcs", "contS"],
+    ];
+    if(m.p>0) rows.push(["Bedrooms · canteens", null, m.nD+" · "+m.nS, "pcs", null],
+                         ["Showers · WC", null, m.nSan*K.I["23"]+" · "+m.nSan*K.I["24"], "pcs", null]);
+    if(state.e==="HP") rows.push(["Air-to-air heat pumps (per group of 3)", m.nPAA, m.nPAA+" pcs", "hpAA"],
+                                  ["Heat recovery units (ventilation with recovery)", 3*m.nMB + m.ncdC + m.nSan + m.nMB, (3*m.nMB + m.ncdC + m.nSan + m.nMB)+" pcs — birouri/dormitoare/săli + sanitar/WC", "recup"]);
+    if(m.nSan) rows.push(["Air-to-water heat pumps (sanitary)", m.nSan, "pcs", "hpAp"],
+                         ["Evacuated tubes · buffer", null, m.nSan*K.I["7"]+" · "+nf(500*m.nSan)+" L", null]);
+    rows.push(["PV panels", m.npan, m.npan+" pcs · "+nf(m.kwp,1)+" kWp", "panou"],
+              ["PV strings", m.nstr, m.nstr+" pcs · max "+K.D["19"]+" per inverter", "string"],
+              ["Wind turbines "+state.tkw+" kW (<5 kW, start at ~2.5–3 m/s)", m.Tin, m.Tin+` pcs · mast ${state.hub} m${state.combo?` · din care ${Math.min(m.Tin,state.combo)} pe masti de iluminat`:""} · ${state.rows} rows × ${state.spc} m${m.Treq>m.Tmx?` · frontage sol ≈ ${m.frontageNeed} m`:""}`, "turb"],
+              ["8 kW hybrid inverters", m.inv, m.inv+" pcs", "inv"],
+              ["Inverter panels (1–2 inverters/panel, whole inverter on one panel)", Math.ceil(m.inv/2), Math.ceil(m.inv/2)+" pcs · "+m.inv+" invertoare", "tablou"],
+              ["Main distribution panel (all inverters, ATS + metering)", 1, "1 pcs / șantier", "tabGen"],
+              ["Sub-panels per group (split by power)", m.nMB + Math.ceil(m.ncdC/3) + m.nSan, (m.nMB + Math.ceil(m.ncdC/3) + m.nSan)+" pcs — birouri "+m.nMB+" + grupuri cazare "+Math.ceil(m.ncdC/3)+" + sanitare "+m.nSan, "subTab"],
+              ["Perimeter outdoor lighting (LED poles)", null, state.extP+" kW × "+state.extH+" h/day = "+(state.extP*state.extH).toFixed(1)+" kWh/zi (tot anul)", "extl"],
+              ...(state.cctv ? [["CCTV system (NVR + "+state.cams+" cameras PoE/radio)", 1, ((state.cams*K.CCTV.wCam+K.CCTV.nvrW+K.CCTV.swW)*24/1000).toFixed(1)+" kWh/zi (24/24) · circuit dedicat în tabloul tehnic, PoE cablu max 90 m/segment sau radio", "cctv"]] : []),
+              ["BMS/EMS in main panel (monitoring + load shedding by priority)", 1, "1 pcs — délestare: 1) iluminat+monitorizare ~1 kW (ține), 2) apă caldă, 3) EV, 4) heating/răcire", "bms"],
+              ...(state.ev ? [["Stație încărcare EV dublă (modul propriu, activă vara mai–sep)", 1, K.EV.evKw+" kW · "+K.EV.evKwh+" kWh/zi", "ev"]] : []),
+              ["Batteries LiFePO₄", null, nf(m.bat,0)+" kWh", "bat"]);
+    return rows;
+  }
+
+  function renderEq(m){
+    const rows = eqRows(m);
+    let total = 0;
+    $("eqBody").innerHTML = rows.map(r=>{
+      const [label, qty, txt, key] = r;
+      const price = key && prices[key] || 0;
+      const line = (qty||0)*price;
+      total += line;
+      const priceTd = key ? `<td><input type="number" min="0" step="100" class="price" data-k="${key}" value="${price}"></td><td class="rowtot">${nf(line,0)}</td>` : `<td></td><td></td>`;
+      return `<tr><td>${label}</td><td>${txt ?? qty}</td>${priceTd}</tr>`;
+    }).join("") + `<tr class="total"><td>EQUIPMENT COST</td><td></td><td></td><td id="eqTotal">${nf(total,0)} lei</td></tr>`;
+    document.querySelectorAll("#eqBody .price").forEach(inp=>{
+      inp.addEventListener("input", ()=>{ prices[inp.dataset.k] = +inp.value || 0; savePrices(); renderEq(m); });
+    });
+  }
+
+
+  function renderSummary(m, clim){
+    const el = $("sumBoss"); if(!el) return;
+    const L = LOCS[state.loc];
+    const prog = progOf();
+    const lines = [];
+    lines.push(`<b>${L.name}</b> (county ${L.judet}) · varianta ${state.v}${state.v==="V2E" ? " · "+m.p+" persoane" : ""} · scenariul ${SCEN[state.s].t}`);
+    lines.push(`Program: iarna ${prog.hi} h from ${String(prog.si).padStart(2,"0")}:00 (${prog.zi} zile/sapt), vara ${prog.hv} h from ${String(prog.sv).padStart(2,"0")}:00 (${prog.zv} zile/sapt). In afara programului 15C.`);
+    lines.push(`Consumption: <b>${nf(m.an,0)} kWh/yr</b> · Productie (PV ${nf(m.kwp,1)} kWp + ${m.Tin} turbine x ${state.tkw} kW pe stalp ${state.hub} m mast): <b>${nf(m.prod,0)} kWh/yr</b> → <b>off-grid, 0 kWh din retea</b>`);
+    lines.push(`Turbines: <b>${m.Tin} pcs</b>` + (m.Treq > m.Tmx ? ` — frontage necesar ≈ ${m.frontageNeed} m (on ${state.frontage} m actual incap ${m.Tmx})` : ` — pe frontageul actual (${state.frontage} m) incap ${m.Tmx}, e suficient`));
+    lines.push(`Battery ${nf(m.bat,0)} kWh · ${m.inv} inverters on ${Math.ceil(m.inv/2)} panels + 1 main panel (BMS) · ${m.npan} panels · ${m.nstr} strings`);
+    if(state.cctv) lines.push(`CCTV: ${state.cams} cameras + NVR, ${((state.cams*K.CCTV.wCam+K.CCTV.nvrW+K.CCTV.swW)*24/1000).toFixed(1)} kWh/zi (24/24), circuit dedicat in tabloul tehnic.`);
+    if(state.ev) lines.push(`Statie EV dubla: ${K.EV.evKw} kW, ${K.EV.evKwh} kWh/day in summer (May–Sep).`);
+    lines.push(`Inghet ${L.inghet.toFixed(2)} m → foundation ≥ ${(L.inghet+0.15).toFixed(2)} m · Equipment cost: see the table below.`);
+    el.innerHTML = lines.join("<br>");
+  }
+function panel(m, clim){
+    const other = model(state.v, state.s, state.e==="HP"?"CL":"HP", state.p, progOf(), clim);
+    const vt = VT[state.v];
+    $("vTitle").textContent = state.v==="V2E" ? `${vt[0]} · ${m.p} persoane cazate` : vt[0];
+    $("vText").textContent = vt[1];
+    const sc = SCEN[state.s];
+    $("sTitle").textContent = sc.t; $("sText").textContent = sc.txt;
+    const prog = progOf();
+    const li = sc.li.concat([
+      `Office program WINTER: ${prog.hi} h from ${String(prog.si).padStart(2,"0")}:00, ${prog.zi} days/week`,
+      `Office program SUMMER: ${prog.hv} h from ${String(prog.sv).padStart(2,"0")}:00, ${prog.zv} days/week`,
+      `Outside the program: 15°C everywhere (anti-freeze)`,
+      `Bedrooms: 15°C during the program, ${K.DORM_TI}°C winter / ${K.DORM_TV}°C summer after program (night)`]);
+    $("sList").innerHTML = li.map(t=>`<li>${t}</li>`).join("");
+    $("eTitle").textContent = EQT[state.e].t; $("eText").textContent = EQT[state.e].txt;
+
+    $("verdict").innerHTML = `<span class="pill ok">AUTONOMOUS (off-grid)</span>`;
+    $("regNote").textContent = `Off-grid: every month, panels + ${m.Tin} turbines (mast ${state.hub} m) produce at least as much as consumed; batteries cover night and calm. `
+      + (m.Treq > m.Tmx
+        ? `On the current frontageage (${state.frontage} m, ${state.rows} rows × ${state.spc} m) fit ${m.Tmx} turbines → extend frontageage to ≈ ${m.frontageNeed} m.`
+        : `On the current frontageage (${state.frontage} m) fit ${m.Tmx} turbines — enough.`)
+      + (state.ev ? ` Modul stație EV dublă: ${K.EV.evKw} kW, ${K.EV.evKwh} kWh/zi în mai–septembrie (inclus în consum).` : "");
+    // producția e identică în toate scenariile (vremea nu se schimbă) — cerință din docx
+    const prods = ["CMD","NOR","ECO"].map(s=>model(state.v, s, state.e, state.p, prog, clim).prod);
+    const sameProd = Math.max(...prods) - Math.min(...prods) < 1e-6;
+    $("prodNote").textContent = sameProd
+      ? `Annual production: ${nf(m.prod,0)} kWh/yr — identical in all 3 scenarios (weather and production do not depend on the scenario).`
+      : "";
+    $("kCons").innerHTML = nf(m.an,0)+"<small>kWh/yr</small>";
+    $("kProd").innerHTML = nf(m.prod,0)+"<small>kWh/yr</small>";
+    $("kTurb").innerHTML = nf(m.Tin,0)+"<small>pcs</small>";
+    $("kBat").innerHTML = nf(m.bat,0)+"<small>kWh</small>";
+    const L = LOCS[state.loc];
+    $("locInfo").textContent = `${L.name}, county ${L.judet} — calc t ${L.tmin}/${L.tmax}°C · avg wind ${nf(clim.wavg,1)} m/s · avg PV ${nf(clim.pvavg,1)} kWh/kWp/zi · frost ${L.inghet.toFixed(2)} m (STAS 6054/77) → foundation ≥ ${(L.inghet+0.15).toFixed(2)} m`;
+    renderEq(m); renderSummary(m, clim);
+    $("lgGrid").hidden = m.auto;
+    $("caption").textContent = (state.v==="V1"
+      ? "TESA WC with electric instant and roof panels; separate technical container with panels."
+      : "Offices sit above the bedrooms and canteen, no panels under them; the TESA WC sits above the showers, with evacuated tubes on the roof.")
+      + (state.e==="HP" ? " Air-to-air heat pumps sit behind each group of 3 double containers." : " ")
+      + ` Each panel = 1 hybrid inverter, with 1–2 turbines and its own PV strings.`;
+  }
+
+  function render(){
+    const clim = climOf();
+    const m = model(state.v, state.s, state.e, state.p, progOf(), clim);
+    draw(m); chart(m); panel(m, clim); drawMap(); drawBloc(m); drawMono(m); drawInst(m); renderMono2(m);
+    const sets = [["#segVar button","v"],["#segScen button","s"],["#segEq button","e"],["#segSez button","z"],["#segDay button","d"]];
+    sets.forEach(([sel,key])=>document.querySelectorAll(sel).forEach(b=>b.setAttribute("aria-pressed", String(b.dataset[key]===state[key]))));
+    $("ctlPers").hidden = state.v!=="V2E";
+    $("pers").value = state.p; $("persOut").textContent = state.p;
+    for(const [id,key] of [["pHi","hi"],["pSi","si"],["pDay","zi"],["pHv","hv"],["pSv","sv"],["pZv","zv"],["hubSel","hub"],["rowSel","rows"],["spcSel","spc"],["frontageSel","frontage"],["extPSel","extP"],["extHSel","extH"],["selfSel","extSelf"],["comboSel","combo"],["tkwSel","tkw"],["camsSel","cams"]]){
+      const el = $(id); if(el) el.value = String(state[key]);
+    }
+    const mi = $("metaInfo"); const L0 = LOCS[state.loc];
+    if(mi) mi.innerHTML = `${L0.name} · calcul ${L0.tmin}/${L0.tmax}°C<br>${LOCS.length} localități · mast ${state.hub} m · ${state.rows} rows × ${state.spc} m · frontage ${state.frontage} m`;
+    const ec = $("evChk"); if(ec) ec.checked = !!state.ev;
+    const cc = $("cctvChk"); if(cc) cc.checked = !!state.cctv;
+    $("optOut").textContent = "";
+    $("btnApply").hidden = true;
+    try{ localStorage.setItem("santier-v6", JSON.stringify(state)); }catch(err){}
+  }
+  const bind = (sel,key) => document.querySelectorAll(sel).forEach(b=>b.addEventListener("click",()=>{state[key]=b.dataset[key];render();}));
+  bind("#segVar button","v"); bind("#segScen button","s"); // echipare CL scoasă din HTML (rămâne în Excel/PPT) bind("#segSez button","z"); bind("#segDay button","d");
+  $("pers").addEventListener("input",ev=>{state.p=+ev.target.value;render();});
+
+  // umple select-urile de program
+  function fillSelect(id, from, to, fmt){
+    const el = $(id);
+    for(let v=from; v<=to; v++){ const o = document.createElement("option"); o.value = String(v); o.textContent = fmt(v); el.appendChild(o); }
+  }
+  fillSelect("pHi",1,24,v=>v+" h"); fillSelect("pHv",1,24,v=>v+" h");
+  fillSelect("pSi",0,23,v=>String(v).padStart(2,"0")+":00"); fillSelect("pSv",0,23,v=>String(v).padStart(2,"0")+":00");
+  fillSelect("pDay",1,7,v=>v+(v===1?" zi":" zile")); fillSelect("pZv",1,7,v=>v+(v===1?" zi":" zile"));
+  for(const [id,key] of [["pHi","hi"],["pSi","si"],["pDay","zi"],["pHv","hv"],["pSv","sv"],["pZv","zv"]]){
+    $(id).addEventListener("change",ev=>{ state[key]=+ev.target.value; render(); });
+  }
+
+  $("btnOpt").addEventListener("click", ()=>{
+    const best = optimize();
+    if(!best) return;
+    const m = model(state.v, state.s, state.e, state.p, {...progOf(), hi:best.hi, zi:best.zi, hv:best.hv, zv:best.zv}, climOf());
+    window.__opt = best;
+    $("optOut").textContent = `Optimal program (off-grid, fewest turbines): WINTER ${best.hi} h × ${best.zi} days, SUMMER ${best.hv} h × ${best.zv} days → ${m.Tin} turbines (mast ${state.hub} m), frontage necesar ≈ ${m.frontageNeed} m, consumption ${nf(m.an,0)} kWh/yr. Regula: fără rețea.`;
+    $("btnApply").hidden = false;
+  });
+  $("btnApply").addEventListener("click", ()=>{
+    if(!window.__opt) return;
+    Object.assign(state, {hi:window.__opt.hi, zi:window.__opt.zi, hv:window.__opt.hv, zv:window.__opt.zv});
+    render();
+  });
+
+
+
+  // ---------------- schema bloc + monofilara ----------------
+  function box(x, y, w, h, title, sub, cls){
+    return `<rect class="bx ${cls||""}" x="${x}" y="${y}" width="${w}" height="${h}" rx="6"/>`+
+           `<text class="bx-t" x="${x+w/2}" y="${y+h/2-4}" text-anchor="middle">${title}</text>`+
+           (sub?`<text class="bx-s" x="${x+w/2}" y="${y+h/2+12}" text-anchor="middle">${sub}</text>`:"");
+  }
+  function arrow(x1,y1,x2,y2, cls){
+    return `<line class="ln ${cls||""}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#arr)"/>`;
+  }
+  function drawBloc(m){
+    const el = $("bloc"); if(!el) return;
+    const nTab = Math.ceil(m.inv/2), nSub = m.nMB + Math.ceil(m.ncdC/3) + m.nSan;
+    let s = `<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--line)"/></marker></defs>`;
+    s += box(10, 20, 160, 46, "String-uri PV ×"+m.nstr, nf(m.kwp,1)+" kWp");
+    s += box(10, 86, 160, 46, "Turbine ×"+m.Tin, "3 kW · mast "+state.hub+" m");
+    s += box(10, 152, 160, 46, "Batteries", nf(m.bat,0)+" kWh · 48 V DC");
+    s += `<line class="ln dc" x1="170" y1="43" x2="215" y2="43"/><line class="ln dc" x1="170" y1="109" x2="215" y2="109"/><line class="ln dc" x1="170" y1="175" x2="215" y2="175"/>`;
+    s += `<line class="ln dc" x1="215" y1="43" x2="215" y2="175"/>`;
+    s += box(215, 86, 170, 46, "Invertoare hibride ×"+m.inv, "8 kW · 48 V · paralel");
+    s += arrow(215, 109, 215, 109, "dc");
+    s += arrow(385, 109, 440, 109, "");
+    s += box(440, 86, 150, 46, "Panelri invertor ×"+nTab, "max 2 inv/tablou, întreg");
+    s += arrow(590, 109, 640, 109, "");
+    s += box(640, 76, 250, 66, "TABLOU GENERAL", "ATS · contorizare · bare AC/DC", "tg");
+    s += box(640, 20, 250, 40, "BMS / EMS", "monitorizare + délestare pe priorități", "bms");
+    s += `<line class="ln bms" x1="765" y1="60" x2="300" y2="86"/><line class="ln bms" x1="765" y1="60" x2="90" y2="175"/>`;
+    s += arrow(765, 142, 765, 165, "");
+    s += box(640, 165, 250, 46, "Sub-tablouri pe grupuri ×"+nSub, "birouri "+m.nMB+" + cazare "+Math.ceil(m.ncdC/3)+" + sanitare "+m.nSan);
+    s += arrow(515, 165, 640, 188, "");
+    const loads = [`Birouri ×${3*m.nMB} — ${nf(m.pkB,1)} kW vârf`, `Cazare — ${nf(m.pkC,1)} kW vârf`, `Sanitar+tehnic ×${m.nSan}`, state.ev?"Stație EV dublă "+K.EV.evKw+" kW (vară)":"", "Iluminat + monitorizare ~1 kW (ține)"].filter(Boolean);
+    s += box(215, 165, 300, 20+loads.length*16, "Consumatori pe module", loads.join("  ·  "));
+    s += `<line class="ln bms" x1="365" y1="165" x2="765" y2="60"/>`;
+    el.setAttribute("viewBox", "0 0 900 230");
+    el.innerHTML = s;
+  }
+  function drawMono(m){
+    const el = $("mono"); if(!el) return;
+    const nTab = Math.ceil(m.inv/2);
+    let s = `<defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--line)"/></marker></defs>`;
+    const X = 130;
+    s += `<line class="bus dc" x1="${X}" y1="30" x2="${X}" y2="170"/>`;
+    s += `<line class="bus" x1="${X}" y1="200" x2="${X}" y2="430"/>`;
+    s += `<text class="bx-s" x="${X+10}" y="105">bară DC 48 V</text>`;
+    s += `<text class="bx-s" x="${X+10}" y="250">bară AC 230 V</text>`;
+    const tap = (y, label, sub, cls) => {
+      s += `<line class="ln" x1="${X}" y1="${y}" x2="${X+34}" y2="${y}"/>`;
+      s += `<rect class="brk" x="${X+34}" y="${y-7}" width="14" height="14"/>`;
+      s += box(X+64, y-22, 300, 44, label, sub, cls);
+    };
+    tap(45,  "String-uri PV ×"+m.nstr, nf(m.kwp,1)+" kWp → MPPT în invertor", "src");
+    tap(95,  "Wind turbines ×"+m.Tin, "3 kW · controller MPPT 48 V", "src");
+    tap(145, "Batteries LiFePO4 "+nf(m.bat,0)+" kWh", "BMS pe fiecare modul baterie", "src");
+    tap(215, "Invertoare ×"+m.inv+" → tablouri invertor ×"+nTab, "8 kW · max 2/tablou, întreg pe un tablou", "inv");
+    tap(275, "TABLOU GENERAL", "ATS · contor · BMS/EMS (délestare pe priorități)", "tg");
+    tap(325, "Sub-tablou birouri ×"+m.nMB, nf(m.pkB,1)+" kW vârf", "sub");
+    tap(370, "Sub-tablou grup cazare ×"+Math.ceil(m.ncdC/3), nf(m.pkC,1)+" kW vârf", "sub");
+    tap(415, "Sub-tablou sanitar ×"+m.nSan, "tuburi vidate + puffer + pompă aer-apă", "sub");
+    if(state.ev) tap(460, "Stație EV dublă", K.EV.evKw+" kW · "+K.EV.evKwh+" kWh/zi · mai–sep", "ev");
+    el.setAttribute("viewBox", "0 0 900 500");
+    el.innerHTML = s;
+  }
+
+  // ---------------- schema funcțională instalații ----------------
+  function drawInst(m){
+    const el = $("inst"); if(!el) return;
+    const nRecup = 3*m.nMB + m.ncdC + m.nSan + m.nMB;
+    let s = `<defs><marker id="arr3" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--cold)"/></marker>` +
+            `<marker id="arr4" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--hot)"/></marker></defs>`;
+    s += `<text class="bx-t" x="10" y="16" text-anchor="start">VENTILAȚIE CU RECUPERARE — aer proaspăt încălzit/răcit (HP)</text>`;
+    s += `<text class="bx-t" x="10" y="196" text-anchor="start">APĂ CALDĂ — tuburi vidate + puffer + pompă aer-apă (rezervă) + recirculare</text>`;
+    s += box(10, 28, 120, 38, "Aer proaspăt", "30 m³/h/pers");
+    s += box(10, 92, 120, 38, "Aer viciat", "din încăperi");
+    s += box(180, 56, 150, 48, "Recuperator ×"+nRecup, "η=75% · 0.35 W/(m³/h)");
+    s += box(390, 28, 140, 38, "Distribuție aer", "către încăperi");
+    s += box(390, 92, 140, 38, "Evacuare aer", "către exterior");
+    s += box(590, 50, 210, 56, "Încăperi: birouri "+(3*m.nMB)+", dorm "+m.nD+", săli "+m.nS+", sanitar "+m.nSan, "uși 0.5–1 h⁻¹ + Q proaspăt");
+    s += `<line class="ln" style="stroke:var(--cold)" x1="130" y1="47" x2="180" y2="76" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="130" y1="111" x2="180" y2="92" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="330" y1="80" x2="390" y2="47" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="330" y1="84" x2="390" y2="111" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="530" y1="47" x2="590" y2="70" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln" style="stroke:var(--cold)" x1="590" y1="90" x2="530" y2="118" marker-end="url(#arr3)"/>`;
+    s += `<line class="ln bms" x1="255" y1="56" x2="700" y2="26"/><text class="bx-s" x="800" y="24" text-anchor="end">BMS reglează debitele</text>`;
+    s += box(10, 216, 120, 38, "Apă rece", "rețea/fântână · "+K.I["14"]+"°C instant");
+    s += box(10, 280, 120, 38, "Tuburi vidate ×"+(m.nSan*K.I["7"]), "pe acoperișul sanitarelor");
+    s += box(180, 252, 150, 46, "Puffer "+(500*m.nSan)+" L ×"+m.nSan, "55°C · serpentină solară");
+    s += box(390, 252, 160, 46, "Pompă aer-apă ×"+m.nSan, "rezervă la "+LOCS[state.loc].tmin+"°C");
+    s += box(610, 216, 140, 38, "Distribuție AC", "55°C → amestec");
+    s += box(610, 280, 140, 38, "Recirculare", "pompă + răcire retur");
+    s += box(610, 336, 190, 52, "Dușuri "+(m.nSan*K.I["23"])+" · WC "+(m.nSan*K.I["24"])+" · lavoare "+(m.nSan*K.I["25"]), "40 L/pers/zi + 30 L spălări + 5 L/pers/zi birou");
+    s += `<line class="ln" style="stroke:var(--hot)" x1="130" y1="235" x2="180" y2="270" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="130" y1="299" x2="180" y2="285" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="330" y1="275" x2="390" y2="275" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="550" y1="275" x2="610" y2="235" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="680" y1="254" x2="680" y2="280" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="610" y1="299" x2="560" y2="299" x2="550" y2="280" marker-end="url(#arr4)"/>`;
+    s += `<line class="ln" style="stroke:var(--hot)" x1="705" y1="254" x2="705" y2="336" marker-end="url(#arr4)"/>`;
+    el.setAttribute("viewBox", "0 0 810 400");
+    el.innerHTML = s;
+  }
+  // ---------------- scheme desfășurate (monofilare) + jurnal de cabluri, stil SDS ----------------
+  function circuitsFor(m){
+    // [eticheta, denumire, protectie, cablu, destinatie, faza, Pi kW]
+    const G = [];
+    const push = (tablou, rows) => G.push([tablou, rows]);
+    for(let i=0;i<m.nMB;i++) push("SDS-B"+(i+1)+" · Sub-tablou BIROURI "+(i+1), [
+      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x10","TG (ATS)","RST",0],
+      ["I1","Iluminat birou "+(i+1),"1P+N C10A 30mA AC","NYY-J 3x1.5","corpuri LED birou "+(i+1),"R",0.4],
+      ["P1","Prize birou "+(i+1),"1P+N C16A 30mA AC","NYY-J 3x2.5","laptop/imprimantă/AP","R",2.0],
+      ["HP1"," Pompă aer-aer grup "+(i+1),"3P+N — de dimensionat de ing.","NYY-J 5x2.5","unitate exterioară multi-split","RST",3.5],
+      ["W1","Instant electric WC TESA","1P+N C20A 30mA A","NYY-J 3x2.5","instant 3.5 kW WC TESA","R",3.5],
+    ]);
+    const nGr = Math.ceil(m.ncdC/3);
+    for(let g=0; g<nGr; g++) push("SDS-C"+(g+1)+" · Sub-tablou CAZARE grup "+(g+1), [
+      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x6","TG (ATS)","RST",0],
+      ["I1","Iluminat dormitoare/sală "+(g+1),"1P+N C10A 30mA AC","NYY-J 3x1.5","corpuri LED","R",0.4],
+      ["P1","Prize dormitoare "+(g+1),"1P+N C16A 30mA AC","NYY-J 3x2.5","încărcare telefoane etc.","R",1.0],
+      ["M1","Microunde + fierbător sală "+(g+1),"1P+N C16A","NYY-J 3x2.5","2 microunde + fierbător","S",3.2],
+      ["V1","Ventilator/recuperator "+(g+1),"1P+N C10A","NYY-J 3x1.5","recuperator de căldură","T",0.4],
+    ]);
+    for(let s=0;s<m.nSan;s++) push("SDS-S"+(s+1)+" · Sub-tablou SANITAR "+(s+1), [
+      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x6","TG (ATS)","RST",0],
+      ["A1","Pompă aer-apă apă caldă "+(s+1),"3P+N — de dimensionat de ing.","NYY-J 5x2.5","pompă aer-apă monobloc","RST",3.0],
+      ["R1","Rezistență rezervă puffer "+(s+1),"1P+N C20A","NYY-J 3x4","rezistență 3 kW","S",3.0],
+      ["C1","Pompe circulație + stație solară","1P+N C10A","NYY-J 3x1.5","pompe + grup solar tuburi vidate","T",0.5],
+      ["I1","Iluminat + ventilație sanitar "+(s+1),"1P+N C10A 30mA AC","NYY-J 3x1.5","LED + ventilator evacuare","R",0.3],
+    ]);
+    if(state.ev) push("SDS-EV · Sub-tablou STAȚIE EV", [
+      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x10","TG (ATS)","RST",0],
+      ["EV1","Stație EV dublă 2×11 kW","3P+N — de dimensionat de ing.","NYY-J 5x6","2 posturi de încărcare (vară)","RST",22.0],
+    ]);
+    push("SDS-T · Sub-tablou TEHNIC (container tehnic)", [
+      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x6","TG (ATS)","RST",0],
+      ["I1","Iluminat cameră tehnică + monitorizare","1P+N C10A 30mA AC","NYY-J 3x1.5","LED + cameră","R",0.2],
+      ["B1","BMS/EMS + switch + contorizare","1P+N C10A","NYY-J 3x1.5","automatizare tablou general","S",0.5],
+      ["P1","Prize service invertor/acumulatori","1P+N C16A 30mA AC","NYY-J 3x2.5","prize service","T",1.5],
+    ]);
+    return G;
+  }
+  function renderMono2(m){
+    const el = $("mono2"); if(!el) return;
+    const groups = circuitsFor(m);
+    let h = `<p class="note"><b>Powered by STRABAG MK-LL — Engineering Division Constanta - Jedi Ciprian Lazar</b> · Șantier fără emisii CO₂ · ${LOCS[state.loc].name} · ${new Date().toISOString().slice(0,10)} — scheme desfășurate (monofilare): 1P+N = monofazat, 3P+N = trifazat; TN-S; PE galben-verde; rezervă 30%.</p>`;
+    let journal = [];
+    groups.forEach(([tablou, rows], gi)=>{
+      h += `<table class="sd"><thead><tr><th colspan="5">${tablou}</th></tr>`+
+           `<tr><th>Circuit</th><th>Description</th><th>Protection</th><th>Cable</th><th>Destination</th></tr></thead><tbody>`;
+      rows.forEach(r=>{
+        h += `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`;
+        if(r[6]>0){
+          const Un = r[5]==="RST" ? 400 : 230;
+          const Imax = r[5]==="RST" ? r[6]*1000/(Math.sqrt(3)*400) : r[6]*1000/230;
+          journal.push([tablou, r[0], r[1], r[5], r[6], Imax, r[3].split(" ")[0], r[3].split(" ")[1], 60]);
+        }
+      });
+      h += `</tbody></table>`;
+    });
+    const mono = [["Iluminat (toate tablourile)", 0.4*m.nMB + 0.4*Math.ceil(m.ncdC/3) + 0.3*m.nSan + 0.2], ["Prize birouri", 2.0*m.nMB], ["Prize dormitoare", 1.0*Math.ceil(m.ncdC/3)], ["Microunde+fierbător săli", 3.2*Math.ceil(m.ncdC/3)], ["Instant WC TESA", 3.5*m.nMB], ["Rezistență rezervă puffer", 3.0*m.nSan], ["Pompe circulație + stație solară", 0.5*m.nSan], ["Ventilatoare/recuperatoare", 0.4*Math.ceil(m.ncdC/3)], ["Iluminat tehnic + monitorizare + BMS", 0.7], ["Prize service tehnic", 1.5]];
+    const tri = [["Unități exterioare pompe aer-aer (per grup de 3)", 3.5*m.nMB + 3.5*Math.ceil(m.ncdC/3)*0], ["Pompă aer-apă apă caldă (per sanitar)", 3.0*m.nSan], ["Stație EV dublă 2×11 kW", state.ev?22:0], ["Alimentare fiecare sub-tablou de la TG (3P+N)", 0]];
+    h += `<h3 style="margin:10px 0 4px">Consumers for your breaker sizing (Pi)</h3>`+
+         `<table class="sd"><thead><tr><th>SINGLE-PHASE (1P+N, 230 V)</th><th>Pi total [kW]</th><th>THREE-PHASE (3P+N, 400 V)</th><th>Pi total [kW]</th></tr></thead><tbody>`;
+    const nR = Math.max(mono.length, tri.length);
+    for(let i=0;i<nR;i++) h += `<tr><td>${mono[i]?mono[i][0]:""}</td><td>${mono[i]?nf(mono[i][1],1):""}</td><td>${tri[i]?tri[i][0]:""}</td><td>${tri[i]?nf(tri[i][1],1):""}</td></tr>`;
+    h += `</tbody></table><p class="note">No amp rating on three-phase — you size it (3P+N, 400 V). Single-phase: lighting 10A, sockets 16A, rest per rule.</p>`;
+    h += `<h3 style="margin:10px 0 4px">Cable schedule</h3>`+
+         `<table class="sd"><thead><tr><th>Panel</th><th>Circuit</th><th>Description</th><th>Phase</th><th>Pi [kW]</th><th>Imax [A]</th><th>Cable</th><th>Size</th><th>Length [m]</th><th>Mounting</th></tr></thead><tbody>`+
+         journal.map(j=>`<tr><td>${j[0]}</td><td>${j[1]}</td><td>${j[2]}</td><td>${j[3]}</td><td>${nf(j[4],1)}</td><td>${nf(j[5],1)}</td><td>${j[6]}</td><td>${j[7]}</td><td>${j[8]}</td><td>pe tub PVC / pat cabluri</td></tr>`).join("")+
+         `</tbody></table>`;
+    el.innerHTML = h;
+  }
+  // ---------------- hartă România ----------------
+  const BORDER = [[23.6,47.27],[24.0,47.6],[24.98,48.26],[25.5,48.25],[26.63,48.2],[27.25,48.1],[28.2,48.0],[28.9,47.6],[29.71,46.57],[29.4,45.9],[29.73,45.2],[29.3,44.6],[28.63,44.18],[28.25,43.75],[27.5,43.8],[26.63,43.62],[25.75,43.73],[24.97,43.75],[24.3,43.65],[23.6,43.85],[22.88,44.45],[22.3,44.9],[21.7,45.1],[21.35,45.47],[21.6,45.85],[22.0,46.35],[22.45,46.62],[22.9,46.85],[23.2,47.0]];
+  constKX = 78; const KY = 86;
+  const proj = (lon, lat) => [(lon-20.2)*constKX*Math.cos(46.5*Math.PI/180)+8, (48.8-lat)*KY+6];
+  function drawMap(){
+    const el = $("locTab"); if(!el) return;
+    let s = `<thead><tr><th>Locality</th><th>County</th><th>calc t min</th><th>calc t max</th><th>frost depth [m]</th><th>avg wind [m/s]</th><th>avg PV [kWh/kWp/day]</th></tr></thead><tbody>`;
+    LOCS.forEach((L,i)=>{
+      const sel = i===state.loc ? ' class="selrow"' : '';
+      const wa = (L.w.reduce((a,b)=>a+b,0)/12).toFixed(1), pa = (L.pv.reduce((a,b)=>a+b,0)/12).toFixed(2);
+      s += `<tr data-i="${i}"${sel}><td><b>${L.name}</b></td><td>${L.judet}</td><td>${L.tmin}°C</td><td>${L.tmax}°C</td><td>${L.inghet.toFixed(2)}</td><td>${wa}</td><td>${pa}</td></tr>`;
+    });
+    el.innerHTML = s + "</tbody>";
+    el.querySelectorAll("tr[data-i]").forEach(tr=>tr.addEventListener("click",()=>{ state.loc=+tr.dataset.i; const sel=$("locSel"); if(sel) sel.value=String(state.loc); render(); }));
+  }
+  function fillLocSel(){
+    const sel = $("locSel"); if(!sel) return;
+    LOCS.forEach((L,i)=>{ const o=document.createElement("option"); o.value=String(i); o.textContent=`${L.name} (${L.judet})`; sel.appendChild(o); });
+    sel.value = String(state.loc);
+    sel.addEventListener("change",()=>{ state.loc=+sel.value; render(); });
+  }
+  fillLocSel();
+  const cctvChk = $("cctvChk");
+  if(cctvChk){ cctvChk.checked = !!state.cctv;
+    cctvChk.addEventListener("change", ()=>{ state.cctv = cctvChk.checked ? 1 : 0; render(); }); }
+  const evChk = $("evChk");
+  if(evChk){ evChk.checked = !!state.ev;
+    evChk.addEventListener("change", ()=>{ state.ev = evChk.checked ? 1 : 0; render(); }); }
+
+
+  // controale layout turbines (mast 6 m, 2 rows, 15-20 m, frontage ajustabil)
+  function fillSel(id, vals, fmt){
+    const el = $(id); if(!el) return;
+    vals.forEach(v=>{ const o=document.createElement("option"); o.value=String(v); o.textContent=fmt(v); el.appendChild(o); });
+  }
+  fillSel("hubSel", [4,6,8,10], v=>v+" m");
+  fillSel("rowSel", [1,2,3,4], v=>v+(v===1?" rând":" rows"));
+  fillSel("spcSel", [10,15,18,20,25,30], v=>v+" m");
+  fillSel("frontageSel", [40,60,80,100,120,150,200,300], v=>v+" m");
+  fillSel("extPSel", [0.5,1,1.5,2,3], v=>v+" kW");
+  fillSel("extHSel", [6,8,10,12,14], v=>v+" h");
+  fillSel("selfSel", [0,25,50,75,100], v=>v+"% autonom solar");
+  fillSel("comboSel", [0,1,2,3,4,6,8,10], v=>v+" mast cu turbine");
+  fillSel("tkwSel", [3,3.5], v=>v+" kW (<5 kW, fără prag 5 m/s)");
+  for(const [id,key] of [["hubSel","hub"],["rowSel","rows"],["spcSel","spc"],["frontageSel","frontage"],["extPSel","extP"],["extHSel","extH"],["selfSel","extSelf"],["comboSel","combo"],["tkwSel","tkw"],["camsSel","cams"]]){
+    const el = $(id); if(!el) continue;
+    el.value = String(state[key]);
+    el.addEventListener("change", ev=>{ state[key]=+ev.target.value; render(); });
+  }
+  // meta info sus: localitatea curentă
+  const metaEl = document.querySelector(".meta");
+  if(metaEl){ metaEl.id = "metaInfo"; }
+
+  render();
+})();
+
+</script>
+
+</body>
+</html>
