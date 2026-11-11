@@ -263,6 +263,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
   <header class="top">
     <div>
       <h1>Organizare de șantier fără emisii CO₂ / CO</h1>
+<p class="sub" style="margin-top:2px;font-weight:600">Powered by STRABAG MK-LL — Engineering Division Constanta - Jedi Ciprian Lazar</p>
       <p class="sub">Energie din vânt și soare pe invertoare hibride cu acumulatori, apă caldă din tuburi vidate, încălzire și răcire cu pompe de căldură. Alege varianta, scenariul și echiparea: schema, explicațiile și echipamentele se schimbă împreună.</p>
     </div>
     <div class="meta">Constanța · calcul −15°C / +38°C<br>cifre preluate din calculul Excel</div>
@@ -1112,7 +1113,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
   function renderMono2(m){
     const el = $("mono2"); if(!el) return;
     const groups = circuitsFor(m);
-    let h = `<p class="note"><b>Engineering Division — Jedi Ciprian Lazar</b> · Șantier fără emisii CO₂ · ${LOCS[state.loc].name} · ${new Date().toISOString().slice(0,10)} — scheme desfășurate (monofilare): 1P+N = monofazat, 3P+N = trifazat; TN-S; PE galben-verde; rezervă 30%.</p>`;
+    let h = `<p class="note"><b>Powered by STRABAG MK-LL — Engineering Division Constanta - Jedi Ciprian Lazar</b> · Șantier fără emisii CO₂ · ${LOCS[state.loc].name} · ${new Date().toISOString().slice(0,10)} — scheme desfășurate (monofilare): 1P+N = monofazat, 3P+N = trifazat; TN-S; PE galben-verde; rezervă 30%.</p>`;
     let journal = [];
     groups.forEach(([tablou, rows], gi)=>{
       h += `<table class="sd"><thead><tr><th colspan="5">${tablou}</th></tr>`+
