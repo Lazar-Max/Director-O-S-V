@@ -3,8 +3,8 @@
 Engineering Division — Jedi Ciprian Lazar
 
 ## Fișiere curente (vezi folderul `07.11.2026/`)
-- `07.11.2026.Organizare_Santier_Calcul_v4.xlsx` — calculatorul (Principal + Personal + Clima_RO legate; restul independente)
-- `07.11.2026.Organizare_Santier_Fara_Emisii_v4.html` — pagina dinamică (rulează direct în browser, și pe telefon)
+- RO: `2026.11.11.Organizare_Santier_Calcul_v4.xlsx`, `2026.11.11.Organizare_Santier_Fara_Emisii_v4.html`, `2026.11.11.Organizare_Santier_Verde_OFF-GRID_v4.pptx`
+- EN: `2026.11.11.Organizare_Santier_Calcul_v4_EN.xlsx`, `2026.11.11.Organizare_Santier_Fara_Emisii_v4_EN.html`, `2026.11.11.Organizare_Santier_Verde_OFF-GRID_v4_EN.pptx`
 
 ## Ce conține v4
 - [x] Program de lucru pe sezon (iarnă/vară): ore, oră de start, zile/săpt (inclusiv weekend)

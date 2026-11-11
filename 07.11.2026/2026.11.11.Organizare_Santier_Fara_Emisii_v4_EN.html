@@ -7,7 +7,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: secțiune verticală prin organizarea de șantier (stânga) + panou de explicații (dreapta). Culori preluate din schema camerei tehnice. */
+/* Layout: secțiune verticală prin organizarea de șantier (stânga) + panou de explicații (dreapta). Culori preluate din schema camerasi tehnice. */
 :root{
   --bg:#F3F1EC; --surface:#FBFAF7; --surface-2:#ECE8DF; --ink:#1D2530; --muted:#5B6472; --border:#CBC4B2;
   --line:#2B5F8A;
@@ -269,7 +269,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     <div class="meta">Constanța · calcul −15°C / +38°C<br>figures from the Excel calculation</div>
   </header>
 
-  <div class="controls" role="group" aria-label="Opțiuni">
+  <div class="controls" role="group" aria-label="Options">
     <div class="ctl"><span class="lbl">Variant</span>
       <div class="seg" id="segVar">
         <button type="button" data-v="V1">V1 · offices only</button>
@@ -295,7 +295,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
         
       </div>
     </div>
-    <div class="ctl"><span class="lbl">Program — WINTER</span><div class="progrow"><select id="pHi" aria-label="ore iarnă"></select><select id="pSi" aria-label="ora de start iarnă"></select><select id="pDay" aria-label="zile pe săptămână iarnă"></select></div><span class="lbl2">hours · start time · days/week</span></div><div class="ctl"><span class="lbl">Program — SUMMER</span><div class="progrow"><select id="pHv" aria-label="ore vară"></select><select id="pSv" aria-label="ora de start vară"></select><select id="pZv" aria-label="zile pe săptămână vară"></select></div><span class="lbl2">hours · start time · days/week</span></div>
+    <div class="ctl"><span class="lbl">Program — WINTER</span><div class="progrow"><select id="pHi" aria-label="h winter"></select><select id="pSi" aria-label="start time winter"></select><select id="pDay" aria-label="days/week winter"></select></div><span class="lbl2">hours · start time · days/week</span></div><div class="ctl"><span class="lbl">Program — SUMMER</span><div class="progrow"><select id="pHv" aria-label="h summer"></select><select id="pSv" aria-label="start time summer"></select><select id="pZv" aria-label="days/week summer"></select></div><span class="lbl2">hours · start time · days/week</span></div>
     <div class="ctl"><span class="lbl">Season</span>
       <div class="seg" id="segSez">
         <button type="button" data-z="i">Winter</button>
@@ -374,7 +374,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
   </div>
 </div>
 
-<section class="bottom"><div class="card"><h2>Site — Romania table (click a locality) + site controls</h2><div class="ctl wide"><span class="lbl">Site — click a locality (or choose from list)</span><div class="maprow"><div class="loctab-wrap"><table class="sd" id="locTab"></table></div><select id="locSel" aria-label="Locality"></select><span class="lbl2">mast</span><select id="hubSel"></select><span class="lbl2">rows</span><select id="rowSel"></select><span class="lbl2">spacing</span><select id="spcSel"></select><span class="lbl2">frontage</span><select id="frontageSel"></select><span class="lbl2">turbine</span><select id="tkwSel"></select><span class="lbl2">ilum.ext</span><select id="extPSel"></select><select id="extHSel"></select><select id="selfSel"></select><select id="comboSel"></select><label class="lbl2"><input type="checkbox" id="evChk" checked> double EV charger (summer)</label><label class="lbl2"><input type="checkbox" id="cctvChk" checked> CCTV</label><select id="camsSel" aria-label="nr camere"></select></div><p class="note" id="locInfo"></p></div></div><div class="card"><h2>Block diagram — energy flow (sources → main panel → groups)</h2><div class="chartbox"><svg id="bloc"></svg></div></div><div class="card"><h2>Block diagram panels — buses and feeders</h2><div class="chartbox"><svg id="mono"></svg></div></div><div class="card"><h2>Functional diagram — ventilation + hot water</h2><div class="chartbox"><svg id="inst"></svg></div></div><div class="card"><h2>Unfolded single-line diagrams per panel + cable schedule</h2><div class="chartbox" id="mono2" style="max-width:none"></div></div><section><h2>Consumption optimization</h2><p class="note">Resource (PV + wind) is finite: automatically finds the minimum per-season program (hours × days) so the variant is <b>AUTONOMĂ</b> în fiecare lună, dacă e posibil.</p><div class="optbtns"><button type="button" id="btnOpt">Optimize program</button><button type="button" id="btnApply" hidden>Apply</button></div><p class="note" id="optOut"></p></section><section>
+<section class="bottom"><div class="card"><h2>Site — Romania table (click a locality) + site controls</h2><div class="ctl wide"><span class="lbl">Site — click a locality (or choose from list)</span><div class="maprow"><div class="loctab-wrap"><table class="sd" id="locTab"></table></div><select id="locSel" aria-label="Locality"></select><span class="lbl2">mast</span><select id="hubSel"></select><span class="lbl2">rows</span><select id="rowSel"></select><span class="lbl2">spacing</span><select id="spcSel"></select><span class="lbl2">frontage</span><select id="frontageSel"></select><span class="lbl2">turbine</span><select id="tkwSel"></select><span class="lbl2">ilum.ext</span><select id="extPSel"></select><select id="extHSel"></select><select id="selfSel"></select><select id="comboSel"></select><label class="lbl2"><input type="checkbox" id="evChk" checked> double EV charger (summer)</label><label class="lbl2"><input type="checkbox" id="cctvChk" checked> CCTV</label><select id="camsSel" aria-label="nr cameras"></select></div><p class="note" id="locInfo"></p></div></div><div class="card"><h2>Block diagram — energy flow (sources → main panel → groups)</h2><div class="chartbox"><svg id="bloc"></svg></div></div><div class="card"><h2>Block diagram panels — buses and feeders</h2><div class="chartbox"><svg id="mono"></svg></div></div><div class="card"><h2>Functional diagram — ventilation + hot water</h2><div class="chartbox"><svg id="inst"></svg></div></div><div class="card"><h2>Unfolded single-line diagrams per panel + cable schedule</h2><div class="chartbox" id="mono2" style="max-width:none"></div></div><section><h2>Consumption optimization</h2><p class="note">Resource (PV + wind) is finite: automatically finds the minimum per-season program (hours × days) so the variant is <b>AUTONOMOUS</b> în fiecare lună, dacă e posibil.</p><div class="optbtns"><button type="button" id="btnOpt">Optimize program</button><button type="button" id="btnApply" hidden>Apply</button></div><p class="note" id="optOut"></p></section><section>
         <h2>Equipment list</h2>
         <table class="eq"><thead><tr><th>Equipment</th><th>Quantity</th><th>Unit price (RON)</th><th>Total (RON)</th></tr></thead><tbody id="eqBody"></tbody></table>
       </section></section>
@@ -400,7 +400,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
   };
   const EQT = {
     HP:{t:"Pompe de căldură (singura variantă în pagina; caloriferele rămân doar în Excel/PPT)",
-      txt:"O pompă de căldură aer-aer la fiecare 3 containere duble, cu ventilație cu recuperare de căldură. Încălzește și răcește. Sanitarul și WC-ul TESA au câte un split mic."}
+      txt:"O pump de căldură aer-aer la fiecare 3 containere duble, cu ventilație cu recuperare de căldură. Încălzește și răcește. Sanitarul și WC-ul TESA au câte un split mic."}
   };
   const VT = {
     V1:["V1 · offices only","Three double office containers, TESA WC, storage and an extra container. The technical container holds inverters, batteries and panels."],
@@ -408,7 +408,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     V2E:["V2 extended","Every 4 people adds a bedroom, every 16 a canteen, every 8 a shower+WC container with its own hot water. One air-to-air heat pump serves 3 double containers."]
   };
 
-  const state = {v:"V2", s:"CMD", e:"HP", z:"i", d:"zi", p:20, hi:11, si:8, zi:5, hv:11, sv:7, zv:5, loc:(LOCS.findIndex(l=>l.name==="Constanța")>=0?LOCS.findIndex(l=>l.name==="Constanța"):0), hub:6, tkw:3, cctv:1, cams:4, alpha:0.14, rows:2, spc:18, frontage:80, ev:1, extP:1.0, extH:10, extSelf:0, combo:0};
+  const state = {v:"V2", s:"CMD", e:"HP", z:"i", d:"zi", p:20, hi:11, si:8, day:5, hv:11, sv:7, zv:5, loc:(LOCS.findIndex(l=>l.name==="Constanța")>=0?LOCS.findIndex(l=>l.name==="Constanța"):0), hub:6, tkw:3, cctv:1, cams:4, alpha:0.14, rows:2, spc:18, frontage:80, ev:1, extP:1.0, extH:10, extSelf:0, combo:0};
   try{ const sv = JSON.parse(localStorage.getItem("santier-v6")||"null"); if(sv) Object.assign(state, sv); }catch(err){}
   if(typeof state.loc !== "number" || !LOCS[state.loc]) state.loc = Math.max(0, LOCS.findIndex(l=>l.name==="Constanța"));  // default: Constanța
   let prices = {};
@@ -562,7 +562,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
   window.__LOCS = LOCS;
   window.__makeClim = makeClim;
   window.__state = state;
-  const progOf = () => ({hi:+state.hi, si:+state.si, zi:+state.zi, hv:+state.hv, sv:+state.sv, zv:+state.zv});
+  const progOf = () => ({hi:+state.hi, si:+state.si, day:+state.zi, hv:+state.hv, sv:+state.sv, zv:+state.zv});
 
   // optimizator: program minim pe sezon ca Treq <= Tmx (AUTONOM), dacă e posibil
   function optimize(){
@@ -576,24 +576,24 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
         const pr = {...fixed}; 
         if(varyW){ pr.hi=h; pr.zi=z; } else { pr.hv=h; pr.zv=z; }
         const tq = treqOf(pr);
-        const score = tq*1000 - h*z;   // off-grid: minimizează turbinele necesare, la egalitate program mai lung
+        const score = tq*1000 - h*z;   // off-grid: minimizes required turbines, ties: longer program
         if(!best || score < best.score) best = {score, h, z, tq, feas:true};
       }
       return best;
     }
     let w1 = scan({...prog, hv:prog.hv, zv:prog.zv}, true);
-    let s1 = scan({...prog, hi:w1.h, zi:w1.z}, false);
+    let s1 = scan({...prog, hi:w1.h, day:w1.z}, false);
     let w2 = scan({...prog, hv:s1.h, zv:s1.z}, true);
     const cands = [ [w1, prog.hv, prog.zv], [w2, s1.h, s1.z], [w1, s1.h, s1.z] ];
     cands.sort((a,b)=> (a[0].score + (a[0].feas?0:0)) - (b[0].score));
-    // alege cea mai bună pereche (iarnă, vară) fezabilă cu suma orelor săptămânale minimă
+    // alege cea mai bună pereche (iarnă, vară) fezabilă cu suma minimum weekly hours
     let bestPair = null;
     for(const [w, hv, zv] of cands){
-      const pr = {...prog, hi:w.h, zi:w.z, hv, zv};
+      const pr = {...prog, hi:w.h, day:w.z, hv, zv};
       const tq = treqOf(pr);
       const feas = tq <= Tmx0;
       const score = feas ? w.h*w.z + hv*zv : 1e9 + tq;
-      if(!bestPair || score < bestPair.score) bestPair = {score, hi:w.h, zi:w.z, hv, zv, tq, feas};
+      if(!bestPair || score < bestPair.score) bestPair = {score, hi:w.h, day:w.z, hv, zv, tq, feas};
     }
     return bestPair;
   }
@@ -740,7 +740,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
       }
     });
 
-    const offNames = [["Sală ședințe","PM"],["Șef șantier","Topo"],["Subcontractori",""]];
+    const offNames = [["Sală ședințe","PM"],["Site manager","Topo"],["Subcontractors",""]];
     let nDl=0, nSl=0;
     doubles.forEach((dd,i)=>{
       const dx = dblX[i];
@@ -782,7 +782,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     if(!m.auto){
       const px = gridX+30;
       add(`<path class="pylon" d="M${px-14},${GY} L${px},${GY-120} L${px+14},${GY} M${px-18},${GY-96} L${px+18},${GY-96} M${px-12},${GY-70} L${px+12},${GY-70}"/>`);
-      add(`<text class="lbl-svg bad" x="${px}" y="${GY-128}" text-anchor="middle">rețea</text>`);
+      add(`<text class="lbl-svg bad" x="${px}" y="${GY-128}" text-anchor="middle">grid</text>`);
       add(`<path class="flow grid" d="M${px},${GY} L${px},${cy2+6} L${techX1-8},${cy2+6} L${techX1-8},${GY}"/>`);
     }
     if(tubeRoof){
@@ -833,7 +833,7 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     if(m.p>0) rows.push(["Bedrooms · canteens", null, m.nD+" · "+m.nS, "pcs", null],
                          ["Showers · WC", null, m.nSan*K.I["23"]+" · "+m.nSan*K.I["24"], "pcs", null]);
     if(state.e==="HP") rows.push(["Air-to-air heat pumps (per group of 3)", m.nPAA, m.nPAA+" pcs", "hpAA"],
-                                  ["Heat recovery units (ventilation with recovery)", 3*m.nMB + m.ncdC + m.nSan + m.nMB, (3*m.nMB + m.ncdC + m.nSan + m.nMB)+" pcs — birouri/dormitoare/săli + sanitar/WC", "recup"]);
+                                  ["Heat recovery units (ventilation with recovery)", 3*m.nMB + m.ncdC + m.nSan + m.nMB, (3*m.nMB + m.ncdC + m.nSan + m.nMB)+" pcs — birouri/dormitoare/canteens + sanitar/WC", "recup"]);
     if(m.nSan) rows.push(["Air-to-water heat pumps (sanitary)", m.nSan, "pcs", "hpAp"],
                          ["Evacuated tubes · buffer", null, m.nSan*K.I["7"]+" · "+nf(500*m.nSan)+" L", null]);
     rows.push(["PV panels", m.npan, m.npan+" pcs · "+nf(m.kwp,1)+" kWp", "panou"],
@@ -843,10 +843,10 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
               ["Inverter panels (1–2 inverters/panel, whole inverter on one panel)", Math.ceil(m.inv/2), Math.ceil(m.inv/2)+" pcs · "+m.inv+" invertoare", "tablou"],
               ["Main distribution panel (all inverters, ATS + metering)", 1, "1 pcs / șantier", "tabGen"],
               ["Sub-panels per group (split by power)", m.nMB + Math.ceil(m.ncdC/3) + m.nSan, (m.nMB + Math.ceil(m.ncdC/3) + m.nSan)+" pcs — birouri "+m.nMB+" + grupuri cazare "+Math.ceil(m.ncdC/3)+" + sanitare "+m.nSan, "subTab"],
-              ["Perimeter outdoor lighting (LED poles)", null, state.extP+" kW × "+state.extH+" h/day = "+(state.extP*state.extH).toFixed(1)+" kWh/zi (tot anul)", "extl"],
-              ...(state.cctv ? [["CCTV system (NVR + "+state.cams+" cameras PoE/radio)", 1, ((state.cams*K.CCTV.wCam+K.CCTV.nvrW+K.CCTV.swW)*24/1000).toFixed(1)+" kWh/zi (24/24) · circuit dedicat în tabloul tehnic, PoE cablu max 90 m/segment sau radio", "cctv"]] : []),
-              ["BMS/EMS in main panel (monitoring + load shedding by priority)", 1, "1 pcs — délestare: 1) iluminat+monitorizare ~1 kW (ține), 2) apă caldă, 3) EV, 4) heating/răcire", "bms"],
-              ...(state.ev ? [["Stație încărcare EV dublă (modul propriu, activă vara mai–sep)", 1, K.EV.evKw+" kW · "+K.EV.evKwh+" kWh/zi", "ev"]] : []),
+              ["Perimeter outdoor lighting (LED poles)", null, state.extP+" kW × "+state.extH+" h/day = "+(state.extP*state.extH).toFixed(1)+" kWh/day (tot anul)", "extl"],
+              ...(state.cctv ? [["CCTV system (NVR + "+state.cams+" cameras PoE/radio)", 1, ((state.cams*K.CCTV.wCam+K.CCTV.nvrW+K.CCTV.swW)*24/1000).toFixed(1)+" kWh/day (24/24) · circuit dedicat în tabloul tehnic, PoE cablu max 90 m/segment sau radio", "cctv"]] : []),
+              ["BMS/EMS in main panel (monitoring + load shedding by priority)", 1, "1 pcs — délestare: 1) iluminat+monitorizare ~1 kW (ține), 2) hot water, 3) EV, 4) heating/răcire", "bms"],
+              ...(state.ev ? [["Double EV charging station (own module, active in summer mai–sep)", 1, K.EV.evKw+" kW · "+K.EV.evKwh+" kWh/day", "ev"]] : []),
               ["Batteries LiFePO₄", null, nf(m.bat,0)+" kWh", "bat"]);
     return rows;
   }
@@ -873,12 +873,12 @@ table.sd td{padding:3px 6px;border:1px solid var(--border)}
     const L = LOCS[state.loc];
     const prog = progOf();
     const lines = [];
-    lines.push(`<b>${L.name}</b> (county ${L.judet}) · varianta ${state.v}${state.v==="V2E" ? " · "+m.p+" persoane" : ""} · scenariul ${SCEN[state.s].t}`);
-    lines.push(`Program: iarna ${prog.hi} h from ${String(prog.si).padStart(2,"0")}:00 (${prog.zi} zile/sapt), vara ${prog.hv} h from ${String(prog.sv).padStart(2,"0")}:00 (${prog.zv} zile/sapt). In afara programului 15C.`);
+    lines.push(`<b>${L.name}</b> (county ${L.judet}) · variant ${state.v}${state.v==="V2E" ? " · "+m.p+" persoane" : ""} · scenariul ${SCEN[state.s].t}`);
+    lines.push(`Program: winter ${prog.hi} h from ${String(prog.si).padStart(2,"0")}:00 (${prog.zi} days/sapt), summer ${prog.hv} h from ${String(prog.sv).padStart(2,"0")}:00 (${prog.zv} days/sapt). In afara programului 15C.`);
     lines.push(`Consumption: <b>${nf(m.an,0)} kWh/yr</b> · Productie (PV ${nf(m.kwp,1)} kWp + ${m.Tin} turbine x ${state.tkw} kW pe stalp ${state.hub} m mast): <b>${nf(m.prod,0)} kWh/yr</b> → <b>off-grid, 0 kWh din retea</b>`);
     lines.push(`Turbines: <b>${m.Tin} pcs</b>` + (m.Treq > m.Tmx ? ` — frontage necesar ≈ ${m.frontageNeed} m (on ${state.frontage} m actual incap ${m.Tmx})` : ` — pe frontageul actual (${state.frontage} m) incap ${m.Tmx}, e suficient`));
     lines.push(`Battery ${nf(m.bat,0)} kWh · ${m.inv} inverters on ${Math.ceil(m.inv/2)} panels + 1 main panel (BMS) · ${m.npan} panels · ${m.nstr} strings`);
-    if(state.cctv) lines.push(`CCTV: ${state.cams} cameras + NVR, ${((state.cams*K.CCTV.wCam+K.CCTV.nvrW+K.CCTV.swW)*24/1000).toFixed(1)} kWh/zi (24/24), circuit dedicat in tabloul tehnic.`);
+    if(state.cctv) lines.push(`CCTV: ${state.cams} cameras + NVR, ${((state.cams*K.CCTV.wCam+K.CCTV.nvrW+K.CCTV.swW)*24/1000).toFixed(1)} kWh/day (24/24), circuit dedicat in tabloul tehnic.`);
     if(state.ev) lines.push(`Statie EV dubla: ${K.EV.evKw} kW, ${K.EV.evKwh} kWh/day in summer (May–Sep).`);
     lines.push(`Inghet ${L.inghet.toFixed(2)} m → foundation ≥ ${(L.inghet+0.15).toFixed(2)} m · Equipment cost: see the table below.`);
     el.innerHTML = lines.join("<br>");
@@ -904,8 +904,8 @@ function panel(m, clim){
       + (m.Treq > m.Tmx
         ? `On the current frontageage (${state.frontage} m, ${state.rows} rows × ${state.spc} m) fit ${m.Tmx} turbines → extend frontageage to ≈ ${m.frontageNeed} m.`
         : `On the current frontageage (${state.frontage} m) fit ${m.Tmx} turbines — enough.`)
-      + (state.ev ? ` Modul stație EV dublă: ${K.EV.evKw} kW, ${K.EV.evKwh} kWh/zi în mai–septembrie (inclus în consum).` : "");
-    // producția e identică în toate scenariile (vremea nu se schimbă) — cerință din docx
+      + (state.ev ? ` Modul stație EV dublă: ${K.EV.evKw} kW, ${K.EV.evKwh} kWh/day in May–septembrie (inclus în consum).` : "");
+    // producția e identică în toate scenariile (vremedoes not change) — requirement from brief
     const prods = ["CMD","NOR","ECO"].map(s=>model(state.v, s, state.e, state.p, prog, clim).prod);
     const sameProd = Math.max(...prods) - Math.min(...prods) < 1e-6;
     $("prodNote").textContent = sameProd
@@ -956,7 +956,7 @@ function panel(m, clim){
   }
   fillSelect("pHi",1,24,v=>v+" h"); fillSelect("pHv",1,24,v=>v+" h");
   fillSelect("pSi",0,23,v=>String(v).padStart(2,"0")+":00"); fillSelect("pSv",0,23,v=>String(v).padStart(2,"0")+":00");
-  fillSelect("pDay",1,7,v=>v+(v===1?" zi":" zile")); fillSelect("pZv",1,7,v=>v+(v===1?" zi":" zile"));
+  fillSelect("pDay",1,7,v=>v+(v===1?" day":" days")); fillSelect("pZv",1,7,v=>v+(v===1?" day":" days"));
   for(const [id,key] of [["pHi","hi"],["pSi","si"],["pDay","zi"],["pHv","hv"],["pSv","sv"],["pZv","zv"]]){
     $(id).addEventListener("change",ev=>{ state[key]=+ev.target.value; render(); });
   }
@@ -964,14 +964,14 @@ function panel(m, clim){
   $("btnOpt").addEventListener("click", ()=>{
     const best = optimize();
     if(!best) return;
-    const m = model(state.v, state.s, state.e, state.p, {...progOf(), hi:best.hi, zi:best.zi, hv:best.hv, zv:best.zv}, climOf());
+    const m = model(state.v, state.s, state.e, state.p, {...progOf(), hi:best.hi, day:best.zi, hv:best.hv, zv:best.zv}, climOf());
     window.__opt = best;
-    $("optOut").textContent = `Optimal program (off-grid, fewest turbines): WINTER ${best.hi} h × ${best.zi} days, SUMMER ${best.hv} h × ${best.zv} days → ${m.Tin} turbines (mast ${state.hub} m), frontage necesar ≈ ${m.frontageNeed} m, consumption ${nf(m.an,0)} kWh/yr. Regula: fără rețea.`;
+    $("optOut").textContent = `Optimal program (off-grid, fewest turbines): WINTER ${best.hi} h × ${best.zi} days, SUMMER ${best.hv} h × ${best.zv} days → ${m.Tin} turbines (mast ${state.hub} m), frontage necesar ≈ ${m.frontageNeed} m, consumption ${nf(m.an,0)} kWh/yr. Regula: fără grid.`;
     $("btnApply").hidden = false;
   });
   $("btnApply").addEventListener("click", ()=>{
     if(!window.__opt) return;
-    Object.assign(state, {hi:window.__opt.hi, zi:window.__opt.zi, hv:window.__opt.hv, zv:window.__opt.zv});
+    Object.assign(state, {hi:window.__opt.hi, day:window.__opt.zi, hv:window.__opt.hv, zv:window.__opt.zv});
     render();
   });
 
@@ -990,24 +990,24 @@ function panel(m, clim){
     const el = $("bloc"); if(!el) return;
     const nTab = Math.ceil(m.inv/2), nSub = m.nMB + Math.ceil(m.ncdC/3) + m.nSan;
     let s = `<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--line)"/></marker></defs>`;
-    s += box(10, 20, 160, 46, "String-uri PV ×"+m.nstr, nf(m.kwp,1)+" kWp");
-    s += box(10, 86, 160, 46, "Turbine ×"+m.Tin, "3 kW · mast "+state.hub+" m");
+    s += box(10, 20, 160, 46, "PV strings ×"+m.nstr, nf(m.kwp,1)+" kWp");
+    s += box(10, 86, 160, 46, "Turbines ×"+m.Tin, "3 kW · mast "+state.hub+" m");
     s += box(10, 152, 160, 46, "Batteries", nf(m.bat,0)+" kWh · 48 V DC");
     s += `<line class="ln dc" x1="170" y1="43" x2="215" y2="43"/><line class="ln dc" x1="170" y1="109" x2="215" y2="109"/><line class="ln dc" x1="170" y1="175" x2="215" y2="175"/>`;
     s += `<line class="ln dc" x1="215" y1="43" x2="215" y2="175"/>`;
-    s += box(215, 86, 170, 46, "Invertoare hibride ×"+m.inv, "8 kW · 48 V · paralel");
+    s += box(215, 86, 170, 46, "Hybrid inverters ×"+m.inv, "8 kW · 48 V · paralel");
     s += arrow(215, 109, 215, 109, "dc");
     s += arrow(385, 109, 440, 109, "");
     s += box(440, 86, 150, 46, "Panelri invertor ×"+nTab, "max 2 inv/tablou, întreg");
     s += arrow(590, 109, 640, 109, "");
-    s += box(640, 76, 250, 66, "TABLOU GENERAL", "ATS · contorizare · bare AC/DC", "tg");
-    s += box(640, 20, 250, 40, "BMS / EMS", "monitorizare + délestare pe priorități", "bms");
+    s += box(640, 76, 250, 66, "MAIN PANEL", "ATS · contorizare · bare AC/DC", "tg");
+    s += box(640, 20, 250, 40, "BMS / EMS", "monitorizare + déload shedding by priority", "bms");
     s += `<line class="ln bms" x1="765" y1="60" x2="300" y2="86"/><line class="ln bms" x1="765" y1="60" x2="90" y2="175"/>`;
     s += arrow(765, 142, 765, 165, "");
-    s += box(640, 165, 250, 46, "Sub-tablouri pe grupuri ×"+nSub, "birouri "+m.nMB+" + cazare "+Math.ceil(m.ncdC/3)+" + sanitare "+m.nSan);
+    s += box(640, 165, 250, 46, "Sub-panels per group ×"+nSub, "birouri "+m.nMB+" + cazare "+Math.ceil(m.ncdC/3)+" + sanitare "+m.nSan);
     s += arrow(515, 165, 640, 188, "");
-    const loads = [`Birouri ×${3*m.nMB} — ${nf(m.pkB,1)} kW vârf`, `Cazare — ${nf(m.pkC,1)} kW vârf`, `Sanitar+tehnic ×${m.nSan}`, state.ev?"Stație EV dublă "+K.EV.evKw+" kW (vară)":"", "Iluminat + monitorizare ~1 kW (ține)"].filter(Boolean);
-    s += box(215, 165, 300, 20+loads.length*16, "Consumatori pe module", loads.join("  ·  "));
+    const loads = [`Offices ×${3*m.nMB} — ${nf(m.pkB,1)} kW peak`, `Accommodation — ${nf(m.pkC,1)} kW peak`, `Sanitary+technical ×${m.nSan}`, state.ev?"Double EV station "+K.EV.evKw+" kW (vară)":"", "Lighting + monitoring ~1 kW (kept)"].filter(Boolean);
+    s += box(215, 165, 300, 20+loads.length*16, "Consumers per module", loads.join("  ·  "));
     s += `<line class="ln bms" x1="365" y1="165" x2="765" y2="60"/>`;
     el.setAttribute("viewBox", "0 0 900 230");
     el.innerHTML = s;
@@ -1019,22 +1019,22 @@ function panel(m, clim){
     const X = 130;
     s += `<line class="bus dc" x1="${X}" y1="30" x2="${X}" y2="170"/>`;
     s += `<line class="bus" x1="${X}" y1="200" x2="${X}" y2="430"/>`;
-    s += `<text class="bx-s" x="${X+10}" y="105">bară DC 48 V</text>`;
-    s += `<text class="bx-s" x="${X+10}" y="250">bară AC 230 V</text>`;
+    s += `<text class="bx-s" x="${X+10}" y="105">DC bus 48 V</text>`;
+    s += `<text class="bx-s" x="${X+10}" y="250">AC bus 230 V</text>`;
     const tap = (y, label, sub, cls) => {
       s += `<line class="ln" x1="${X}" y1="${y}" x2="${X+34}" y2="${y}"/>`;
       s += `<rect class="brk" x="${X+34}" y="${y-7}" width="14" height="14"/>`;
       s += box(X+64, y-22, 300, 44, label, sub, cls);
     };
-    tap(45,  "String-uri PV ×"+m.nstr, nf(m.kwp,1)+" kWp → MPPT în invertor", "src");
+    tap(45,  "PV strings ×"+m.nstr, nf(m.kwp,1)+" kWp → MPPT in inverter", "src");
     tap(95,  "Wind turbines ×"+m.Tin, "3 kW · controller MPPT 48 V", "src");
-    tap(145, "Batteries LiFePO4 "+nf(m.bat,0)+" kWh", "BMS pe fiecare modul baterie", "src");
-    tap(215, "Invertoare ×"+m.inv+" → tablouri invertor ×"+nTab, "8 kW · max 2/tablou, întreg pe un tablou", "inv");
-    tap(275, "TABLOU GENERAL", "ATS · contor · BMS/EMS (délestare pe priorități)", "tg");
-    tap(325, "Sub-tablou birouri ×"+m.nMB, nf(m.pkB,1)+" kW vârf", "sub");
-    tap(370, "Sub-tablou grup cazare ×"+Math.ceil(m.ncdC/3), nf(m.pkC,1)+" kW vârf", "sub");
-    tap(415, "Sub-tablou sanitar ×"+m.nSan, "tuburi vidate + puffer + pompă aer-apă", "sub");
-    if(state.ev) tap(460, "Stație EV dublă", K.EV.evKw+" kW · "+K.EV.evKwh+" kWh/zi · mai–sep", "ev");
+    tap(145, "Batteries LiFePO4 "+nf(m.bat,0)+" kWh", "BMS on each battery module", "src");
+    tap(215, "Invertoare ×"+m.inv+" → inverter panels ×"+nTab, "8 kW · max 2/tablou, întreg pe un tablou", "inv");
+    tap(275, "MAIN PANEL", "ATS · meter · BMS/EMS (priority load shedding)", "tg");
+    tap(325, "Office sub-panel ×"+m.nMB, nf(m.pkB,1)+" kW peak", "sub");
+    tap(370, "Accommodation group sub-panel ×"+Math.ceil(m.ncdC/3), nf(m.pkC,1)+" kW peak", "sub");
+    tap(415, "Sanitary sub-panel ×"+m.nSan, "evacuated tubes + buffer + air-water HP", "sub");
+    if(state.ev) tap(460, "Double EV station", K.EV.evKw+" kW · "+K.EV.evKwh+" kWh/day · mai–sep", "ev");
     el.setAttribute("viewBox", "0 0 900 500");
     el.innerHTML = s;
   }
@@ -1045,28 +1045,28 @@ function panel(m, clim){
     const nRecup = 3*m.nMB + m.ncdC + m.nSan + m.nMB;
     let s = `<defs><marker id="arr3" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--cold)"/></marker>` +
             `<marker id="arr4" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--hot)"/></marker></defs>`;
-    s += `<text class="bx-t" x="10" y="16" text-anchor="start">VENTILAȚIE CU RECUPERARE — aer proaspăt încălzit/răcit (HP)</text>`;
-    s += `<text class="bx-t" x="10" y="196" text-anchor="start">APĂ CALDĂ — tuburi vidate + puffer + pompă aer-apă (rezervă) + recirculare</text>`;
-    s += box(10, 28, 120, 38, "Aer proaspăt", "30 m³/h/pers");
-    s += box(10, 92, 120, 38, "Aer viciat", "din încăperi");
-    s += box(180, 56, 150, 48, "Recuperator ×"+nRecup, "η=75% · 0.35 W/(m³/h)");
-    s += box(390, 28, 140, 38, "Distribuție aer", "către încăperi");
-    s += box(390, 92, 140, 38, "Evacuare aer", "către exterior");
-    s += box(590, 50, 210, 56, "Încăperi: birouri "+(3*m.nMB)+", dorm "+m.nD+", săli "+m.nS+", sanitar "+m.nSan, "uși 0.5–1 h⁻¹ + Q proaspăt");
+    s += `<text class="bx-t" x="10" y="16" text-anchor="start">VENTILAȚIE CU RECUPERARE — fresh air heated/cooled (HP)</text>`;
+    s += `<text class="bx-t" x="10" y="196" text-anchor="start">HOT WATER — evacuated tubes + buffer + air-water heat pump (backup) + recirculation</text>`;
+    s += box(10, 28, 120, 38, "Fresh air", "30 m³/h/pers");
+    s += box(10, 92, 120, 38, "Exhaust air", "from rooms");
+    s += box(180, 56, 150, 48, "Heat recovery unit ×"+nRecup, "η=75% · 0.35 W/(m³/h)");
+    s += box(390, 28, 140, 38, "Air distribution", "către rooms");
+    s += box(390, 92, 140, 38, "Air exhaust", "către exterior");
+    s += box(590, 50, 210, 56, "Rooms: offices "+(3*m.nMB)+", bed "+m.nD+", canteens "+m.nS+", sanitary "+m.nSan, "uși 0.5–1 h⁻¹ + Q proaspăt");
     s += `<line class="ln" style="stroke:var(--cold)" x1="130" y1="47" x2="180" y2="76" marker-end="url(#arr3)"/>`;
     s += `<line class="ln" style="stroke:var(--cold)" x1="130" y1="111" x2="180" y2="92" marker-end="url(#arr3)"/>`;
     s += `<line class="ln" style="stroke:var(--cold)" x1="330" y1="80" x2="390" y2="47" marker-end="url(#arr3)"/>`;
     s += `<line class="ln" style="stroke:var(--cold)" x1="330" y1="84" x2="390" y2="111" marker-end="url(#arr3)"/>`;
     s += `<line class="ln" style="stroke:var(--cold)" x1="530" y1="47" x2="590" y2="70" marker-end="url(#arr3)"/>`;
     s += `<line class="ln" style="stroke:var(--cold)" x1="590" y1="90" x2="530" y2="118" marker-end="url(#arr3)"/>`;
-    s += `<line class="ln bms" x1="255" y1="56" x2="700" y2="26"/><text class="bx-s" x="800" y="24" text-anchor="end">BMS reglează debitele</text>`;
-    s += box(10, 216, 120, 38, "Apă rece", "rețea/fântână · "+K.I["14"]+"°C instant");
+    s += `<line class="ln bms" x1="255" y1="56" x2="700" y2="26"/><text class="bx-s" x="800" y="24" text-anchor="end">BMS controls airflows</text>`;
+    s += box(10, 216, 120, 38, "Cold water", "grid/fântână · "+K.I["14"]+"°C instant");
     s += box(10, 280, 120, 38, "Tuburi vidate ×"+(m.nSan*K.I["7"]), "pe acoperișul sanitarelor");
-    s += box(180, 252, 150, 46, "Puffer "+(500*m.nSan)+" L ×"+m.nSan, "55°C · serpentină solară");
-    s += box(390, 252, 160, 46, "Pompă aer-apă ×"+m.nSan, "rezervă la "+LOCS[state.loc].tmin+"°C");
-    s += box(610, 216, 140, 38, "Distribuție AC", "55°C → amestec");
-    s += box(610, 280, 140, 38, "Recirculare", "pompă + răcire retur");
-    s += box(610, 336, 190, 52, "Dușuri "+(m.nSan*K.I["23"])+" · WC "+(m.nSan*K.I["24"])+" · lavoare "+(m.nSan*K.I["25"]), "40 L/pers/zi + 30 L spălări + 5 L/pers/zi birou");
+    s += box(180, 252, 150, 46, "Buffer "+(500*m.nSan)+" L ×"+m.nSan, "55°C · serpentină solară");
+    s += box(390, 252, 160, 46, "Air-water HP ×"+m.nSan, "backup at "+LOCS[state.loc].tmin+"°C");
+    s += box(610, 216, 140, 38, "HW distribution", "55°C → amestec");
+    s += box(610, 280, 140, 38, "Recirculation", "pump + răcire retur");
+    s += box(610, 336, 190, 52, "Dușuri "+(m.nSan*K.I["23"])+" · WC "+(m.nSan*K.I["24"])+" · lavoare "+(m.nSan*K.I["25"]), "40 L/pers/zi + 30 L washing + 5 L/pers/zi birou");
     s += `<line class="ln" style="stroke:var(--hot)" x1="130" y1="235" x2="180" y2="270" marker-end="url(#arr4)"/>`;
     s += `<line class="ln" style="stroke:var(--hot)" x1="130" y1="299" x2="180" y2="285" marker-end="url(#arr4)"/>`;
     s += `<line class="ln" style="stroke:var(--hot)" x1="330" y1="275" x2="390" y2="275" marker-end="url(#arr4)"/>`;
@@ -1077,49 +1077,49 @@ function panel(m, clim){
     el.setAttribute("viewBox", "0 0 810 400");
     el.innerHTML = s;
   }
-  // ---------------- scheme desfășurate (monofilare) + jurnal de cabluri, stil SDS ----------------
+  // ---------------- unfolded single-line diagrams + jurnal de cabluri, stil SDS ----------------
   function circuitsFor(m){
     // [eticheta, denumire, protectie, cablu, destinatie, faza, Pi kW]
     const G = [];
     const push = (tablou, rows) => G.push([tablou, rows]);
-    for(let i=0;i<m.nMB;i++) push("SDS-B"+(i+1)+" · Sub-tablou BIROURI "+(i+1), [
-      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x10","TG (ATS)","RST",0],
-      ["I1","Iluminat birou "+(i+1),"1P+N C10A 30mA AC","NYY-J 3x1.5","corpuri LED birou "+(i+1),"R",0.4],
-      ["P1","Prize birou "+(i+1),"1P+N C16A 30mA AC","NYY-J 3x2.5","laptop/imprimantă/AP","R",2.0],
+    for(let i=0;i<m.nMB;i++) push("SDS-B"+(i+1)+" · Sub-panel OFFICES "+(i+1), [
+      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x10","MAIN (ATS)","RST",0],
+      ["I1","Lighting office "+(i+1),"1P+N C10A 30mA AC","NYY-J 3x1.5","corpuri LED birou "+(i+1),"R",0.4],
+      ["P1","Sockets office "+(i+1),"1P+N C16A 30mA AC","NYY-J 3x2.5","laptop/imprimantă/AP","R",2.0],
       ["HP1"," Pompă aer-aer grup "+(i+1),"3P+N — de dimensionat de ing.","NYY-J 5x2.5","unitate exterioară multi-split","RST",3.5],
-      ["W1","Instant electric WC TESA","1P+N C20A 30mA A","NYY-J 3x2.5","instant 3.5 kW WC TESA","R",3.5],
+      ["W1","Instant electric TESA WC","1P+N C20A 30mA A","NYY-J 3x2.5","instant 3.5 kW WC TESA","R",3.5],
     ]);
     const nGr = Math.ceil(m.ncdC/3);
-    for(let g=0; g<nGr; g++) push("SDS-C"+(g+1)+" · Sub-tablou CAZARE grup "+(g+1), [
-      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x6","TG (ATS)","RST",0],
-      ["I1","Iluminat dormitoare/sală "+(g+1),"1P+N C10A 30mA AC","NYY-J 3x1.5","corpuri LED","R",0.4],
-      ["P1","Prize dormitoare "+(g+1),"1P+N C16A 30mA AC","NYY-J 3x2.5","încărcare telefoane etc.","R",1.0],
-      ["M1","Microunde + fierbător sală "+(g+1),"1P+N C16A","NYY-J 3x2.5","2 microunde + fierbător","S",3.2],
-      ["V1","Ventilator/recuperator "+(g+1),"1P+N C10A","NYY-J 3x1.5","recuperator de căldură","T",0.4],
+    for(let g=0; g<nGr; g++) push("SDS-C"+(g+1)+" · Sub-panel ACCOMMODATION group "+(g+1), [
+      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x6","MAIN (ATS)","RST",0],
+      ["I1","Iluminat dormitoare/canteen "+(g+1),"1P+N C10A 30mA AC","NYY-J 3x1.5","corpuri LED","R",0.4],
+      ["P1","Bedroom sockets "+(g+1),"1P+N C16A 30mA AC","NYY-J 3x2.5","încărcare telefoane etc.","R",1.0],
+      ["M1","Microwaves + kettle canteen "+(g+1),"1P+N C16A","NYY-J 3x2.5","2 microunde + fierbător","S",3.2],
+      ["V1","Fan/heat recovery unit "+(g+1),"1P+N C10A","NYY-J 3x1.5","recuperator de căldură","T",0.4],
     ]);
-    for(let s=0;s<m.nSan;s++) push("SDS-S"+(s+1)+" · Sub-tablou SANITAR "+(s+1), [
-      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x6","TG (ATS)","RST",0],
-      ["A1","Pompă aer-apă apă caldă "+(s+1),"3P+N — de dimensionat de ing.","NYY-J 5x2.5","pompă aer-apă monobloc","RST",3.0],
-      ["R1","Rezistență rezervă puffer "+(s+1),"1P+N C20A","NYY-J 3x4","rezistență 3 kW","S",3.0],
-      ["C1","Pompe circulație + stație solară","1P+N C10A","NYY-J 3x1.5","pompe + grup solar tuburi vidate","T",0.5],
-      ["I1","Iluminat + ventilație sanitar "+(s+1),"1P+N C10A 30mA AC","NYY-J 3x1.5","LED + ventilator evacuare","R",0.3],
+    for(let s=0;s<m.nSan;s++) push("SDS-S"+(s+1)+" · Sub-panel SANITARY "+(s+1), [
+      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x6","MAIN (ATS)","RST",0],
+      ["A1","Air-water heat pump hot water "+(s+1),"3P+N — de dimensionat de ing.","NYY-J 5x2.5","pump aer-apă monobloc","RST",3.0],
+      ["R1","Buffer backup resistance "+(s+1),"1P+N C20A","NYY-J 3x4","rezistență 3 kW","S",3.0],
+      ["C1","Circulation pumps + solar station","1P+N C10A","NYY-J 3x1.5","pompe + grup solar tuburi vidate","T",0.5],
+      ["I1","Lighting + ventilation sanitary "+(s+1),"1P+N C10A 30mA AC","NYY-J 3x1.5","LED + ventilator evacuare","R",0.3],
     ]);
-    if(state.ev) push("SDS-EV · Sub-tablou STAȚIE EV", [
-      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x10","TG (ATS)","RST",0],
-      ["EV1","Stație EV dublă 2×11 kW","3P+N — de dimensionat de ing.","NYY-J 5x6","2 posturi de încărcare (vară)","RST",22.0],
+    if(state.ev) push("SDS-EV · Sub-panel EV STATION", [
+      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x10","MAIN (ATS)","RST",0],
+      ["EV1","Double EV station 2×11 kW","3P+N — de dimensionat de ing.","NYY-J 5x6","2 charging posts (summer)","RST",22.0],
     ]);
-    push("SDS-T · Sub-tablou TEHNIC (container tehnic)", [
-      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x6","TG (ATS)","RST",0],
-      ["I1","Iluminat cameră tehnică + monitorizare","1P+N C10A 30mA AC","NYY-J 3x1.5","LED + cameră","R",0.2],
-      ["B1","BMS/EMS + switch + contorizare","1P+N C10A","NYY-J 3x1.5","automatizare tablou general","S",0.5],
-      ["P1","Prize service invertor/acumulatori","1P+N C16A 30mA AC","NYY-J 3x2.5","prize service","T",1.5],
+    push("SDS-T · Sub-panel TEHNIC (container tehnic)", [
+      ["1Q1","Alimentare de la Panel General","3P+N — de dimensionat de ing.","NYY-J 5x6","MAIN (ATS)","RST",0],
+      ["I1","Technical room lighting + monitoring","1P+N C10A 30mA AC","NYY-J 3x1.5","LED + room","R",0.2],
+      ["B1","BMS/EMS + switch + metering","1P+N C10A","NYY-J 3x1.5","automatizare tablou general","S",0.5],
+      ["P1","Service sockets inverters/batteries","1P+N C16A 30mA AC","NYY-J 3x2.5","prize service","T",1.5],
     ]);
     return G;
   }
   function renderMono2(m){
     const el = $("mono2"); if(!el) return;
     const groups = circuitsFor(m);
-    let h = `<p class="note"><b>Powered by STRABAG MK-LL — Engineering Division Constanta - Jedi Ciprian Lazar</b> · Șantier fără emisii CO₂ · ${LOCS[state.loc].name} · ${new Date().toISOString().slice(0,10)} — scheme desfășurate (monofilare): 1P+N = monofazat, 3P+N = trifazat; TN-S; PE galben-verde; rezervă 30%.</p>`;
+    let h = `<p class="note"><b>Powered by STRABAG MK-LL — Engineering Division Constanta - Jedi Ciprian Lazar</b> · Șantier fără emisii CO₂ · ${LOCS[state.loc].name} · ${new Date().toISOString().slice(0,10)} — unfolded single-line diagrams: 1P+N = monofazat, 3P+N = trifazat; TN-S; PE galben-verde; rezervă 30%.</p>`;
     let journal = [];
     groups.forEach(([tablou, rows], gi)=>{
       h += `<table class="sd"><thead><tr><th colspan="5">${tablou}</th></tr>`+
@@ -1134,8 +1134,8 @@ function panel(m, clim){
       });
       h += `</tbody></table>`;
     });
-    const mono = [["Iluminat (toate tablourile)", 0.4*m.nMB + 0.4*Math.ceil(m.ncdC/3) + 0.3*m.nSan + 0.2], ["Prize birouri", 2.0*m.nMB], ["Prize dormitoare", 1.0*Math.ceil(m.ncdC/3)], ["Microunde+fierbător săli", 3.2*Math.ceil(m.ncdC/3)], ["Instant WC TESA", 3.5*m.nMB], ["Rezistență rezervă puffer", 3.0*m.nSan], ["Pompe circulație + stație solară", 0.5*m.nSan], ["Ventilatoare/recuperatoare", 0.4*Math.ceil(m.ncdC/3)], ["Iluminat tehnic + monitorizare + BMS", 0.7], ["Prize service tehnic", 1.5]];
-    const tri = [["Unități exterioare pompe aer-aer (per grup de 3)", 3.5*m.nMB + 3.5*Math.ceil(m.ncdC/3)*0], ["Pompă aer-apă apă caldă (per sanitar)", 3.0*m.nSan], ["Stație EV dublă 2×11 kW", state.ev?22:0], ["Alimentare fiecare sub-tablou de la TG (3P+N)", 0]];
+    const mono = [["Lighting (all panels)", 0.4*m.nMB + 0.4*Math.ceil(m.ncdC/3) + 0.3*m.nSan + 0.2], ["Sockets officeri", 2.0*m.nMB], ["Bedroom sockets", 1.0*Math.ceil(m.ncdC/3)], ["Microunde+canteen kettle", 3.2*Math.ceil(m.ncdC/3)], ["Instant WC TESA", 3.5*m.nMB], ["Buffer backup resistance", 3.0*m.nSan], ["Circulation pumps + solar station", 0.5*m.nSan], ["Ventilatoare/recuperatoare", 0.4*Math.ceil(m.ncdC/3)], ["Iluminat tehnic + monitorizare + BMS", 0.7], ["Prize service tehnic", 1.5]];
+    const tri = [["Unități exterioare pompe aer-aer (per grup de 3)", 3.5*m.nMB + 3.5*Math.ceil(m.ncdC/3)*0], ["Air-water heat pump hot water (per sanitar)", 3.0*m.nSan], ["Double EV station 2×11 kW", state.ev?22:0], ["Alimentare fiecare sub-tablou de la TG (3P+N)", 0]];
     h += `<h3 style="margin:10px 0 4px">Consumers for your breaker sizing (Pi)</h3>`+
          `<table class="sd"><thead><tr><th>SINGLE-PHASE (1P+N, 230 V)</th><th>Pi total [kW]</th><th>THREE-PHASE (3P+N, 400 V)</th><th>Pi total [kW]</th></tr></thead><tbody>`;
     const nR = Math.max(mono.length, tri.length);
@@ -1143,7 +1143,7 @@ function panel(m, clim){
     h += `</tbody></table><p class="note">No amp rating on three-phase — you size it (3P+N, 400 V). Single-phase: lighting 10A, sockets 16A, rest per rule.</p>`;
     h += `<h3 style="margin:10px 0 4px">Cable schedule</h3>`+
          `<table class="sd"><thead><tr><th>Panel</th><th>Circuit</th><th>Description</th><th>Phase</th><th>Pi [kW]</th><th>Imax [A]</th><th>Cable</th><th>Size</th><th>Length [m]</th><th>Mounting</th></tr></thead><tbody>`+
-         journal.map(j=>`<tr><td>${j[0]}</td><td>${j[1]}</td><td>${j[2]}</td><td>${j[3]}</td><td>${nf(j[4],1)}</td><td>${nf(j[5],1)}</td><td>${j[6]}</td><td>${j[7]}</td><td>${j[8]}</td><td>pe tub PVC / pat cabluri</td></tr>`).join("")+
+         journal.map(j=>`<tr><td>${j[0]}</td><td>${j[1]}</td><td>${j[2]}</td><td>${j[3]}</td><td>${nf(j[4],1)}</td><td>${nf(j[5],1)}</td><td>${j[6]}</td><td>${j[7]}</td><td>${j[8]}</td><td>on PVC pipe / cable tray</td></tr>`).join("")+
          `</tbody></table>`;
     el.innerHTML = h;
   }
@@ -1177,13 +1177,13 @@ function panel(m, clim){
     evChk.addEventListener("change", ()=>{ state.ev = evChk.checked ? 1 : 0; render(); }); }
 
 
-  // controale layout turbines (mast 6 m, 2 rows, 15-20 m, frontage ajustabil)
+  // controale layout turbines (mast 6 m, 2 rows, 15-20 m, adjustable frontage)
   function fillSel(id, vals, fmt){
     const el = $(id); if(!el) return;
     vals.forEach(v=>{ const o=document.createElement("option"); o.value=String(v); o.textContent=fmt(v); el.appendChild(o); });
   }
   fillSel("hubSel", [4,6,8,10], v=>v+" m");
-  fillSel("rowSel", [1,2,3,4], v=>v+(v===1?" rând":" rows"));
+  fillSel("rowSel", [1,2,3,4], v=>v+(v===1?" row":" rows"));
   fillSel("spcSel", [10,15,18,20,25,30], v=>v+" m");
   fillSel("frontageSel", [40,60,80,100,120,150,200,300], v=>v+" m");
   fillSel("extPSel", [0.5,1,1.5,2,3], v=>v+" kW");
@@ -1196,7 +1196,7 @@ function panel(m, clim){
     el.value = String(state[key]);
     el.addEventListener("change", ev=>{ state[key]=+ev.target.value; render(); });
   }
-  // meta info sus: localitatea curentă
+  // meta info sus: current locality
   const metaEl = document.querySelector(".meta");
   if(metaEl){ metaEl.id = "metaInfo"; }
 
